@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to set up Claude Code cloud sessions and use the $250 credit | ml0x</title>
-<meta name="description" content="Step-by-step setup for Claude Code cloud sessions, tested on Claude Code 2.1.281. Claim the $100 or $250 credit, connect GitHub, start your first session from the terminal, and fix the errors people hit.">
+<title>Claude Code cloud sessions: setup, limits and costs (tested on 2.1.281) | ml0x</title>
+<meta name="description" content="Step-by-step setup for Claude Code cloud sessions, tested on Claude Code 2.1.281. Connect GitHub, start your first session from the terminal, know the VM limits and what it costs, and fix the errors people hit.">
 <link rel="canonical" href="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <link rel="alternate" hreflang="en" href="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <link rel="alternate" hreflang="x-default" href="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="How to set up Claude Code cloud sessions and use the $250 credit">
+<meta property="og:title" content="Claude Code cloud sessions: setup, limits and costs">
 <meta property="og:description" content="Claim the credit, connect GitHub, run your first cloud session from the terminal, and fix the errors people hit. Tested on Claude Code 2.1.281.">
 <meta property="og:url" content="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <meta property="og:site_name" content="ml0x">
@@ -19,7 +19,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Claude Code cloud sessions setup guide">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="How to set up Claude Code cloud sessions and use the $250 credit">
+<meta name="twitter:title" content="Claude Code cloud sessions: setup, limits and costs">
 <meta name="twitter:description" content="Claim the credit, connect GitHub, run your first cloud session from the terminal, and fix the errors people hit.">
 <meta name="twitter:image" content="https://ml0x.com/og/claude-code-cloud-sessions.png">
 <meta name="author" content="Michael Lip">
@@ -32,6 +32,10 @@
 .ccs-steps > li { margin: 0 0 8px; }
 .ccs-step-no { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.8px; margin: 48px 0 4px; }
 .ccs-step-no + h2 { margin-top: 0; }
+.ccs-offer { margin: 40px 0 8px; }
+.ccs-offer h3 { margin: 4px 0 8px; font-size: 18px; }
+.ccs-offer-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin: 16px 0 0; }
+.ccs-offer-free { font-size: 14px; }
 .ccs-status { display: inline-block; font-family: var(--font-mono); font-size: 11px; padding: 2px 8px; border-radius: var(--radius-pill); border: 1px solid var(--line-strong); color: var(--ink-2); white-space: nowrap; }
 .ccs-status.is-ok { color: var(--ok); border-color: var(--ok); }
 .ccs-status.is-warn { color: var(--warn); border-color: var(--warn); }
@@ -64,12 +68,12 @@
 {
   "@context": "https://schema.org",
   "@type": "TechArticle",
-  "headline": "How to set up Claude Code cloud sessions and use the $250 credit",
+  "headline": "Claude Code cloud sessions: setup, limits and costs",
   "description": "Step-by-step setup for Claude Code cloud sessions, tested on Claude Code 2.1.281: claim the credit, connect GitHub, configure the environment, start and steer a session, and fix common errors.",
   "author": {"@type": "Person", "name": "Michael Lip", "url": "https://github.com/theluckystrike"},
   "publisher": {"@type": "Organization", "name": "ml0x", "url": "https://ml0x.com"},
   "datePublished": "2026-09-24",
-  "dateModified": "2026-09-24",
+  "dateModified": "2026-10-08",
   "proficiencyLevel": "Beginner",
   "dependencies": "Claude Pro or Max plan, a GitHub account, Claude Code CLI",
   "image": "https://ml0x.com/og/claude-code-cloud-sessions.png",
@@ -105,7 +109,7 @@
         <a href="/research/">Research</a>
       </nav>
     </div>
-    <a class="nav-cta" href="https://zovo.one/pricing?utm_source=ml0x&amp;utm_medium=nav&amp;utm_campaign=guides-claude-code-cloud-sessions" target="_blank" rel="noopener">Zovo browser extensions</a>
+    <a class="nav-cta" href="/pipeline/">ml0x pipeline, $99</a>
   </div>
 </header>
 
@@ -121,10 +125,9 @@
   </div>
 
   <div class="stat-grid" aria-label="Key numbers">
-    <div class="stat-card"><div class="value">$250 / $100</div><div class="label">Credit on Max / Pro</div></div>
-    <div class="stat-card"><div class="value">Oct 7</div><div class="label">Last day to claim</div></div>
-    <div class="stat-card"><div class="value">Nov 4</div><div class="label">Expires 11:59 PM Pacific</div></div>
     <div class="stat-card"><div class="value">4 / 16 / 30</div><div class="label">vCPU / GB RAM / GB disk</div></div>
+    <div class="stat-card"><div class="value">--cloud</div><div class="label">One flag from your repo</div></div>
+    <div class="stat-card"><div class="value">$250 / $100</div><div class="label">One-time credit (claim closed Oct 7, 2026)</div></div>
   </div>
 
   <div class="ccs-quick">
@@ -158,8 +161,8 @@ claude --cloud "Fix the failing tests"</code></pre>
     <p>Update Claude Code first with <code>claude update</code>. The <code>--cloud</code> flag and <code>/claim-credit</code> are in 2.1.281, and older versions may not have them.</p>
 
     <p class="ccs-step-no">Step 1</p>
-    <h2>Claim the credit</h2>
-    <p>Open Claude Code and type <code>/claim-credit</code>. You can also open <a href="https://claude.ai/code" target="_blank" rel="noopener">claude.ai/code</a>, where a claim prompt appears on accounts that still have one. The deadline to claim is the end of 7 October 2026, US Pacific time.</p>
+    <h2>Check the credit (claims closed Oct 7)</h2>
+    <p>Open Claude Code and type <code>/claim-credit</code>. You can also open <a href="https://claude.ai/code" target="_blank" rel="noopener">claude.ai/code</a>, where a claim prompt appears on accounts that still have one. The claim window closed at the end of 7 October 2026, US Pacific time, so this step only matters if you claimed before then. Cloud sessions work the same without the credit; they run on your plan's usage.</p>
     <p>If you've claimed it already, the command tells you so and links to your offer page. Here's the exact output from my account.</p>
 <pre><code>&gt; /claim-credit
   &#9151;  You've already claimed this offer. See the offer at https://claude.ai/code/claim-credit/6</code></pre>
@@ -252,7 +255,15 @@ claude --teleport session_013RJsJUzfWs11NhuKnFaKr2</code></pre>
     <p>A session started in the browser begins from the repo's default branch unless you name another one. From the CLI it begins from the branch you're on. Either way it commits to a branch prefixed <code>claude/</code>. The session page shows a counter such as +42 &minus;18. Click it to open the diff and comment on individual lines. Your comments go back with your next message. When you're happy, click Create PR and choose a full PR, a draft, or GitHub's compose page with a generated title and description.</p>
     <p>Commits made in a cloud session carry a <code>Claude-Session:</code> trailer with the session URL, and PR bodies include the link too. To leave it out, commit <code>"attribution": {"sessionUrl": false}</code> to the repo's <code>.claude/settings.json</code>. Your personal <code>~/.claude/settings.json</code> doesn't reach the cloud.</p>
 
-    <h2>Plan the credit so none of it expires</h2>
+    <aside class="callout ccs-offer" data-mr-placement="guide_pipeline_offer" aria-label="ml0x pipeline">
+      <p class="eyebrow">From the author of this guide</p>
+      <h3>Running Claude Code unattended? Put a budget cap on it first.</h3>
+      <p>The ml0x pipeline runs Claude Code on your own machine in four stages (analyze, implement, test, review), with a quality gate and a dollar ceiling you set before the run starts. I built it because the bill lands on me. The core is free and MIT on GitHub. The $99 package is the same system pinned at a version, with the configs, the runbook and the research behind it. One payment, 60-day refund, and you keep the files.</p>
+      <p class="ccs-offer-actions"><a class="btn" href="/pipeline/">Get the ml0x pipeline, $99 once</a> <a class="ccs-offer-free" href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">Clone the free core first</a></p>
+    </aside>
+
+    <h2>The $250 / $100 credit (closed to new claims Oct 7, 2026; expires Nov 4)</h2>
+    <h3>Plan the credit so none of it expires</h3>
     <p>Whatever is left on November 4 is gone. The planner divides your remaining balance by the days left, so you can see what a day's worth of cloud work should cost. The first figures below assume 24 September. The page recomputes them from your own clock when it loads.</p>
   </section>
 
