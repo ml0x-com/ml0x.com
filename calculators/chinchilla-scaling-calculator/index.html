@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chinchilla scaling calculator, optimal model size and tokens | ml0x</title>
+<meta name="description" content="Enter a training budget in FLOPs. Get the compute-optimal parameter and token counts and the loss under the Hoffmann et al. 2022 fit and the 2024 replication fit.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/chinchilla-scaling-calculator/">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/chinchilla-scaling-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/chinchilla-scaling-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Chinchilla scaling calculator, optimal model size and tokens">
+<meta property="og:description" content="Enter a training budget in FLOPs. Get the compute-optimal parameter and token counts and the loss under the Hoffmann et al. 2022 fit and the 2024 replication fit.">
+<meta property="og:url" content="https://ml0x.com/calculators/chinchilla-scaling-calculator/">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chinchilla scaling calculator, optimal model size and tokens">
+<meta name="twitter:description" content="Enter a training budget in FLOPs. Get the compute-optimal parameter and token counts and the loss under the Hoffmann et al. 2022 fit and the 2024 replication fit.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<script src="/site-analytics.js" defer></script>
+<style>
+.cs-calc{max-width:880px;margin:0 auto;padding:8px 0}
+.cs-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:14px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.cs-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.cs-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.cs-calc table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;table-layout:auto}
+.cs-calc th,.cs-calc td{font-size:14px;white-space:normal;overflow-wrap:normal;padding:6px 8px;vertical-align:top;text-align:left}
+.cs-calc .cs-scroll{overflow-x:auto;max-width:100%}
+@media (max-width:480px){.cs-calc #cs-out{padding:14px 8px}.cs-calc th,.cs-calc td{padding:6px 3px}.cs-calc th{letter-spacing:0;text-transform:none;font-family:inherit}.cs-calc #cs-const th,.cs-calc #cs-const td{padding:6px 2px}}
+.cs-calc sup{font-size:14px}
+.cs-calc label{font-size:14px;display:block;margin:10px 0 0}
+.cs-calc input[type="text"]{max-width:440px;width:100%;font-size:16px}
+.cs-calc fieldset{border:1px solid var(--line);border-radius:var(--radius);padding:6px 20px 18px;margin:24px 0;background:var(--surface)}
+.cs-calc legend{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--ink-muted);padding:0 6px}
+.cs-calc #cs-out{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:var(--radius-sm);padding:18px 20px;margin:24px 0;min-height:104px;font-variant-numeric:tabular-nums}
+.cs-calc #cs-out p{margin:0 0 10px}
+.cs-calc .note{font-size:14px;color:var(--ink-muted);max-width:70ch}
+.cs-calc .formula{font-family:var(--font-mono);font-size:14px;overflow-wrap:anywhere}
+</style>
+</head>
+<body><a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" href="https://zovo.one/pricing?utm_source=ml0x&amp;utm_medium=nav&amp;utm_campaign=calculators-chinchilla-scaling-calculator" target="_blank" rel="noopener">Zovo browser extensions</a>
+  </div>
+</header>
+
+<main id="main" class="container">
+<article class="cs-calc"><nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Chinchilla scaling calculator</span></nav>
+<h1>Chinchilla scaling calculator</h1>
+<p>By Michael Lip. Enter a training compute budget C in FLOPs. The page gives the compute-optimal parameter count N and token count D under two published fits of the same loss formula: the Hoffmann et al. (2022) fit and the 2024 replication fit by Besiroglu et al. It also shows the gap between the two fits, the tokens-per-parameter ratio of each, and the predicted loss for a plan that you enter. All arithmetic runs in this browser tab.</p>
+
+<h2>Compute a plan</h2>
+<div id="cs-calc-box">
+<fieldset>
+<legend>Compute budget</legend>
+<label for="cs-c">Training compute C, in FLOPs (for example 5.76e23)</label>
+<input id="cs-c" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="5.76e23">
+</fieldset>
+<fieldset>
+<legend>Your plan (optional)</legend>
+<label for="cs-n">Parameters N (for example 1e10). Leave empty to use the optimum.</label>
+<input id="cs-n" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="">
+<label for="cs-d">Training tokens D (for example 2.051e11). Leave empty to use the optimum.</label>
+<input id="cs-d" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="">
+<p class="note">Enter N or D and the page takes the other one from C = 6ND. Enter both and the page ignores the C field: it uses C = 6ND of your plan for the plan and for the optimum.</p>
+</fieldset>
+<p><button id="cs-go" type="button">Compute</button></p>
+</div>
+<div id="cs-out" class="readout" aria-live="polite"></div>
+<noscript><p style="max-width:62ch">The calculator needs JavaScript. The constants, the formulas and the worked examples below are static text.</p></noscript>
+
+<h2>Constants of the two fits</h2>
+<p class="note">Both fits use the loss formula L(N, D) = E + A / N<sup>&alpha;</sup> + B / D<sup>&beta;</sup>. The exponent &alpha; goes with the parameter count N and &beta; goes with the token count D. The calculator uses the first two columns. The third column is the rounded set printed in the body of the 2022 paper, shown for comparison only. The rows a, b and G are computed on this page from the constants with Eq. 4 of the 2022 paper.</p>
+<div class="cs-scroll"><table id="cs-const">
+<thead><tr><th>Constant</th><th>Hoffmann et al. 2022, precise</th><th>Replication 2024</th><th>Hoffmann et al. 2022, rounded</th></tr></thead>
+<tbody>
+<tr><td>Source</td><td>arXiv 2404.10102, Eq. 4</td><td>arXiv 2404.10102, Eq. 3</td><td>arXiv 2203.15556, Eq. 10</td></tr>
+<tr><td>E</td><td>1.6934</td><td>1.8172</td><td>1.69</td></tr>
+<tr><td>A</td><td>406.4</td><td>482.01</td><td>406.4</td></tr>
+<tr><td>B</td><td>410.7</td><td>2085.43</td><td>410.7</td></tr>
+<tr><td>&alpha; (N)</td><td>0.3392</td><td>0.3478</td><td>0.34</td></tr>
+<tr><td>&beta; (D)</td><td>0.2849</td><td>0.3658</td><td>0.28</td></tr>
+<tr><td>a = &beta; / (&alpha; + &beta;)</td><td>0.4565</td><td>0.5126</td><td>0.4516</td></tr>
+<tr><td>b = &alpha; / (&alpha; + &beta;)</td><td>0.5435</td><td>0.4874</td><td>0.5484</td></tr>
+<tr><td>G</td><td>1.3004</td><td>0.1196</td><td>1.3447</td></tr>
+</tbody>
+</table></div>
+<p class="note">The replication paper says that its Eq. 4 values come from comments in the TeX source of the 2022 paper and are more precise than the values in the body of that paper. The 2022 paper states a = 0.46 and b = 0.54 for this approach. The precise column rounds to these values.</p>
+
+<h2>Formulas</h2>
+<p>The 2022 paper finds the optimum by minimizing L(N, D) under the constraint FLOPs(N, D) &asymp; 6ND (its Eq. 4 and the text above it). The factor 6 comes from Kaplan et al. (2020), who estimate the non-embedding training compute as C &asymp; 6N floating point operations per training token, with N the number of non-embedding parameters and the backward pass at about twice the cost of the forward pass. The 2022 paper counts the embedding matrices in its parameter count and in its FLOPs (its Appendix F). The closed form is:</p>
+<p class="formula">N_opt(C) = G &times; (C / 6)^a<br>D_opt(C) = G^(-1) &times; (C / 6)^b<br>G = (&alpha;A / (&beta;B))^(1 / (&alpha; + &beta;)), a = &beta; / (&alpha; + &beta;), b = &alpha; / (&alpha; + &beta;)<br>tokens per parameter = D_opt / N_opt<br>loss of a plan = E + A / N^&alpha; + B / D^&beta;<br>gap = value of the replication fit / value of the Hoffmann fit</p>
+<p>When you enter N only, the page sets D = C / (6N). When you enter D only, it sets N = C / (6D). The loss penalty of a plan is the loss of the plan minus the loss at the optimum of the same fit for the same C.</p>
+
+<h2>Worked examples</h2>
+<p>Gopher budget. The 2022 paper gives the Gopher training budget as 5.76 &times; 10<sup>23</sup> FLOPs and writes: "We project the optimal model size given the Gopher FLOP budget to be 40B parameters." With the precise constants, this page gives N_opt = 4.03 &times; 10<sup>10</sup> and D_opt = 2.38 &times; 10<sup>12</sup>, which is 59.1 tokens per parameter. With the rounded constants of Eq. 10, the same budget gives N_opt = 3.22 &times; 10<sup>10</sup>, so the rounding alone moves the answer away from 40B. The replication fit gives N_opt = 7.22 &times; 10<sup>10</sup> and D_opt = 1.33 &times; 10<sup>12</sup>, which is 18.4 tokens per parameter. The gap is 1.79 for N and 0.558 for D.</p>
+<p>Check of C = 6ND with Table 3 of the 2022 paper. 400 million parameters and 8.0 billion tokens give 1.92 &times; 10<sup>19</sup> FLOPs. 1 billion parameters and 20.2 billion tokens give 1.21 &times; 10<sup>20</sup>. 10 billion parameters and 205.1 billion tokens give 1.23 &times; 10<sup>22</sup>. These three products agree with the FLOPs column of Table 3. Table 3 comes from Approach 1 of the paper, not from the fitted loss formula, so it tests only the 6ND rule.</p>
+<p>Plan loss. For N = 1 &times; 10<sup>10</sup> and D = 2.051 &times; 10<sup>11</sup>, the plan uses C = 1.23 &times; 10<sup>22</sup>. The predicted loss is 2.1041 under the Hoffmann fit and 2.1293 under the replication fit. At the optimum for the same C, the Hoffmann fit gives 2.1015, a penalty of 0.0026. The replication fit gives 2.1293 at its optimum, a penalty below 0.0001.</p>
+
+<h2>Why the two fits disagree</h2>
+<p>The replication paper reconstructs the data of Figure 4 of the 2022 paper and fits the same formula again. It states that the Hoffmann parameters suggest "approximately 70 tokens per parameter" and that its own fit implies "around 20 tokens per parameter". It gives two reasons for the difference: the constants in the body of the 2022 paper are rounded, and the optimizer of the 2022 fit stopped before convergence. Under the precise Hoffmann constants, a is less than b, so the ratio D_opt / N_opt grows with C. This page computes 27.8 tokens per parameter at 10<sup>20</sup> FLOPs, 59.1 at the Gopher budget and 92.5 at 10<sup>26</sup> FLOPs. Under the replication fit, a is more than b, and the ratio falls slowly: 22.9 at 10<sup>20</sup>, 18.4 at the Gopher budget and 16.1 at 10<sup>26</sup>. The replication paper also states that its fit is consistent with a ratio between 4 and 40 for models trained on 10<sup>26</sup> FLOPs or more.</p>
+
+<h2>Limits</h2>
+<p>Each fit describes the data and the tokenizer of the 2022 paper only. That paper trained "over 400 language models ranging from 70 million to over 16 billion parameters" (its abstract). Its Table A9, the list of all its models, runs from 44 million to 16,183 million parameters. Outside that range the formulas are an extrapolation, and the calculator shows a warning when a parameter count is below 44 million or above 16,183 million. The page does not predict the loss or the optimal size of any named model. It does not model cost, hardware time or prices. The loss values are in the units of the 2022 paper and do not transfer to a different dataset.</p>
+
+<h2>Sources</h2>
+<p>All three sources were fetched on 2026-10-11. Hoffmann et al. (2022), "Training Compute-Optimal Large Language Models", arXiv 2203.15556: Eq. 4, Eq. 10, Table 2, Table 3, Appendix F and the Gopher budget of 5.76 &times; 10<sup>23</sup> FLOPs, with Table A9 for the range of model sizes. Besiroglu et al. (2024), "Chinchilla Scaling: A replication attempt", arXiv 2404.10102 (version 2): Eq. 3, Eq. 4, Table 1 and Section 3.3. Kaplan et al. (2020), "Scaling Laws for Neural Language Models", arXiv 2001.08361: Section 2.1, C &asymp; 6N per training token. Links: <a href="https://arxiv.org/abs/2203.15556" target="_blank" rel="noopener">arXiv 2203.15556</a>, <a href="https://arxiv.org/abs/2404.10102" target="_blank" rel="noopener">arXiv 2404.10102</a>, <a href="https://arxiv.org/abs/2001.08361" target="_blank" rel="noopener">arXiv 2001.08361</a>.</p>
+</article>
+</main>
+
+<footer class="site-footer">
+  <nav class="footer-links-seo" aria-label="ML tools and content"><a href="https://mcp.zovo.one" target="_blank" rel="noopener">MCP servers for Claude</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/tools/learning-rate-finder.html">Learning rate finder</a>
+    <a href="/tools/confusion-matrix-calculator.html">Confusion matrix calculator</a>
+    <a href="/tools/neural-network-playground.html">Neural network playground</a>
+    <a href="/tools/attention-mechanism-visualizer.html">Attention visualizer</a>
+    <a href="/tools/dataset-splitter.html">Dataset splitter</a>
+    <a href="/calculators/kv-cache-size-calculator.html">KV cache calculator</a>
+    <a href="/calculators/llm-memory-calculator.html">LLM memory calculator</a>
+    <a href="/calculators/quantization-calculator.html">Quantization calculator</a>
+    <a href="/guides/">Guides</a>
+    <a href="/guides/gradient-descent-explained.html">Gradient descent</a>
+    <a href="/answers/">Answers</a>
+    <a href="/answers/ml-algorithm-comparison.html">Algorithm comparison</a>
+    <a href="/research/">Research</a>
+    <a href="/research/ml-cheatsheet.html">ML cheat sheet</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+    </div>
+  </div>
+</footer>
+<script src="/assets/offer-events.js" defer></script>
+<script>
+"use strict";
+/* calc-core start */
+var CS_FITS = {
+  hoffmann: { label: "Hoffmann et al. 2022 (precise)", E: 1.6934, A: 406.4, B: 410.7, alpha: 0.3392, beta: 0.2849 },
+  replication: { label: "Replication 2024", E: 1.8172, A: 482.01, B: 2085.43, alpha: 0.3478, beta: 0.3658 }
+};
+var CS_LIMITS = { cMin: 1e15, cMax: 1e30, nMin: 1e6, nMax: 1e15, dMin: 1e6, dMax: 1e17 };
+function csParse(raw) {
+  if (raw === null || raw === undefined) return { empty: true };
+  var s = String(raw).replace(/[\s,_  ]/g, "");
+  if (s === "") return { empty: true };
+  if (!/^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(s)) return { error: true };
+  var v = Number(s);
+  if (!isFinite(v)) return { error: true };
+  if (!(v > 0)) return { notPositive: true };
+  return { value: v };
+}
+function csOpt(C, f) {
+  var a = f.beta / (f.alpha + f.beta), b = f.alpha / (f.alpha + f.beta);
+  var G = Math.pow((f.alpha * f.A) / (f.beta * f.B), 1 / (f.alpha + f.beta));
+  var N = G * Math.pow(C / 6, a), D = Math.pow(C / 6, b) / G;
+  return { N: N, D: D, a: a, b: b, G: G };
+}
+function csLoss(N, D, f) { return f.E + f.A / Math.pow(N, f.alpha) + f.B / Math.pow(D, f.beta); }
+function csSci(x) {
+  var s = x.toExponential(2), m = s.split("e");
+  return m[0] + " × 10^" + Number(m[1]);
+}
+function csCompute(cRaw, nRaw, dRaw) {
+  var L = CS_LIMITS, c = csParse(cRaw), n = csParse(nRaw), d = csParse(dRaw);
+  if (n.error || d.error || c.error) return { error: "Enter numbers only, for example 5.76e23 or 1,000,000,000." };
+  if (n.notPositive || d.notPositive || c.notPositive) return { error: "Enter a number above 0." };
+  if (!n.empty && (n.value < L.nMin || n.value > L.nMax)) return { error: "Enter N from 1e6 to 1e15 parameters, or leave N empty." };
+  if (!d.empty && (d.value < L.dMin || d.value > L.dMax)) return { error: "Enter D from 1e6 to 1e17 tokens, or leave D empty." };
+  var C, N = null, D = null, planned = false, fromPlan = false;
+  if (!n.empty && !d.empty) { N = n.value; D = d.value; C = 6 * N * D; planned = true; fromPlan = true; }
+  else {
+    if (c.empty) return { error: "Enter the training compute C in FLOPs, for example 5.76e23." };
+    C = c.value;
+    if (!n.empty) { N = n.value; D = C / (6 * N); planned = true; }
+    else if (!d.empty) { D = d.value; N = C / (6 * D); planned = true; }
+  }
+  if (!(C >= L.cMin && C <= L.cMax)) return { error: "C must be from 1e15 to 1e30 FLOPs." + (fromPlan ? " Your N and D give C = 6ND = " + csSci(C) + ", which is " + (C < L.cMin ? "below 1e15." : "above 1e30.") : "") };
+  if (planned && (N < L.nMin || N > L.nMax)) return { error: "With this C and D, N = " + csSci(N) + " parameters. Keep N from 1e6 to 1e15: change C or D." };
+  if (planned && (D < L.dMin || D > L.dMax)) return { error: "With this C and N, D = " + csSci(D) + " tokens. Keep D from 1e6 to 1e17: change C or N." };
+  var res = { C: C, planned: planned, fits: {} };
+  for (var k in CS_FITS) {
+    var f = CS_FITS[k], o = csOpt(C, f), r = { N: o.N, D: o.D, a: o.a, b: o.b, G: o.G, tpp: o.D / o.N, Lopt: csLoss(o.N, o.D, f) };
+    if (planned) { r.Lplan = csLoss(N, D, f); r.penalty = r.Lplan - r.Lopt; }
+    res.fits[k] = r;
+  }
+  if (planned) { res.N = N; res.D = D; res.tpp = D / N; }
+  return res;
+}
+/* calc-core end */
+function csFmtLoss(x) { var v = Math.round(x * 10000) / 10000; return (v === 0 ? 0 : v).toFixed(4); }
+function csFmtPen(plan, opt) { var u = Math.round(plan * 10000) - Math.round(opt * 10000); return u < 1 ? "below 0.0001" : (u / 10000).toFixed(4); }
+function csFmt1(x) { return x.toLocaleString("en-US", { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+var CS_RANGE = { min: 4.4e7, max: 1.6183e10 };
+function csRun() {
+  var out = document.getElementById("cs-out");
+  var r = csCompute(document.getElementById("cs-c").value, document.getElementById("cs-n").value, document.getElementById("cs-d").value);
+  if (r.error) { out.textContent = r.error; return; }
+  var h = r.fits.hoffmann, p = r.fits.replication;
+  var rows = [
+    ["N_opt (parameters)", csSci(h.N), csSci(p.N), (p.N / h.N).toFixed(3)],
+    ["D_opt (tokens)", csSci(h.D), csSci(p.D), (p.D / h.D).toFixed(3)],
+    ["D_opt / N_opt", csFmt1(h.tpp), csFmt1(p.tpp), (p.tpp / h.tpp).toFixed(3)],
+    ["Loss at the optimum", csFmtLoss(h.Lopt), csFmtLoss(p.Lopt), ""],
+    ["a, b", h.a.toFixed(4) + ", " + h.b.toFixed(4), p.a.toFixed(4) + ", " + p.b.toFixed(4), ""]
+  ];
+  if (r.planned) {
+    rows.push(["Loss of your plan", csFmtLoss(h.Lplan), csFmtLoss(p.Lplan), ""]);
+    rows.push(["Penalty against the optimum", csFmtPen(h.Lplan, h.Lopt), csFmtPen(p.Lplan, p.Lopt), ""]);
+  }
+  var html = "<p>Budget C = " + csSci(r.C) + " FLOPs.";
+  if (r.planned) html += " Your plan: N = " + csSci(r.N) + ", D = " + csSci(r.D) + ", " + csFmt1(r.tpp) + " tokens per parameter.";
+  html += "</p><div class=\"cs-scroll\"><table><thead><tr><th>Result</th><th>Hoffmann 2022 (precise)</th><th>Replication 2024</th><th>Gap</th></tr></thead><tbody>";
+  for (var i = 0; i < rows.length; i++) html += "<tr><td>" + rows[i].join("</td><td>") + "</td></tr>";
+  html += "</tbody></table></div><p class=\"note\">Gap = replication value divided by Hoffmann value. Loss values are in the units of the 2022 paper and apply to its data only.</p>";
+  var out1 = [], chk = [["N_opt of the Hoffmann fit", h.N], ["N_opt of the replication fit", p.N]];
+  if (r.planned) chk.push(["N of your plan", r.N]);
+  for (var j = 0; j < chk.length; j++) if (chk[j][1] < CS_RANGE.min || chk[j][1] > CS_RANGE.max) out1.push(chk[j][0]);
+  if (out1.length) html += "<p class=\"note\"><strong>Extrapolation:</strong> " + (out1.length > 1 ? out1.slice(0, -1).join(", ") + " and " + out1[out1.length - 1] + " are" : out1[0] + " is") + " outside 44 million to 16,183 million parameters, the smallest and largest models in Table A9 of the 2022 paper. At such sizes the fit is an extrapolation.</p>";
+  out.innerHTML = html;
+}
+document.getElementById("cs-go").addEventListener("click", csRun);
+["cs-c", "cs-n", "cs-d"].forEach(function (id) {
+  var el = document.getElementById(id);
+  el.addEventListener("input", csRun);
+  el.addEventListener("keydown", function (e) { if (e.key === "Enter") csRun(); });
+});
+window.addEventListener("pageshow", csRun);
+csRun();
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","@id":"https://ml0x.com/calculators/chinchilla-scaling-calculator/#article","headline":"Chinchilla scaling calculator, optimal model size and tokens","mainEntityOfPage":"https://ml0x.com/calculators/chinchilla-scaling-calculator/","author":{"@id":"https://ml0x.com/#michael-lip"},"publisher":{"@id":"https://ml0x.com/#organization"},"datePublished":"2026-10-11","dateModified":"2026-10-11"},{"@type":"Person","@id":"https://ml0x.com/#michael-lip","name":"Michael Lip","url":"https://github.com/theluckystrike"},{"@type":"Organization","@id":"https://ml0x.com/#organization","name":"ml0x","url":"https://ml0x.com/"},{"@type":"Dataset","name":"Chinchilla loss-fit constants, fetched 2026-10-11","description":"Constants E, A, B, alpha and beta of the parametric loss fit from Hoffmann et al. 2022 (arXiv 2203.15556, Eq. 10) and from Besiroglu et al. 2024 (arXiv 2404.10102, Eq. 3 and Eq. 4), with the exponents a and b and the coefficient G computed from them.","creator":{"@id":"https://ml0x.com/#organization"},"isBasedOn":["https://arxiv.org/abs/2203.15556","https://arxiv.org/abs/2404.10102"],"isAccessibleForFree":true},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Chinchilla scaling calculator","item":"https://ml0x.com/calculators/chinchilla-scaling-calculator/"}]}]}</script></body>
+</html>
