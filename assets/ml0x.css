@@ -424,6 +424,35 @@ canvas { display: block; max-width: 100%; background: var(--surface); border-rad
 .site-footer__links { display: flex; gap: 20px; }
 .site-footer__links a { font-family: var(--font-body); font-size: 11px; }
 
+/* ------------------------------------------------- support (tip) CTA */
+.support-cta {
+  background: var(--surface-2, #F2F2F0); border: 1px solid var(--line, #E8E8E6);
+  border-left: 3px solid var(--ink, #1A1A1A); border-radius: var(--radius-sm, 8px);
+  padding: 16px 20px; margin: 24px 0; color: var(--ink-2, #4A4A4A);
+  font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  font-size: 14px; line-height: 1.6;
+}
+.support-cta p { margin: 0 0 12px; color: var(--ink-2, #4A4A4A); font-size: 14px; }
+.support-cta .support-cta__title { font-weight: 600; font-size: 16px; color: var(--ink, #1A1A1A); margin: 0 0 4px; letter-spacing: -0.2px; }
+.support-cta__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0; }
+.support-cta__btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 44px; padding: 10px 20px; box-sizing: border-box;
+  background: var(--ink, #1A1A1A); color: #fff; border: 1px solid var(--ink, #1A1A1A);
+  border-radius: var(--radius-pill, 980px);
+  font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+  font-size: 14px; font-weight: 500; line-height: 1.2; text-decoration: none;
+}
+.support-cta__btn:hover { background: #333; border-color: #333; color: #fff; }
+.support-cta__btn--alt { background: var(--surface, #FFFFFF); color: var(--ink, #1A1A1A); border-color: var(--line-strong, #D8D8D6); }
+.support-cta__btn--alt:hover { background: var(--surface, #FFFFFF); color: var(--ink, #1A1A1A); border-color: var(--ink, #1A1A1A); }
+.support-cta a:focus-visible { outline: 2px solid var(--ink, #1A1A1A); outline-offset: 3px; }
+.support-cta__why { font-size: 14px; color: var(--ink, #1A1A1A); text-decoration: underline; text-underline-offset: 3px; }
+.support-cta__fine { font-size: 12px; color: var(--ink-faint, #6E6E6E); margin: 10px 0 0 !important; }
+.support-cta-wrap { max-width: var(--wrap, 1080px); margin: 64px auto 0; padding: 0 var(--pad-x, 40px); box-sizing: border-box; }
+.support-cta-wrap .support-cta { margin: 0; }
+@media (max-width: 767px) { .support-cta-wrap { padding: 0 20px; } }
+
 /* ------------------------------------------- legacy class vocabulary
    The 58 pre-redesign pages carry these names in their markup. Mapping them
    here means the markup does not have to be rewritten to pick up the system. */

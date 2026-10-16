@@ -310,6 +310,11 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     var a = t.closest('a[href],button,[data-mr-checkout]');
     if (!a) return;
     var href = a.tagName === 'A' ? a.href : '';
+    var sc = href && a.closest('[data-support-cta]');
+    if (sc && /^https:\/\/(buymeacoffee\.com|paypal\.me)\//i.test(href)) {
+      track('support_click', { cta_position: sc.getAttribute('data-support-cta'), rail: /paypal\.me/i.test(href) ? 'paypal' : 'bmc' });
+      return;
+    }
     var plain = e.button === 0 && !(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
     if (plain && (a.classList.contains('ig-load') || a.classList.contains('reference-play') || a.hasAttribute('data-mr-reel'))) {
       var ig = a.classList.contains('ig-load'), shell = a.parentElement;
