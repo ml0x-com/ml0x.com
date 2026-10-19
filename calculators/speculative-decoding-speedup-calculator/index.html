@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speculative decoding speedup calculator | ml0x</title>
+<meta name="description" content="Enter an acceptance rate, draft length and draft cost ratio. Get the expected tokens per step, the expected speedup and the best draft length from the paper formulas.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/speculative-decoding-speedup-calculator/">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/speculative-decoding-speedup-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/speculative-decoding-speedup-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Speculative decoding speedup calculator">
+<meta property="og:description" content="Enter an acceptance rate, draft length and draft cost ratio. Get the expected tokens per step, the expected speedup and the best draft length from the paper formulas.">
+<meta property="og:url" content="https://ml0x.com/calculators/speculative-decoding-speedup-calculator/">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Speculative decoding speedup calculator">
+<meta name="twitter:description" content="Enter an acceptance rate, draft length and draft cost ratio. Get the expected tokens per step, the expected speedup and the best draft length from the paper formulas.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<script src="/site-analytics.js" defer></script>
+<style>
+.sd-calc{max-width:880px;margin:0 auto;padding:8px 0}
+.sd-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:14px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.sd-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.sd-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.sd-calc table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px;table-layout:auto}
+.sd-calc th,.sd-calc td{font-size:14px;white-space:normal;overflow-wrap:normal;padding:6px 8px;vertical-align:top;text-align:left}
+.sd-calc .sd-scroll{overflow-x:auto;max-width:100%}
+.sd-calc label,.sd-calc legend,.sd-calc th{text-transform:none}
+@media (max-width:480px){.sd-calc #sd-out{padding:14px 8px}.sd-calc th,.sd-calc td{padding:6px 3px}.sd-calc th{letter-spacing:0;text-transform:none;font-family:inherit}}
+.sd-calc label{font-size:14px;display:block;margin:10px 0 0}
+.sd-calc input[type="text"]{max-width:440px;width:100%;font-size:16px}
+.sd-calc fieldset{border:1px solid var(--line);border-radius:var(--radius);padding:6px 20px 18px;margin:24px 0;background:var(--surface)}
+.sd-calc legend{font-family:var(--font-mono);font-size:14px;font-weight:500;color:var(--ink-muted);padding:0 6px}
+.sd-calc #sd-out{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:var(--radius-sm);padding:18px 20px;margin:24px 0;min-height:104px;font-variant-numeric:tabular-nums}
+.sd-calc #sd-out p{margin:0 0 10px}
+.sd-calc #sd-out .sd-err{color:#b00020;font-weight:500}
+.sd-calc .note{font-size:14px;color:var(--ink-muted);max-width:70ch}
+.sd-calc .formula{font-family:var(--font-mono);font-size:14px;overflow-wrap:anywhere}
+</style>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body><a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" href="https://zovo.one/pricing?utm_source=ml0x&amp;utm_medium=nav&amp;utm_campaign=calculators-speculative-decoding-speedup-calculator" target="_blank" rel="noopener">Zovo browser extensions</a>
+  </div>
+</header>
+
+<main id="main" class="container">
+<article class="sd-calc"><nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Speculative decoding speedup calculator</span></nav>
+<h1>Speculative decoding speedup calculator</h1>
+<p>By Michael Lip, who builds open-source ML tools and developer utilities at <a href="https://zovo.one/">zovo.one</a>. Enter an acceptance rate &alpha;, a draft length &gamma;, a cost coefficient c and an operations ratio &ccirc;. The page applies the formulas of Leviathan et al. (2023) to give the expected number of tokens generated per run of the algorithm, the expected walltime improvement factor over standard decoding, the expected factor of increase in total arithmetic operations, and the draft length from 1 to 20 that gives the largest improvement. All arithmetic runs in this browser tab.</p>
+
+<h2>Compute a plan</h2>
+<div id="sd-calc-box">
+<fieldset>
+<legend>Inputs</legend>
+<label for="sd-a">Acceptance rate &alpha;, between 0 and 1 (for example 0.8). The chance that the target model accepts one draft token.</label>
+<input id="sd-a" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="0.8">
+<label for="sd-g">Draft length &gamma;, a whole number of tokens per step, 1 to 1000 (for example 5).</label>
+<input id="sd-g" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="5">
+<label for="sd-c">Relative cost of one draft token c, 0 or more (for example 0.05). Time of one draft forward pass divided by the time of one target forward pass.</label>
+<input id="sd-c" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="0.05">
+<label for="sd-ch">Operations ratio &ccirc;, 0 or more (for example 0.05). Arithmetic operations per token of M<sub>q</sub> divided by those of M<sub>p</sub> (Definition 3.10). Used only for the operations result.</label>
+<input id="sd-ch" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" value="0.05">
+</fieldset>
+<p><button id="sd-go" type="button">Compute</button></p>
+</div>
+<div id="sd-out" class="readout" aria-live="polite"></div>
+<noscript><p style="max-width:62ch">The calculator needs JavaScript. The constants, the formulas and the worked examples below are static text.</p></noscript>
+
+<h2>Formulas</h2>
+<p>The page uses the notation of Leviathan et al. (2023): M<sub>p</sub> is the target model, M<sub>q</sub> is the draft model, &gamma; is the number of tokens the draft model writes per step, &alpha; is the expected acceptance rate of a single token, and c is the relative cost of one draft forward pass. Chen et al. (2023) use different letters for the same quantities, K for the draft length and p for the draft model, and this page states that mapping once here.</p>
+<p class="formula">expected tokens per step = E(tokens) = (1 &minus; &alpha;<sup>&gamma;+1</sup>) / (1 &minus; &alpha;) &nbsp;&nbsp; (Eq. 1 of arXiv 2211.17192)</p>
+<p class="formula">expected speedup = (1 &minus; &alpha;<sup>&gamma;+1</sup>) / ((1 &minus; &alpha;) &times; (&gamma;c + 1)) &nbsp;&nbsp; (Theorem 3.8)</p>
+<p class="formula">best &gamma; for a given &alpha; and c = the &gamma; in 1 to 20 with the largest Theorem 3.8 value, compared unrounded</p>
+<p class="formula">Corollary 3.9: if &alpha; &gt; c, a &gamma; with an improvement exists, and the improvement factor is at least (1 + &alpha;) / (1 + c) (Theorem 3.8 at &gamma; = 1)</p>
+<p class="formula">expected factor of increase in total arithmetic operations = (1 &minus; &alpha;)(&gamma;&ccirc; + &gamma; + 1) / (1 &minus; &alpha;<sup>&gamma;+1</sup>) &nbsp;&nbsp; (Theorem 3.11, &ccirc; from Definition 3.10)</p>
+<p>At &alpha; = 1 the page uses the limits &gamma; + 1 tokens per step, speed (&gamma; + 1) / (&gamma;c + 1) and operations (&gamma;&ccirc; + &gamma; + 1) / (&gamma; + 1), because Eq. 1 and Theorem 3.11 divide by zero there. With c = 0 the Theorem 3.8 speed rises toward the bound 1 / (1 &minus; &alpha;) as &gamma; grows, so the best-&gamma; search ends at the search cap of 20 and the page says that the cap set the answer. When &alpha; is less than or equal to c, no &gamma; gives a speedup above 1 and the page says so instead of showing a best &gamma; as a gain.</p>
+
+<h2>Table 1 of the paper</h2>
+<p class="note">Table 1 of Leviathan et al. (2023) gives the total number of arithmetic operations and the inference speed against the baseline, for six pairs of &alpha; and &gamma;, with c = &ccirc; = 0. Table 1 is a calculation from the formulas, not a measurement. The columns are the paper's operations value (Theorem 3.11), the paper's speed value (Theorem 3.8) and this page's value of the speed formula. All six rows agree to two decimals.</p>
+<div class="sd-scroll"><table id="sd-t1">
+<thead><tr><th>&alpha;</th><th>&gamma;</th><th>Operations (paper)</th><th>Speed (paper)</th><th>Speed (this page)</th></tr></thead>
+<tbody>
+<tr><td>0.6</td><td>2</td><td>1.53</td><td>1.96</td><td>1.96</td></tr>
+<tr><td>0.7</td><td>3</td><td>1.58</td><td>2.53</td><td>2.53</td></tr>
+<tr><td>0.8</td><td>2</td><td>1.23</td><td>2.44</td><td>2.44</td></tr>
+<tr><td>0.8</td><td>5</td><td>1.63</td><td>3.69</td><td>3.69</td></tr>
+<tr><td>0.9</td><td>2</td><td>1.11</td><td>2.71</td><td>2.71</td></tr>
+<tr><td>0.9</td><td>10</td><td>1.60</td><td>6.86</td><td>6.86</td></tr>
+</tbody>
+</table></div>
+<p class="note">Table 1 is not a measurement. Table 4 of the same paper compares Theorem 3.8 with measured T5-XXL walltimes: the measured value is higher in 8 of 12 rows, equal in 1 row and lower in 3 rows. The paper gives two reasons for the differences: optimization differences between its implementation and the baseline, and the i.i.d. assumption for the acceptance of each token, which is only an approximation. For English to German translation with T5-XXL as M<sub>p</sub> and a bigram model as M<sub>q</sub>, the paper gives &alpha; &asymp; 0.2 and, with c = 0, an inference speed improvement factor of 1.25X with &gamma; = 3 (Section 3.6). In the paper's experiments, where M<sub>q</sub> was typically a couple of orders of magnitude smaller than M<sub>p</sub>, c was always less than 0.05. Table 4 has c = 0.11 for T5-LARGE, so c is not always that small.</p>
+
+<h2>Worked examples</h2>
+<p>Reproducing Table 1. With &alpha; = 0.8 and &gamma; = 5 and c = 0, Eq. 1 gives (1 &minus; 0.8<sup>6</sup>) / (1 &minus; 0.8) = 3.68928 tokens per step, and Theorem 3.8 gives the same 3.69 speedup shown in the table, since the draft is free.</p>
+<p>Bigram draft. With &alpha; = 0.2, &gamma; = 3 and c = 0, Eq. 1 and Theorem 3.8 both give 1.248, which rounds to the 1.25X value in Section 3.6 of the paper for English to German translation.</p>
+<p>Best &gamma; with a paid draft. With &alpha; = 0.8 and c = 0.05, the best &gamma; from 1 to 20 is 8, with speed 3.092080. With &alpha; = 0.6 and c = 0.1, the best &gamma; is 3, with speed 1.673846.</p>
+<p>Corollary 3.9 check. With &alpha; = 0.8, c = 0.05 and &gamma; = 1, Theorem 3.8 gives (1 + &alpha;) / (1 + c) = 1.714286, exactly the corollary's bound for a one-token draft.</p>
+<p>Free draft cap. With &alpha; = 0.9 and c = 0, the search hits the &gamma; = 20 cap with speed 8.905810 against the bound 1 / (1 &minus; &alpha;) = 10. The page reports that the cap set the answer.</p>
+<p>Near tie. With &alpha; = 0.7 and c = 0.05, &gamma; = 6 gives 2.3529377 and &gamma; = 5 gives 2.3529360. The page compares unrounded values, picks &gamma; = 6, and notes that the neighbour is within 0.0001. Rounded to two decimals both show 2.35.</p>
+<p>No gain. With &alpha; = 0.5 and c = 0.6, no &gamma; beats plain target decoding, because the draft costs more per token than the acceptance rate justifies. The page states this instead of a speedup.</p>
+<p>Measured values from Chen et al. (2023), arXiv 2302.01318v1. Setup: Chinchilla 70B as the target model, a 4B draft model, K = 4 (K is Leviathan &gamma;), batch size 1, 16 TPU v4. The abstract reports a 2 to 2.5&times; decoding speedup in a distributed setup. Table 1 gives 1.92&times; on XSum with nucleus sampling, 2.01&times; on XSum with greedy sampling and 2.46&times; on HumanEval with nucleus sampling, against a baseline of 14.1 ms per token. The draft model samples at 1.8 ms per token. These are measured values. Chen et al. do not report &alpha; in Table 1, so this page does not use them to test the formulas, and it does not compute speedups from the millisecond values.</p>
+
+<h2>Limits</h2>
+<p>The results are expected values from the formulas. They are not measured speeds. Theorem 3.8 assumes that the acceptance of each draft token is i.i.d. with one constant rate &alpha;, that the hardware can run &gamma; + 1 evaluations of M<sub>p</sub> in parallel with no increase in walltime, and that the generations are long enough (the paper notes that the improvement is capped by the number of generated tokens). The page does not model batch size, memory bandwidth, cost or prices, and it does not predict the speedup of a named model, API or GPU. The best-&gamma; search covers &gamma; = 1 to 20.</p>
+
+<h2>Sources</h2>
+<p>All sources were fetched on 2026-10-19. Leviathan, Yaniv et al. (2023), "Fast Inference from Transformers via Speculative Decoding", arXiv 2211.17192 version 2: Section 3.1 for &alpha; = E(&beta;), Definition 3.7 for c, Eq. 1 for expected tokens, Theorem 3.8 for the expected speedup, Corollary 3.9 for the one-token bound, Theorem 3.11 for expected operations, Definition 3.10 for &ccirc;, Section 3.5 for the choice of &gamma;, Section 3.6 for the c = 0 bound and the bigram example, Table 1 for the operations and speed values with c = &ccirc; = 0, Table 4 and Appendix A.3 for the comparison with measured walltimes, and the text after Definition 3.7 for the cost caveat. Chen, Charlie et al. (2023), "Accelerating Large Language Model Decoding with Speculative Sampling", arXiv 2302.01318 version 1: abstract for the 2 to 2.5&times; range, Table 1 for the measured speedups at batch size 1 with K = 4, and the Results section for the 4B draft model, 16 TPU v4 and the 1.8 ms and 14.1 ms per token values. Links: <a href="https://arxiv.org/abs/2211.17192" target="_blank" rel="noopener">arXiv 2211.17192</a>, <a href="https://arxiv.org/abs/2302.01318" target="_blank" rel="noopener">arXiv 2302.01318</a>.</p>
+</article>
+</main>
+
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee · $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <nav class="footer-links-seo" aria-label="ML tools and content"><a href="https://mcp.zovo.one" target="_blank" rel="noopener">MCP servers for Claude</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/tools/learning-rate-finder.html">Learning rate finder</a>
+    <a href="/tools/confusion-matrix-calculator.html">Confusion matrix calculator</a>
+    <a href="/tools/neural-network-playground.html">Neural network playground</a>
+    <a href="/tools/attention-mechanism-visualizer.html">Attention visualizer</a>
+    <a href="/tools/dataset-splitter.html">Dataset splitter</a>
+    <a href="/calculators/kv-cache-size-calculator.html">KV cache calculator</a>
+    <a href="/calculators/llm-memory-calculator.html">LLM memory calculator</a>
+    <a href="/calculators/quantization-calculator.html">Quantization calculator</a>
+    <a href="/guides/">Guides</a>
+    <a href="/guides/gradient-descent-explained.html">Gradient descent</a>
+    <a href="/answers/">Answers</a>
+    <a href="/answers/ml-algorithm-comparison.html">Algorithm comparison</a>
+    <a href="/research/">Research</a>
+    <a href="/research/ml-cheatsheet.html">ML cheat sheet</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+    </div>
+  </div>
+</footer>
+<script src="/assets/offer-events.js" defer></script>
+<script>
+"use strict";
+/* calc-core start */
+{
+const SD_CAP = 20;
+/** @param {string|null} raw @param {string} kind @returns {{error: string, v: number}} */
+const sdParse = function (raw, kind) {
+  if (raw === null || raw === undefined) return { error: "empty", v: NaN };
+  const t = String(raw);
+  if (t.indexOf(",") !== -1) return { error: kind === "g" ? "use digits only, no commas" : "use a dot as the decimal mark, not a comma", v: NaN };
+  const s = t.replace(/^\s+|\s+$/g, "");
+  if (s === "") return { error: "empty", v: NaN };
+  if (/[\s_]/.test(s)) return { error: "remove the space or underscore inside the number", v: NaN };
+  if (!/^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(s)) return { error: "not a number", v: NaN };
+  const v = Number(s);
+  if (!isFinite(v)) return { error: "not a finite number", v: NaN };
+  if (v < 0) return { error: kind === "g" ? "must be 1 or more" : "must be 0 or more", v: NaN };
+  if (v === 0 && kind === "g") return { error: "must be greater than 0", v: NaN };
+  if (kind === "a" && v > 1) return { error: "must be 1 or less", v: NaN };
+  if (kind === "c" && v > 100) return { error: "too large, use a value up to 100", v: NaN };
+  if (kind === "g") {
+    if (Math.floor(v) !== v) return { error: "must be a whole number", v: NaN };
+    if (v > 1000) return { error: "too large, use a value up to 1000", v: NaN };
+  }
+  return { error: "", v: v };
+};
+/** @param {number} a @param {number} g @param {number} x */
+const sdArgsOk = function (a, g, x) {
+  return isFinite(a) && a >= 0 && a <= 1 && isFinite(g) && g >= 1 && g <= 1000 && Math.floor(g) === g && isFinite(x) && x >= 0;
+};
+/** @param {number} a @param {number} g */
+const sdTokens = function (a, g) {
+  if (!sdArgsOk(a, g, 0)) return NaN;
+  if (a === 1) return g + 1;
+  return (1 - Math.pow(a, g + 1)) / (1 - a);
+};
+/** @param {number} a @param {number} g @param {number} c */
+const sdSpeed = function (a, g, c) {
+  if (!sdArgsOk(a, g, c)) return NaN;
+  if (a === 1) return (g + 1) / (g * c + 1);
+  return (1 - Math.pow(a, g + 1)) / ((1 - a) * (g * c + 1));
+};
+/** @param {number} a @param {number} g @param {number} ch */
+const sdOps = function (a, g, ch) {
+  if (!sdArgsOk(a, g, ch)) return NaN;
+  if (a === 1) return (g * ch + g + 1) / (g + 1);
+  return (1 - a) * (g * ch + g + 1) / (1 - Math.pow(a, g + 1));
+};
+/** @param {number} a @param {number} c */
+const sdBest = function (a, c) {
+  let bestG = 0, bestS = -1, second = -1;
+  if (!sdArgsOk(a, 1, c)) return { g: bestG, speed: NaN, second: NaN };
+  for (let i = 1; i <= SD_CAP; i++) {
+    const s = sdSpeed(a, i, c);
+    if (s > bestS + 1e-12) { second = bestS; bestS = s; bestG = i; }
+    else if (s > second) { second = s; }
+  }
+  return { g: bestG, speed: bestS, second: second };
+};
+/** @param {number} x */
+const sdFmt = function (x) {
+  if (!isFinite(x)) return "not defined";
+  let v = Math.round(x * 1e6) / 1e6;
+  if (v === 0) v = 0;
+  return String(v);
+};
+/** @param {string} id @returns {string|null} */
+const sdVal = function (id) {
+  const el = /** @type {HTMLInputElement|null} */ (document.getElementById(id));
+  return el ? el.value : null;
+};
+/** @param {number} a @param {number} c */
+const sdBestHtml = function (a, c) {
+  if (a <= c) {
+    return '<p class="sd-err">alpha = ' + String(a) + " is not above c = " + String(c) + ", so no draft length from 1 to " + SD_CAP + " beats plain target-model decoding. No best gamma is shown as a gain.</p>";
+  }
+  const b = sdBest(a, c);
+  let html = "<p>Corollary 3.9: alpha = " + String(a) + " is above c = " + String(c) + ", so an improvement exists. It is at least (1 + alpha) / (1 + c) = " + sdFmt((1 + a) / (1 + c)) + "x.</p>";
+  let note = "";
+  if (b.second > 0 && b.speed - b.second < 1e-4) note = " The next-best gamma is within 0.0001 of this speed, so the two choices give almost the same speed.";
+  if (c === 0) {
+    const bound = (a === 1) ? "With alpha = 1 and c = 0 the speed is gamma + 1 and has no upper bound" : "With c = 0 the speed rises toward the bound 1 / (1 - alpha) = " + sdFmt(1 / (1 - a)) + " as gamma grows";
+    html += "<p>Best gamma: " + SD_CAP + " (speed " + sdFmt(sdSpeed(a, SD_CAP, 0)) + "x). " + bound + ", so the search cap of " + SD_CAP + " set this answer.</p>";
+  } else {
+    if (b.g === SD_CAP) note += " The best value is at the search cap of " + SD_CAP + ", so the cap set this answer. A gamma above " + SD_CAP + " can give a higher speed.";
+    html += "<p>Best gamma from 1 to " + SD_CAP + ": " + b.g + " (speed " + sdFmt(b.speed) + "x)." + note + "</p>";
+  }
+  return html;
+};
+const sdRun = function () {
+  const out = document.getElementById("sd-out");
+  if (!out) return;
+  const pa = sdParse(sdVal("sd-a"), "a");
+  const pg = sdParse(sdVal("sd-g"), "g");
+  const pc = sdParse(sdVal("sd-c"), "c");
+  const pch = sdParse(sdVal("sd-ch"), "c");
+  const msgs = [];
+  if (pa.error) msgs.push("Acceptance rate: " + pa.error + ".");
+  if (pg.error) msgs.push("Draft length: " + pg.error + ".");
+  if (pc.error) msgs.push("Draft cost: " + pc.error + ".");
+  if (pch.error) msgs.push("Operations ratio c-hat: " + pch.error + ".");
+  if (msgs.length) { out.innerHTML = msgs.map(function (/** @type {string} */ m) { return '<p class="sd-err">' + m + "</p>"; }).join(""); return; }
+  const a = pa.v, g = pg.v, c = pc.v;
+  let html = "";
+  html += "<p>Inputs: alpha = " + String(a) + ", gamma = " + g + ", c = " + String(c) + ", c-hat = " + String(pch.v) + ".</p>";
+  const tok = sdTokens(a, g);
+  html += "<p>Expected tokens per step (" + (a === 1 ? "limit at alpha = 1: gamma + 1" : "Eq. 1, E(tokens) = (1 - alpha^(gamma+1)) / (1 - alpha)") + "): " + sdFmt(tok) + ".</p>";
+  const sp = sdSpeed(a, g, c);
+  html += "<p>Expected speedup at gamma = " + g + " (" + (a === 1 ? "limit at alpha = 1: (gamma + 1) / (gamma*c + 1)" : "Theorem 3.8, (1 - alpha^(gamma+1)) / ((1 - alpha)(gamma*c + 1))") + "): " + sdFmt(sp) + "x.</p>";
+  const ops = sdOps(a, g, pch.v);
+  html += "<p>Expected factor of increase in total arithmetic operations at gamma = " + g + ", c-hat = " + String(pch.v) + " (" + (a === 1 ? "limit at alpha = 1: (gamma*c-hat + gamma + 1) / (gamma + 1)" : "Theorem 3.11, (1 - alpha)(gamma*c-hat + gamma + 1) / (1 - alpha^(gamma+1))") + "): " + sdFmt(ops) + "x.</p>";
+  html += sdBestHtml(a, c);
+  out.innerHTML = html;
+};
+const sdChanged = function () {
+  const o = document.getElementById("sd-out");
+  if (o) o.innerHTML = "<p>Inputs changed. Press Compute.</p>";
+};
+document.addEventListener("DOMContentLoaded", function () {
+  const btn = document.getElementById("sd-go");
+  if (btn) btn.addEventListener("click", sdRun);
+  ["sd-a", "sd-g", "sd-c", "sd-ch"].forEach(function (id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener("keydown", function (/** @type {KeyboardEvent} */ e) { if (e && e.key === "Enter") sdRun(); });
+    el.addEventListener("input", sdChanged);
+  });
+});
+}
+/* calc-core end */
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"Article","@id":"https://ml0x.com/calculators/speculative-decoding-speedup-calculator/#article","headline":"Speculative decoding speedup calculator","description":"Enter an acceptance rate, draft length and draft cost ratio. Get the expected tokens per step, the expected speedup and the best draft length from the paper formulas.","author":{"@id":"https://ml0x.com/#michael-lip"},"publisher":{"@id":"https://ml0x.com/#organization"},"datePublished":"2026-10-19","dateModified":"2026-10-19","mainEntityOfPage":"https://ml0x.com/calculators/speculative-decoding-speedup-calculator/"},
+{"@type":"Person","@id":"https://ml0x.com/#michael-lip","name":"Michael Lip","url":"https://ml0x.com/about.html","description":"Michael Lip builds open-source ML tools and developer utilities at zovo.one.","sameAs":["https://zovo.one/","https://github.com/theluckystrike"]},
+{"@type":"Organization","@id":"https://ml0x.com/#organization","name":"ml0x","url":"https://ml0x.com/"},
+{"@type":"Dataset","@id":"https://ml0x.com/calculators/speculative-decoding-speedup-calculator/#dataset","name":"Leviathan et al. 2023 Table 1 speedup values","description":"Total arithmetic operations and inference speed against the baseline, assuming c = c-hat = 0, from Table 1 of arXiv 2211.17192v2, fetched 2026-10-19. Rows alpha/gamma/operations/speed: 0.6/2/1.53/1.96, 0.7/3/1.58/2.53, 0.8/2/1.23/2.44, 0.8/5/1.63/3.69, 0.9/2/1.11/2.71, 0.9/10/1.60/6.86.","creator":{"@id":"https://ml0x.com/#organization"},"temporalCoverage":"2023"},
+{"@type":"BreadcrumbList","@id":"https://ml0x.com/calculators/speculative-decoding-speedup-calculator/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Speculative decoding speedup calculator","item":"https://ml0x.com/calculators/speculative-decoding-speedup-calculator/"}]}
+]}
+</script>
+</body>
+</html>
