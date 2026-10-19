@@ -225,6 +225,18 @@ const sdFmt = function (x) {
   if (v === 0) v = 0;
   return String(v);
 };
+/** Exact 1 / (1 - alpha) from the decimal text of alpha, rounded to 6 decimals.
+ * @param {number} a @returns {string} */
+const sdBound = function (a) {
+  const m = /^0\.(\d{1,30})$/.exec(String(a));
+  if (!m) return sdFmt(1 / (1 - a));
+  const scale = 10n ** BigInt(m[1].length);
+  const den = scale - BigInt(m[1]);
+  if (den <= 0n) return "not defined";
+  const q6 = (scale * 2000000n + den) / (2n * den);
+  const fp = (q6 % 1000000n).toString().padStart(6, "0").replace(/0+$/, "");
+  return fp ? (q6 / 1000000n).toString() + "." + fp : (q6 / 1000000n).toString();
+};
 /** @param {string} id @returns {string|null} */
 const sdVal = function (id) {
   const el = /** @type {HTMLInputElement|null} */ (document.getElementById(id));
@@ -240,7 +252,7 @@ const sdBestHtml = function (a, c) {
   let note = "";
   if (b.second > 0 && b.speed - b.second < 1e-4) note = " The next-best gamma is within 0.0001 of this speed, so the two choices give almost the same speed.";
   if (c === 0) {
-    const bound = (a === 1) ? "With alpha = 1 and c = 0 the speed is gamma + 1 and has no upper bound" : "With c = 0 the speed rises toward the bound 1 / (1 - alpha) = " + sdFmt(1 / (1 - a)) + " as gamma grows";
+    const bound = (a === 1) ? "With alpha = 1 and c = 0 the speed is gamma + 1 and has no upper bound" : "With c = 0 the speed rises toward the bound 1 / (1 - alpha) = " + sdBound(a) + " as gamma grows";
     html += "<p>Best gamma: " + SD_CAP + " (speed " + sdFmt(sdSpeed(a, SD_CAP, 0)) + "x). " + bound + ", so the search cap of " + SD_CAP + " set this answer.</p>";
   } else {
     if (b.g === SD_CAP) note += " The best value is at the search cap of " + SD_CAP + ", so the cap set this answer. A gamma above " + SD_CAP + " can give a higher speed.";
