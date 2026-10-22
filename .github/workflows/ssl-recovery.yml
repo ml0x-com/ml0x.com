@@ -1,0 +1,103 @@
+name: Publish verified static assets to Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ssl-recovery-main
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && github.repository == 'theluckystrike/ml0x.com'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      source_commit: ${{ steps.source.outputs.commit }}
+      root_digest: ${{ steps.package.outputs.root_digest }}
+      artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
+    steps:
+      - name: Check out the exact source commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event_name == 'workflow_run' && 'refs/heads/main' || github.sha }}
+      - name: Resolve this package's immutable source commit once
+        id: source
+        run: echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Export unchanged runtime files and deterministic GitHub-compatible routes
+        id: package
+        env:
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 .github/scripts/export_static_assets.py --worker ssl-recovery-ml0x --domain ml0x.com
+      - name: Upload one immutable deployment artifact
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ssl-recovery-${{ steps.source.outputs.commit }}
+          path: _ssl_bundle
+          if-no-files-found: error
+          retention-days: 7
+      - name: Record artifact identity
+        env:
+          SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
+          ROOT_DIGEST: ${{ steps.package.outputs.root_digest }}
+          ARTIFACT_DIGEST: ${{ steps.upload.outputs.artifact-digest }}
+        run: |
+          {
+            echo "Source commit: $SOURCE_COMMIT"
+            echo "Root asset manifest SHA256: $ROOT_DIGEST"
+            echo "GitHub artifact SHA256: $ARTIFACT_DIGEST"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  deploy:
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Check out only to run the committed artifact verifier and config
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          ref: ${{ needs.package.outputs.source_commit }}
+      - name: Download this run's exact immutable artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: ssl-recovery-${{ needs.package.outputs.source_commit }}
+          path: _ssl_bundle
+      - name: Verify every artifact byte, source commit and root digest
+        env:
+          ROOT_DIGEST: ${{ needs.package.outputs.root_digest }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 .github/scripts/export_static_assets.py --worker ssl-recovery-ml0x --domain ml0x.com --verify --expected-digest "$ROOT_DIGEST"
+      - name: Upload the verified artifact as a new assets-only Worker version
+        id: upload_version
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKER_DEPLOY_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_WORKER_DEPLOY_TOKEN }}
+          accountId: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.151.3'
+          packageManager: npm
+          command: versions upload --config .cloudflare/wrangler.jsonc --no-bundle --tag ci-${{ github.run_id }}-${{ github.run_attempt }} --message "${{ needs.package.outputs.source_commit }} ${{ needs.package.outputs.root_digest }}"
+      - name: Attest and deploy only the exact uploaded version, then verify readback
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKER_DEPLOY_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          EXPECTED_WORKER: ssl-recovery-ml0x
+          EXPECTED_DOMAIN: ml0x.com
+          SOURCE_COMMIT: ${{ needs.package.outputs.source_commit }}
+          ROOT_DIGEST: ${{ needs.package.outputs.root_digest }}
+          WRANGLER_UPLOAD_OUTPUT: ${{ steps.upload_version.outputs.command-output }}
+          PYTHONDONTWRITEBYTECODE: '1'
+        run: python3 .github/scripts/deploy_worker_version.py

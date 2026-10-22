@@ -1,0 +1,10 @@
+{
+  "name": "ssl-recovery-ml0x",
+  "compatibility_date": "2026-10-22",
+  "workers_dev": true,
+  "assets": {
+    "directory": "../_ssl_bundle/assets",
+    "html_handling": "none",
+    "not_found_handling": "404-page"
+  }
+}
