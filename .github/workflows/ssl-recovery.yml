@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   package:
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && github.repository == 'theluckystrike/ml0x.com'
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' && github.repository == 'ml0x-com/ml0x.com'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     outputs:
