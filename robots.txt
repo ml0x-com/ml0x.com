@@ -38,4 +38,19 @@ Allow: /
 User-agent: Meta-ExternalAgent
 Allow: /
 
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
 Sitemap: https://ml0x.com/sitemap.xml

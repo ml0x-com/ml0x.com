@@ -3,20 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Embedding cost calculator, chunk count and vector storage for 8 models | ml0x</title>
+<title>Embedding cost calculator, chunk count and vector storage for 7 models | ml0x</title>
 <meta name="description" content="Compute the chunk count, embedding API cost, vector storage size and monthly vector database cost for 8 published embedding models, with the fp32-vs-binary storage gap and an index overhead control.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://ml0x.com/calculators/embeddings-cost-calculator/">
 <link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/embeddings-cost-calculator/">
 <link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/embeddings-cost-calculator/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Embedding cost calculator, chunk count and vector storage for 8 models">
+<meta property="og:title" content="Embedding cost calculator, chunk count and vector storage for 7 models">
 <meta property="og:description" content="Compute the chunk count, embedding API cost, vector storage size and monthly vector database cost for 8 published embedding models, with the fp32-vs-binary storage gap and an index overhead control.">
 <meta property="og:url" content="https://ml0x.com/calculators/embeddings-cost-calculator/">
 <meta property="og:site_name" content="ml0x">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Embedding cost calculator, chunk count and vector storage for 8 models">
+<meta name="twitter:title" content="Embedding cost calculator, chunk count and vector storage for 7 models">
 <meta name="twitter:description" content="Compute the chunk count, embedding API cost, vector storage size and monthly vector database cost for 8 published embedding models, with the fp32-vs-binary storage gap and an index overhead control.">
 <meta name="author" content="Michael Lip">
 <link rel="stylesheet" href="/assets/ml0x.css">
@@ -57,6 +57,7 @@
 <main id="main" class="container">
 <article class="emb-calc"><nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Embedding cost calculator</span></nav>
 <h1>Embedding cost calculator</h1>
+<div style="border-left:3px solid #1A1A1A;background:rgba(26,26,26,0.04);padding:14px 18px;margin:0 0 24px;border-radius:0 8px 8px 0"><p style="margin:0 0 8px;font-size:15px;line-height:1.65">Enter a document set to estimate an embedding pipeline. The page computes the chunk count after overlap, the one-off embedding API bill at published list prices, the raw vector store size in fp32 and in binary quantization, and a monthly hosting estimate for seven embedding models. Prices and dimensions come from vendor pages; all arithmetic runs in your browser.</p><p style="margin:0;font-size:12px;color:#6E6E6E">Updated 28 October 2026</p></div>
 <p>By Michael Lip. Enter a document set and this page computes the chunk count after overlap, the one-off embedding API bill at published list prices, the raw vector store size in fp32 and in binary quantization, and a monthly hosting estimate. The per-model prices and dimensions below are published values read from the vendors' own pricing and model pages; the chunk and storage arithmetic runs in your browser and nothing is sent to a server.</p>
 
 <h2>Estimate an embedding pipeline</h2>
@@ -236,7 +237,7 @@ document.getElementById("overlap").addEventListener("change",run);
 document.getElementById("dims").addEventListener("change",run);
 syncDims();run();
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Embedding cost calculator, chunk count and vector storage for 8 models","author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one","description":"Builds open-source ML tools and developer utilities at zovo.one. ml0x is part of the Zovo Tools network, a collection of free, privacy-first tools for developers and data scientists."},"datePublished":"2026-09-28","dateModified":"2026-09-28","publisher":{"@type":"Organization","name":"ml0x"}},{"@type":"Dataset","name":"Published embedding model prices and dimensions, checked 2026-09-28","description":"List prices per 1M input tokens, default dimensions, Matryoshka ranges and context windows for seven published embedding models, read from each vendor's own pricing and model documentation pages.","creator":{"@type":"Organization","name":"ml0x"},"isAccessibleForFree":true},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":2,"name":"Embedding cost calculator","item":"https://ml0x.com/calculators/embeddings-cost-calculator/"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Embedding cost calculator, chunk count and vector storage for 7 models","author":{"@id":"https://ml0x.com/#michael-lip"},"datePublished":"2026-09-28","dateModified":"2026-09-28","publisher":{"@id":"https://ml0x.com/#organization"},"@id":"https://ml0x.com/calculators/embeddings-cost-calculator/#article"},{"@type":"Dataset","name":"Per-model prices and dimensions","description":"The per-model prices and dimensions below are published values read from the vendors' own pricing and model pages","creator":{"@id":"https://ml0x.com/#organization"},"isAccessibleForFree":true,"@id":"https://ml0x.com/calculators/embeddings-cost-calculator/#dataset"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":2,"name":"Embedding cost calculator","item":"https://ml0x.com/calculators/embeddings-cost-calculator/"}],"@id":"https://ml0x.com/calculators/embeddings-cost-calculator/#breadcrumb"},{"@type":"Person","@id":"https://ml0x.com/#michael-lip","name":"Michael Lip","url":"https://ml0x.com/about.html"},{"@type":"Organization","@id":"https://ml0x.com/#organization","name":"ml0x","url":"https://ml0x.com/"}]}</script>
   <script src="/assets/js/mlx-ui.js" defer></script>
 </body>
 </html>
