@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MFU calculator, model FLOPs utilization from tokens per second | ml0x</title>
+<meta name="description" content="Compute model FLOPs utilization (MFU) from training tokens per second, parameter count, chip count and dense peak FLOP/s, with the PaLM attention term.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/mfu-calculator/">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/mfu-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/mfu-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MFU calculator, model FLOPs utilization from tokens per second">
+<meta property="og:description" content="Compute model FLOPs utilization (MFU) from training tokens per second, parameter count, chip count and dense peak FLOP/s, with the PaLM attention term.">
+<meta property="og:url" content="https://ml0x.com/calculators/mfu-calculator/">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MFU calculator, model FLOPs utilization from tokens per second">
+<meta name="twitter:description" content="Compute model FLOPs utilization (MFU) from training tokens per second, parameter count, chip count and dense peak FLOP/s, with the PaLM attention term.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<script src="/site-analytics.js" defer></script>
+<style>
+.mfu-calc{max-width:880px;margin:0 auto;padding:8px 0}
+.mfu-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:14px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.mfu-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.mfu-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.mfu-calc table{display:block;overflow-x:auto;margin:24px 0}
+@media print{.mfu-calc table{display:table;overflow:visible;width:100%}.mfu-calc th,.mfu-calc td{font-size:9px;white-space:normal;padding:2px 3px}}
+.mfu-calc td{white-space:nowrap}
+.mfu-calc select,.mfu-calc input[type="number"]{max-width:440px}
+.mfu-calc label{font-size:14px;display:block;margin:10px 0 0}
+.mfu-calc label,.mfu-calc legend,.mfu-calc th{text-transform:none}
+.mfu-calc th,.mfu-calc td{font-size:14px}
+.mfu-calc fieldset{border:1px solid var(--line);border-radius:var(--radius);padding:6px 20px 18px;margin:24px 0;background:var(--surface)}
+.mfu-calc legend{font-family:var(--font-mono);font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);padding:0 6px}
+.mfu-calc #mfu-out{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:var(--radius-sm);padding:18px 20px;margin:24px 0;min-height:104px;font-variant-numeric:tabular-nums}
+.mfu-calc #mfu-out p{margin:0 0 10px}
+aside.support-cta a.sct-github small, a.support-cta__btn.sct-github small{font-size:12px}
+.mfu-calc .muted-note{font-family:var(--font-mono);font-size:14px;color:var(--ink-faint);max-width:70ch}
+</style>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body><a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" href="https://zovo.one/pricing?utm_source=ml0x&amp;utm_medium=nav&amp;utm_campaign=calculators-mfu-calculator" target="_blank" rel="noopener">Zovo browser extensions</a>
+  </div>
+</header>
+
+<main id="main" class="container">
+<article class="mfu-calc"><nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>MFU calculator</span></nav>
+<h1>MFU calculator</h1>
+<div style="border-left:3px solid #1A1A1A;background:rgba(26,26,26,0.04);padding:14px 18px;margin:0 0 24px;border-radius:0 8px 8px 0"><p style="margin:0 0 8px;font-size:15px;line-height:1.65">Enter your training throughput in tokens per second and this page computes model FLOPs utilization (MFU), the ratio of achieved to theoretical peak compute during LLM training, using the 6N rule from the PaLM paper, with an optional attention term that grows with sequence length. With the PaLM paper inputs, the calculator gives 45.7% without attention and 46.2% with attention for PaLM 540B, as the paper prints. For Megatron-Turing NLG 530B it gives 29.8% and 30.3%. The paper prints 29.7% and 30.2%. The exact values from the printed inputs are 29.77% and 30.27%. All arithmetic runs in your browser.</p><p style="margin:0;font-size:12px;color:#6E6E6E">Updated 29 October 2026</p></div>
+<p>By Michael Lip, who builds open-source ML tools and developer utilities at <a href="https://zovo.one/">zovo.one</a>. The PaLM paper defines model FLOPs utilization as achieved throughput divided by the theoretical peak R = P / (6N + 12LHQT), where P is the total theoretical peak matmul throughput of all chips, N the parameter count, and the 12LHQT term accounts for the dense self-attention FLOPs. Enter your observed tokens per second, model shape and hardware below and the page computes both the plain 6N MFU and the attention-corrected MFU, plus the theoretical peak throughput, the throughput for a target MFU and the days to train D tokens. The page does not send your inputs to a server.</p>
+
+<h2>Compute MFU from training throughput</h2>
+<div id="mfu-calc-box">
+<fieldset>
+<legend>Training run</legend>
+<label>Observed throughput (tokens per second) <input id="tokps" type="number" min="0" step="0.1" value="238300" max="100000000000"></label>
+<label>Model parameters (billions) <input id="paramsB" type="number" min="0.001" step="0.001" value="540" max="100000"></label>
+<label>Sequence length (tokens) <input id="seqlen" type="number" min="1" step="1" value="2048" max="10000000"></label>
+<label>Training tokens D (billions) <input id="dtok" type="number" min="0.001" step="0.001" value="780" max="1000000"></label>
+<label>Target MFU for the inverse mode (%) <input id="target" type="number" min="0.1" step="0.1" value="50" max="100"></label>
+</fieldset>
+<fieldset>
+<legend>Model shape (attention term)</legend>
+<label>Layers (0 to skip the attention term) <input id="layers" type="number" min="0" step="1" value="118" max="100000"></label>
+<label>Attention heads <input id="heads" type="number" min="1" step="1" value="48" max="100000"></label>
+<label>Head dimension <input id="headdim" type="number" min="1" step="1" value="256" max="100000"></label>
+</fieldset>
+<fieldset>
+<legend>Hardware</legend>
+<label>Accelerator <select id="hw">
+<option value="275">TPU v4, 275 TFLOP/s (bf16 matmul)</option>
+<option value="312">A100 80GB, 312 TFLOP/s (bf16 matmul)</option>
+<option value="989.4">H100 SXM, 989.4 TFLOP/s (bf16 dense)</option>
+<option value="989.5">H200 SXM, 989.5 TFLOP/s (bf16 dense, half of the 1,979 sparsity value)</option>
+<option value="1307.4">MI300X, 1307.4 TFLOP/s (bf16 dense)</option>
+<option value="custom">custom peak…</option>
+</select></label>
+<label id="custom-wrap" style="display:none">Custom peak matmul TFLOP/s per chip <input id="customtf" type="number" min="0.1" step="0.1" value="300" max="100000"></label>
+<label>Number of chips <input id="chips" type="number" min="1" step="1" value="6144" max="1000000"></label>
+</fieldset>
+<p><button id="go" type="button">Compute</button></p>
+</div>
+<div id="mfu-out" class="readout" aria-live="polite"></div>
+<noscript><p style="max-width:62ch">The interactive calculator needs JavaScript. The worked examples and formula notes below are static and still fully readable without it.</p></noscript>
+
+<h2>Published MFU rows and the values from their inputs</h2>
+<p class="muted-note">The throughput, chip count, peak TFLOP/s and paper MFU of both rows come from the PaLM paper (arXiv 2204.02311, Section 4.1, Table 3 and Appendix B). The PaLM 540B shape comes from PaLM Table 1 and Section 5. The MT-NLG shape comes from Smith et al. (arXiv 2201.11990, Section 3.2). MT-NLG 530B ran on 2240 A100 GPUs at 312 peak matmul TFLOP/s and reached 65.43K tokens/s. PaLM 540B ran on 6144 TPU v4 chips at 275 TFLOP/s and reached 238.3K tokens/s. The calculator gives 45.7% and 46.2% for PaLM 540B. For MT-NLG it gives 29.8% and 30.3%, because the exact values are 29.77% and 30.27%. The paper prints 29.7% and 30.2%. These printed values are the exact values rounded down to one decimal. The paper does not state its rounding rule.</p>
+<table id="mfu-table">
+<thead><tr><th>Model</th><th>Params N</th><th>Layers L</th><th>Heads H</th><th>Head dim Q</th><th>Seq T</th><th>Throughput</th><th>Chips</th><th>Peak TFLOP/s</th><th>Paper MFU (no attn / attn)</th><th>Exact value from these inputs (no attn / attn)</th></tr></thead>
+<tbody>
+<tr><td>Megatron-Turing NLG 530B</td><td>530B</td><td>105</td><td>128</td><td>160</td><td>2,048</td><td>65,430 tok/s</td><td>2,240 A100</td><td>312</td><td>29.7% / 30.2%</td><td>29.77% / 30.27%</td></tr>
+<tr><td>PaLM 540B</td><td>540B</td><td>118</td><td>48</td><td>256</td><td>2,048</td><td>238,300 tok/s</td><td>6,144 TPU v4</td><td>275</td><td>45.7% / 46.2%</td><td>45.70% / 46.20%</td></tr>
+</tbody>
+</table>
+
+<h2>MFU values in the PaLM paper</h2>
+<p>PaLM Table 3 prints these MFU values. GPT-3 175B on V100 GPUs has 21.3%. Gopher 280B on 4096 TPU v3 chips has 32.5%. Megatron-Turing NLG 530B on 2240 A100 GPUs has 30.2%. PaLM 540B on 6144 TPU v4 chips has 46.2%. The GPT-3 and Gopher values are quotes, because the paper does not give all of their inputs. The paper says that PaLM gets high accelerator utilization because of its parallelism strategy, XLA TPU compiler optimizations and the use of "parallel layers". The hardware FLOPs utilization of PaLM, which includes rematerialization FLOPs, is 57.8%. Use the dense peak FLOP/s for the data type that you train in. The NVIDIA A100 datasheet gives 312 TFLOPS BFLOAT16 and 624 TFLOPS with sparsity. If you use the sparsity value, the calculated MFU is half of the correct value.</p>
+
+<h2>Formula notes</h2>
+<p>Per the PaLM paper: an N-parameter decoder-only model requires 6N matmul FLOPs per token seen, 2N for the forward pass and 4N for the backward, because each forward matmul gets two backward matmuls (following Kaplan et al., 2020). Dense self-attention adds 6LH(2QT) FLOPs per token, where L is layers, H heads, Q head dimension and T sequence length; equivalently 12LHQT. MFU is achieved tokens/second divided by the theoretical peak R = P / (6N + 12LHQT), where P is total peak matmul FLOPs/s across the whole fleet. The attention term matters more for small models and for long sequences; at PaLM 540B scale it moved the answer only from 45.7% to 46.2%. The time to train D tokens is D × (6N + 12LHQT) / (P × MFU). This equals D divided by the observed tokens per second. It counts model FLOPs only. PaLM Appendix B says that its compute figures do not account for development, evictions or other inefficiency. The A100 and TPU v4 peaks are the values that the PaLM paper used. The NVIDIA H100 and H200 pages give 1,979 TFLOPS BFLOAT16 with sparsity. The AMD MI300X page gives 989.4 TFLOPS BF16 dense for the H100 SXM (footnote MI300-18). The calculator uses 989.4 for the H100 and half of 1,979, which is 989.5, for the H200. NVIDIA gives the same 1,979 value for the H100 SXM and the H200 SXM. The AMD MI300X page gives 1,978.9 for the H100 SXM. Thus 989.5 is a rounded value, and the 0.1 difference from 989.4 comes from rounding. The AMD MI300X page gives 1,307.4 TFLOPS BF16 dense and 2,614.9 with sparsity. Check the datasheet for the data type that you train in.</p>
+<h2>Where these numbers come from</h2>
+<p>All sources were fetched on 2026-10-29. The MFU formula, the 6N rule, the attention term and both reference rows come from Chowdhery et al., "PaLM: Scaling Language Modeling with Pathways", <a href="https://arxiv.org/abs/2204.02311">arXiv 2204.02311</a> version 5, Section 4.1, Table 3 and Appendix B. PaLM 540B has 118 layers, 48 heads and a head size of 256 (Table 1), and the sequence length is 2048 (Section 5). The MT-NLG shape (105 layers, hidden size 20480, 128 heads, sequence length 2048) and the iteration time of 60.1 seconds at batch size 1920 on 280 DGX A100 servers come from Smith et al., <a href="https://arxiv.org/abs/2201.11990">arXiv 2201.11990</a>, Sections 2.4 and 3.2. The head dimension is 20480 / 128 = 160. The 6N rule follows Kaplan et al., <a href="https://arxiv.org/abs/2001.08361">arXiv 2001.08361</a>. The peak values per chip come from <a href="https://docs.cloud.google.com/tpu/docs/v4">Google Cloud TPU v4</a> (275 teraflops bf16), the <a href="https://www.nvidia.com/content/dam/en-zz/Solutions/Data-Center/a100/pdf/nvidia-a100-datasheet-us-nvidia-1758950-r4-web.pdf">NVIDIA A100 datasheet</a> (312 TFLOPS BFLOAT16, 624 with sparsity), the <a href="https://www.nvidia.com/en-us/data-center/h100/">NVIDIA H100 page</a>, the <a href="https://www.nvidia.com/en-us/data-center/h200/">NVIDIA H200 page</a> and the <a href="https://www.amd.com/en/products/accelerators/instinct/mi300/mi300x.html">AMD MI300X page</a>. The results are calculations from your inputs. They are not benchmarks. The arithmetic runs in this browser tab.</p>
+</article>
+</main>
+
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee · $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <nav class="footer-links-seo" aria-label="ML tools and content"><a href="https://mcp.zovo.one" target="_blank" rel="noopener">MCP servers for Claude</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/tools/learning-rate-finder.html">Learning rate finder</a>
+    <a href="/tools/confusion-matrix-calculator.html">Confusion matrix calculator</a>
+    <a href="/tools/neural-network-playground.html">Neural network playground</a>
+    <a href="/tools/attention-mechanism-visualizer.html">Attention visualizer</a>
+    <a href="/tools/dataset-splitter.html">Dataset splitter</a>
+    <a href="/calculators/kv-cache-size-calculator.html">KV cache calculator</a>
+    <a href="/calculators/llm-memory-calculator.html">LLM memory calculator</a>
+    <a href="/calculators/quantization-calculator.html">Quantization calculator</a>
+    <a href="/guides/">Guides</a>
+    <a href="/guides/gradient-descent-explained.html">Gradient descent</a>
+    <a href="/answers/">Answers</a>
+    <a href="/answers/ml-algorithm-comparison.html">Algorithm comparison</a>
+    <a href="/research/">Research</a>
+    <a href="/research/ml-cheatsheet.html">ML cheat sheet</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+    </div>
+  </div>
+</footer>
+<script src="/assets/offer-events.js" defer></script>
+<script>
+"use strict";
+function fmt(n,dp){return n.toLocaleString("en-US",{maximumFractionDigits:dp===undefined?2:dp});}
+function num(id){var v=parseFloat(document.getElementById(id).value);return v===0?0:v;}
+function run(){
+ var tokps=num("tokps"),paramsB=num("paramsB"),seqlen=num("seqlen");
+ var layers=num("layers"),heads=num("heads"),headdim=num("headdim");
+ var hwv=document.getElementById("hw").value;
+ var perChip=hwv==="custom"?num("customtf"):parseFloat(hwv);
+ var chips=num("chips");
+ var out=document.getElementById("mfu-out");if(!out){return;}
+ var whole=(seqlen===Math.floor(seqlen)&&layers===Math.floor(layers)&&heads===Math.floor(heads)&&headdim===Math.floor(headdim)&&chips===Math.floor(chips));
+ if(!(isFinite(tokps)&&isFinite(paramsB)&&isFinite(seqlen)&&isFinite(perChip)&&isFinite(chips))){out.innerHTML="<p>Enter a throughput, parameter count and hardware peak to compute MFU.</p>";return;}
+ if(!(isFinite(layers)&&isFinite(heads)&&isFinite(headdim))){out.innerHTML="<p>Enter the layers, attention heads and head dimension (set layers to 0 to skip the attention term).</p>";return;}
+ if(tokps<=0||paramsB<=0||perChip<=0||chips<1){out.innerHTML="<p>Throughput, parameters and peak TFLOP/s must be positive, and at least one chip.</p>";return;}
+ if(!whole){out.innerHTML="<p>Sequence length, layers, heads, head dimension and chip count must be whole numbers.</p>";return;}
+ if(seqlen<1||layers<0||heads<1||headdim<1){out.innerHTML="<p>Sequence length, heads and head dimension must be 1 or more. Layers must be 0 or more.</p>";return;}
+ if(tokps>1e11||paramsB>1e5||perChip>1e5||chips>1e6||seqlen>1e7||layers>1e5||heads>1e5||headdim>1e5){out.innerHTML="<p>A value is above the maximum of its field. Enter a smaller value.</p>";return;}
+ if(layers>0&&heads<1){out.innerHTML="<p>A model with layers must have at least one attention head (or set layers to 0 to skip the attention term).</p>";return;}
+ var N=paramsB*1e9;
+ var P=perChip*1e12*chips; /* total peak matmul FLOPs/s */
+ var baseFlopsPerTok=6*N;
+ var attnFlopsPerTok=layers>0?12*layers*heads*headdim*seqlen:0;
+ var Rno=P/baseFlopsPerTok;
+ var Rwith=P/(baseFlopsPerTok+attnFlopsPerTok);
+ var mfuNo=tokps/Rno*100;
+ var mfuWith=attnFlopsPerTok>0?tokps/Rwith*100:mfuNo;
+ if(mfuWith>100){out.innerHTML="<p>The result is above 100% MFU, which is not possible. Check the throughput, the parameter count, the peak TFLOP/s and the chip count.</p>";return;}
+ var tflopsPerChip=tokps*(baseFlopsPerTok+attnFlopsPerTok)/1e12/chips;
+ var petaflopDays=tokps*(baseFlopsPerTok+attnFlopsPerTok)/1e15;
+ var attnShare=attnFlopsPerTok>0?attnFlopsPerTok/(baseFlopsPerTok+attnFlopsPerTok)*100:0;
+ var dtokB=num("dtok"),target=num("target");
+ var extra="<p>Theoretical peak throughput with the attention term, R = P / (6N + 12LHQT): "+fmt(Rwith,0)+" tok/s.</p>";
+ if(isFinite(target)&&target>0&&target<=100){extra+="<p>Throughput for "+fmt(target,1)+"% MFU with the attention term: "+fmt(target/100*Rwith,0)+" tok/s.</p>";}else{extra+="<p>Enter a target MFU above 0 and at most 100 to get the throughput for that target.</p>";}
+ if(isFinite(dtokB)&&dtokB>0&&dtokB<=1e6){extra+="<p>Time to train "+fmt(dtokB,3)+" billion tokens at "+fmt(mfuWith,1)+"% MFU: "+fmt(dtokB*1e9*(baseFlopsPerTok+attnFlopsPerTok)/(P*mfuWith/100)/86400,1)+" days.</p>";}else{extra+="<p>Enter training tokens D above 0 and at most 1,000,000 billion to get the training time.</p>";}
+ out.innerHTML="<p>MFU (6N rule, no attention): <strong>"+fmt(mfuNo,1)+"%</strong>, from "+fmt(tokps,0)+" tok/s against a theoretical peak of "+fmt(Rno,0)+" tok/s ("+fmt(P/1e15,1)+" PFLOP/s fleet peak at "+fmt(baseFlopsPerTok/1e9,2)+" GFLOPs per token).</p>"
+ +"<p>MFU with the attention term (12 × "+fmt(layers,0)+"L × "+fmt(heads,0)+"H × "+fmt(headdim,0)+"d × "+fmt(seqlen,0)+"T = "+fmt(attnFlopsPerTok/1e9,2)+" GFLOPs/token extra, "+fmt(attnShare,1)+"% of model FLOPs): <strong>"+fmt(mfuWith,1)+"%</strong>.</p>"
+ +"<p>Your run achieves "+fmt(tflopsPerChip,1)+" model TFLOP/s per chip, i.e. "+fmt(petaflopDays*30.44,2)+" petaFLOP/s-days per 30.44-day month of training.</p>"+extra
+ ;
+}
+document.getElementById("go").addEventListener("click",run);
+document.getElementById("hw").addEventListener("change",function(){document.getElementById("custom-wrap").style.display=this.value==="custom"?"block":"none";run();});
+["tokps","paramsB","seqlen","dtok","target","layers","heads","headdim","customtf","chips"].forEach(function(id){document.getElementById(id).addEventListener("change",run);});
+run();
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"MFU calculator, model FLOPs utilization from tokens per second","description":"Compute model FLOPs utilization (MFU) from training tokens per second, parameter count, chip count and dense peak FLOP/s, with the PaLM attention term.","author":{"@id":"https://ml0x.com/#michael-lip"},"datePublished":"2026-10-29","dateModified":"2026-10-29","publisher":{"@id":"https://ml0x.com/#organization"},"@id":"https://ml0x.com/calculators/mfu-calculator/#article"},{"@type":"Dataset","name":"Published MFU reference rows","description":"MFU figures for Megatron-Turing NLG 530B and PaLM 540B as printed in the PaLM paper, with the inputs used to compute them","creator":{"@id":"https://ml0x.com/#organization"},"isAccessibleForFree":true,"@id":"https://ml0x.com/calculators/mfu-calculator/#dataset"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"MFU calculator","item":"https://ml0x.com/calculators/mfu-calculator/"}],"@id":"https://ml0x.com/calculators/mfu-calculator/#breadcrumb"},{"@type":"Person","@id":"https://ml0x.com/#michael-lip","name":"Michael Lip","url":"https://ml0x.com/about.html","description":"Builds open-source ML tools and developer utilities at zovo.one","sameAs":["https://zovo.one/","https://github.com/theluckystrike"]},{"@type":"Organization","@id":"https://ml0x.com/#organization","name":"ml0x","url":"https://ml0x.com/"}]}</script>
+  <script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>
