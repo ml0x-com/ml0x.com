@@ -337,8 +337,12 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
       return;
     }
     if (a.origin === location.origin && /^\/(pipeline|triage)\/?$/.test(a.pathname) && !/^\/(pipeline|triage)\//.test(location.pathname)) {
-      track('cta_click', { cta_target: a.pathname.replace(/\//g, ''), cta_id: clip(a.getAttribute('data-cta') || ''), placement: placement(a),
-        page_path: location.pathname, link_text: clip(a.textContent) });
+      // gtag holds normal events for about 5 s, so a same-site click hands them to the next page (playbook ch. 09).
+      var held = (w.__mrRecent || []).filter(function (r) { return Date.now() - r.t < 6000; });
+      held.push({ n: 'cta_click', p: { cta_target: a.pathname.replace(/\//g, ''), cta_id: clip(a.getAttribute('data-cta') || ''), placement: placement(a),
+        page_path: location.pathname, link_text: clip(a.textContent) } });
+      try { if (plain && a.target !== '_blank') { sessionStorage.setItem('mr_handoff_v1', JSON.stringify(held)); return; } } catch (err) {}
+      track('cta_click', held[held.length - 1].p);
       return;
     }
     if (STRIPE.test(href) || a.hasAttribute('data-mr-checkout')) {
@@ -354,6 +358,12 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     if (HOME && a.getAttribute('data-track')) track('cta_click', { placement: placement(a) });
   }
   d.addEventListener('click', function (e) { try { onClick(e); } catch (err) {} }, true);
+  (function () { // deliver events handed over by the previous page
+    var raw = null;
+    try { raw = sessionStorage.getItem('mr_handoff_v1'); sessionStorage.removeItem('mr_handoff_v1'); } catch (err) {}
+    if (!raw) return;
+    try { JSON.parse(raw).forEach(function (x) { if (x && typeof x.n === 'string') track(x.n, ext(x.p || {}, { handoff: 1 })); }); } catch (err) {}
+  })();
 
   var vids = typeof WeakMap === 'function' ? new WeakMap() : null;
   function vtitle(v) {
@@ -407,6 +417,7 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
       if (seen[key] || !entries.some(function (entry) { return entry.intersectionRatio >= 0.25; })) return;
       if (getComputedStyle(a).visibility === 'hidden' || getComputedStyle(a).display === 'none') return;
       seen[key] = true;
+      (window.__mrRecent = window.__mrRecent || []).push({ t: Date.now(), n: 'offer_view', p: { site_id: 'ml0x.com', product_id: product, placement: placement, event_schema_version: '1', qa: false } });
       window.mrTrack('offer_view', {
         site_id: 'ml0x.com', product_id: product, placement: placement,
         event_schema_version: '1', qa: false
