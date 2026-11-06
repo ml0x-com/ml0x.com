@@ -336,8 +336,13 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
       track('telegram_click', { target: tg[3] === 'addlist/' ? 'addlist' : tg[3].toLowerCase(), placement: placement(a), link_url: clip(href) });
       return;
     }
+    if (a.origin === location.origin && /^\/(pipeline|triage)\/?$/.test(a.pathname) && !/^\/(pipeline|triage)\//.test(location.pathname)) {
+      track('cta_click', { cta_target: a.pathname.replace(/\//g, ''), cta_id: clip(a.getAttribute('data-cta') || ''), placement: placement(a),
+        page_path: location.pathname, link_text: clip(a.textContent) });
+      return;
+    }
     if (STRIPE.test(href) || a.hasAttribute('data-mr-checkout')) {
-      var it = itemFor(href), plan = it ? it.item_id : planOf(a, href), cp = { plan: plan, currency: 'USD', placement: placement(a) };
+      var it = itemFor(href), plan = it ? it.item_id : planOf(a, href), cp = { plan: plan, currency: 'USD', placement: placement(a), cta_id: clip(a.getAttribute('data-cta') || '') };
       if (it) { cp.value = it.price; cp.items = [ext(it, { quantity: 1 })]; } else if (VALUE[plan]) cp.value = VALUE[plan];
       track('begin_checkout', cp);
       return;
@@ -385,9 +390,9 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
   if (navigator.globalPrivacyControl || navigator.doNotTrack === '1' ||
       new URLSearchParams(location.search).get('roi_qa') === '1' ||
       typeof window.mrTrack !== 'function' || !('IntersectionObserver' in window)) return;
-  var products = {'28E3cw8My2Bq0tvgjj43S0t':'ml0x_pipeline','bJe00kbYK4Jyccd8QR43S0s':'training_run_triage'};
+  var products = {'28E3cw8My2Bq0tvgjj43S0t':'ml0x_pipeline','bJe00kbYK4Jyccd8QR43S0s':'training_run_triage','/pipeline/':'ml0x_pipeline','/triage/':'training_run_triage'};
   var seen = Object.create(null);
-  document.querySelectorAll('a[href^="https://buy.stripe.com/"]').forEach(function (a) {
+  document.querySelectorAll('a[href^="https://buy.stripe.com/"],a[data-cta][href="/pipeline/"],a[data-cta][href="/triage/"]').forEach(function (a) {
     var href = a.href || '', product = '';
     Object.keys(products).some(function (key) {
       if (href.indexOf(key) >= 0) { product = products[key]; return true; }
