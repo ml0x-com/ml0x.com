@@ -152,7 +152,7 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     '.mrc .mrc-text{margin:0 0 12px;padding:0;color:#d6d3cb}' +
     '.mrc .mrc-text a{color:#fffdf7;text-decoration:underline;text-underline-offset:3px}' +
     '.mrc .mrc-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}' +
-    '.mrc .mrc-btn{-webkit-appearance:none;appearance:none;min-height:44px;margin:0;padding:10px 14px;border:1px solid rgba(255,255,255,.24);' +
+    '.mrc .mrc-btn{-webkit-appearance:none;appearance:none;min-height:48px;margin:0;padding:10px 14px;border:1px solid rgba(255,255,255,.24);' +
     'border-radius:999px;background:#212120;color:#fffdf7;font:inherit;font-weight:800;cursor:pointer}' +
     '.mrc .mrc-btn:hover{border-color:#28CA41}' +
     '.mrc .mrc-btn:focus-visible,.mrc .mrc-text a:focus-visible{outline:3px solid #28CA41;outline-offset:2px}' +
@@ -348,6 +348,7 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     if (STRIPE.test(href) || a.hasAttribute('data-mr-checkout')) {
       var it = itemFor(href), plan = it ? it.item_id : planOf(a, href), cp = { plan: plan, currency: 'USD', placement: placement(a), cta_id: clip(a.getAttribute('data-cta') || '') };
       if (it) { cp.value = it.price; cp.items = [ext(it, { quantity: 1 })]; } else if (VALUE[plan]) cp.value = VALUE[plan];
+      track('cta_click', { cta_id: cp.cta_id, cta_target: 'stripe', placement: cp.placement, page_path: location.pathname, link_text: clip(a.textContent) });
       track('begin_checkout', cp);
       return;
     }
