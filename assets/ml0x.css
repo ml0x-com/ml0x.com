@@ -755,3 +755,6 @@ main, .tool-container, .research-content, .article-content { max-width: 100%; }
   body.result-first main.container > #resultsSection { order: 3; }
   body.result-first main.container > * { order: 4; }
 }
+
+/* CRO 1106 R2: 48 px header CTA */
+.nav-cta, .site-nav__cta { display: inline-flex; align-items: center; min-height: 48px; box-sizing: border-box; padding: 0 18px; }
