@@ -349,6 +349,13 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
       var it = itemFor(href), plan = it ? it.item_id : planOf(a, href), cp = { plan: plan, currency: 'USD', placement: placement(a), cta_id: clip(a.getAttribute('data-cta') || '') };
       if (it) { cp.value = it.price; cp.items = [ext(it, { quantity: 1 })]; } else if (VALUE[plan]) cp.value = VALUE[plan];
       track('cta_click', { cta_id: cp.cta_id, cta_target: 'stripe', placement: cp.placement, page_path: location.pathname, link_text: clip(a.textContent) });
+      // Same-tab click: hold the navigation until gtag confirms begin_checkout (max 1.2 s), so a click right after Accept is not lost.
+      if (booted && plain && a.tagName === 'A' && !e.defaultPrevented && (!a.target || a.target === '_self')) {
+        e.preventDefault();
+        var gone = false, to = a.href, go = function () { if (!gone) { gone = true; location.href = to; } };
+        cp.event_callback = go; cp.event_timeout = 1000;
+        setTimeout(go, 1200);
+      }
       track('begin_checkout', cp);
       return;
     }
