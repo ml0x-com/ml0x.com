@@ -270,13 +270,13 @@ img,svg{max-width:100%;height:auto}
 <div data-r="features-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: #E8E8E6; border-radius: 12px; overflow: hidden; margin-bottom: 24px;">
 <div style="background: #fff; padding: 32px 24px;">
 <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #1A1A1A; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Budget</div>
-<div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #C53030; letter-spacing: -0.5px; margin-bottom: 12px; font-variant-numeric: tabular-nums;">$0 runaways</div>
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #C53030; letter-spacing: -0.5px; margin-bottom: 12px; font-variant-numeric: tabular-nums;">Hard caps</div>
 <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E; line-height: 1.6; margin: 0;">Five layers of enforcement at the gateway. Your agents can't overspend because the limits live outside the agent process.</p>
 </div>
 <div style="background: #fff; padding: 32px 24px;">
 <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #1A1A1A; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Routing</div>
-<div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.5px; margin-bottom: 12px; font-variant-numeric: tabular-nums;">-85% cost</div>
-<p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E; line-height: 1.6; margin: 0;">74% of calls go to Flash at $0.28/M output. Only 26% actually need Opus. The router picks per-task, not per-session.</p>
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.5px; margin-bottom: 12px; font-variant-numeric: tabular-nums;">Per-task routing</div>
+<p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E; line-height: 1.6; margin: 0;">The router picks a model per task, not per session. Simple tasks can go to a cheaper model.</p>
 </div>
 <div style="background: #fff; padding: 32px 24px;">
 <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #1A1A1A; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Quality</div>
@@ -285,7 +285,7 @@ img,svg{max-width:100%;height:auto}
 </div>
 <div style="background: #fff; padding: 32px 24px;">
 <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500; color: #1A1A1A; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Memory</div>
-<div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.5px; margin-bottom: 12px;">∞ context</div>
+<div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1A1A1A; letter-spacing: -0.5px; margin-bottom: 12px;">Session memory</div>
 <p style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E; line-height: 1.6; margin: 0;">Sessions flow into logs, logs compile into a wiki, the wiki feeds the next session. It gets better the more you use it.</p>
 </div>
 </div>
@@ -325,19 +325,19 @@ img,svg{max-width:100%;height:auto}
 <div data-r="econ-grid" style="max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;">
 <div>
 <h2 style="font-family: 'JetBrains Mono', monospace; font-size: clamp(28px, 3.5vw, 36px); font-weight: 700; color: #1A1A1A; margin: 0 0 16px; letter-spacing: -1.5px; line-height: 1.15;">The math</h2>
-<p style="font-family: 'Inter', sans-serif; font-size: 15px; color: #6E6E6E; margin: 0 0 32px; line-height: 1.7;">Without routing, every query hits Opus at $75/M output. With ml0x, 74% go to Flash at $0.28/M. You'll recoup the $99 in your first afternoon.</p>
+<p style="font-family: 'Inter', sans-serif; font-size: 15px; color: #6E6E6E; margin: 0 0 32px; line-height: 1.7;">Without routing, every query goes to the most expensive model. Routing sends simple tasks to a cheaper one. The saving depends on your task mix, so measure it on your own runs.</p>
 <div style="display: flex; flex-direction: column; gap: 0;">
 <div style="display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #E8E8E6;">
 <span style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E;">Model routing</span>
-<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #1A1A1A; font-weight: 500; font-variant-numeric: tabular-nums;">-85%</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #1A1A1A; font-weight: 500; font-variant-numeric: tabular-nums;">depends on task mix</span>
 </div>
 <div style="display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #E8E8E6;">
-<span style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E;">Prompt caching, 90% hit</span>
-<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #1A1A1A; font-weight: 500;">50x per cached call</span>
+<span style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E;">Prompt caching</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #1A1A1A; font-weight: 500;">cache reads at 0.1x input price</span>
 </div>
 <div style="display: flex; justify-content: space-between; padding: 14px 0;">
 <span style="font-family: 'Inter', sans-serif; font-size: 14px; color: #6E6E6E;">Budget enforcement</span>
-<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #1A1A1A; font-weight: 500;">$0 surprises</span>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: #1A1A1A; font-weight: 500;">a hard cap you set</span>
 </div>
 </div>
 <p style="font-family: 'Inter', sans-serif; font-size: 11px; color: #6E6E6E; margin: 16px 0 0;">RouteLLM (ICLR 2025), Anthropic caching docs</p>
