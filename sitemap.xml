@@ -116,6 +116,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ml0x.com/calculators/tokens-per-second-calculator/</loc>
+    <lastmod>2026-11-08</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ml0x.com/calculators/chinchilla-scaling-calculator/</loc>
     <lastmod>2026-10-11</lastmod>
     <priority>0.7</priority>
@@ -340,4 +345,5 @@
     <lastmod>2026-09-26</lastmod>
     <priority>0.3</priority>
   </url>
+
 </urlset>
