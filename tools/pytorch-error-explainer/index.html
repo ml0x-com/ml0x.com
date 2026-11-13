@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyTorch Error Explainer: Fix "mat1 and mat2 shapes cannot be multiplied", Size Mismatch, CUDA OOM | ml0x</title>
+<meta name="description" content="Paste a PyTorch error and get the cause and the fix with your own numbers: mat1 and mat2 shapes cannot be multiplied, size of tensor a must match, expected size, expected dim, size mismatch in state_dict, conv channels, CUDA out of memory. Free, runs in your browser.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/tools/pytorch-error-explainer/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PyTorch Error Explainer: shape, size mismatch and CUDA OOM errors, explained with your numbers">
+<meta property="og:description" content="Paste the error. Get the cause and the fix. 26 rules for shape, dtype, device and memory errors. Free, in your browser.">
+<meta property="og:url" content="https://ml0x.com/tools/pytorch-error-explainer/">
+<meta property="og:site_name" content="ml0x">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PyTorch Error Explainer">
+<meta name="twitter:description" content="Paste a PyTorch shape, size mismatch or CUDA OOM error. Get the cause and the fix with your own numbers.">
+<meta name="author" content="Michael Lip">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "PyTorch Error Explainer", "url": "https://ml0x.com/tools/pytorch-error-explainer/", "applicationCategory": "DeveloperApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What does \"mat1 and mat2 shapes cannot be multiplied\" mean?", "acceptedAnswer": {"@type": "Answer", "text": "The input to an nn.Linear layer has a last dimension that differs from the layer's in_features. In (AxB and CxD), B is what arrives and C is what the layer expects. Set in_features to B, or use nn.LazyLinear."}}, {"@type": "Question", "name": "How do I fix \"Sizes of tensors must match except in dimension 1\"?", "acceptedAnswer": {"@type": "Answer", "text": "torch.cat needs every dimension except the one you join along to be equal. In U-Nets, resize the upsampled feature map to the skip connection's height and width before concatenating."}}, {"@type": "Question", "name": "How do I fix CUDA out of memory in PyTorch?", "acceptedAnswer": {"@type": "Answer", "text": "Reduce the batch size and use gradient accumulation, train in bf16 or fp16 with torch.autocast, wrap evaluation in torch.no_grad(), and accumulate loss.item() instead of loss. If a lot of memory is reserved but unallocated, set PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True."}}, {"@type": "Question", "name": "Is my error text sent anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The rules run in your browser. The page counts only which rule matched (for example mat1-mat2), never the text you paste."}}]}</script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:#FAFAF9;
+  color:#1A1A1A;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:640px;margin:0 auto;padding:28px 20px 64px}
+a{color:#1A1A1A}
+.eyebrow{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:#6E6E6E;margin:0 0 10px
+}
+h1{font-size:27px;line-height:1.24;letter-spacing:-.01em;margin:0 0 14px;font-weight:600}
+h2{font-size:19px;line-height:1.3;margin:0 0 10px;font-weight:600}
+h3{font-size:16px;line-height:1.35;margin:0 0 4px;font-weight:600}
+.lede{color:#4A4A4A;margin:0 0 24px}
+.card{
+  background:#FFFFFF;border:1px solid #E8E8E6;border-radius:12px;
+  padding:20px;margin:0 0 16px
+}
+.card p{margin:0 0 12px}
+.card p:last-child{margin-bottom:0}
+.price{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;color:#6E6E6E;margin:0 0 14px
+}
+.proof{
+  font-size:14px;color:#4A4A4A;border-left:3px solid #AA4F08;
+  padding:2px 0 2px 12px;margin:0 0 20px
+}
+.item{margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #F0EFED}
+.item:last-child{margin:0;padding:0;border-bottom:0}
+.item p{margin:0;color:#4A4A4A;font-size:15px}
+.meta{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12px;color:#6E6E6E;margin:3px 0 0
+}
+pre{
+  background:#F4F4F2;border:1px solid #E8E8E6;border-radius:8px;
+  padding:12px 14px;overflow-x:auto;margin:0 0 12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.7
+}
+.btn{
+  display:block;text-align:center;text-decoration:none;
+  background:#111111;color:#FFFFFF;
+  border-radius:8px;padding:14px 18px;min-height:48px;
+  font-weight:600;font-size:16px;margin:4px 0 0
+}
+.btn:hover{background:#000000;color:#FFFFFF}
+.after{font-size:13px;color:#6E6E6E;margin:8px 0 0;text-align:center}
+.refund{font-size:15px;color:#1A1A1A;margin:14px 0 0}
+ul{margin:0 0 12px;padding-left:20px}
+li{margin:0 0 8px;color:#4A4A4A;font-size:15px}
+.rule{border:0;border-top:1px solid #E8E8E6;margin:28px 0}
+footer{font-size:13px;color:#6E6E6E;margin:32px 0 0}
+footer a{color:#6E6E6E}
+@media (max-width:480px){h1{font-size:23px}.wrap{padding:20px 16px 48px}}
+</style>
+
+<style>
+.wrap{max-width:760px}
+textarea{width:100%;min-height:150px;padding:12px;border:1px solid #CFCFCC;border-radius:8px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.5;background:#fff;color:#1A1A1A;resize:vertical}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 0}
+.row button{min-height:48px;padding:0 20px;border:0;border-radius:8px;background:#111;color:#fff;font-weight:600;font-size:16px;cursor:pointer}
+.ex{font-size:13px;color:#4A4A4A}
+.ex a{display:inline-block;margin:2px 6px 2px 0;padding:6px 8px;border:1px solid #E8E8E6;border-radius:6px;text-decoration:none;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:#fff}
+.yours{font-weight:600;color:#1A1A1A;border-left:3px solid #AA4F08;padding:2px 0 2px 12px}
+.result{border-color:#AA4F08}
+.err h3{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:14px;line-height:1.45;word-break:break-word}
+.body ul{margin:8px 0 12px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;background:#F4F4F2;padding:1px 4px;border-radius:4px}
+pre code{background:none;padding:0}
+.offer{border:1px solid #111;}
+.toc{columns:2;font-size:14px}
+.toc li{margin:0 0 4px}
+@media (max-width:560px){.toc{columns:1}}
+</style>
+<script src="/site-analytics.js?v=1106r3" defer></script>
+<script src="/assets/js/sprint-l4.js?v=1" defer></script>
+<script src="/assets/js/pytorch-error-explainer.js?v=1" defer></script>
+</head>
+<body>
+<main class="wrap" data-cro="sprint-20261113-l4-pytorch-explainer">
+
+  <p class="eyebrow">ml0x.com / tools / pytorch error explainer</p>
+  <h1>PyTorch error explainer: paste the error, get the cause and the fix</h1>
+  <p class="lede">For shape and size errors (<code>mat1 and mat2 shapes cannot be multiplied</code>, <code>must match the size of tensor b</code>, <code>expected size</code>, <code>expected dim</code>, <code>size mismatch</code>), dtype and device errors, and CUDA out of memory. It reads the numbers in your message and tells you which dimension is wrong. Everything runs in your browser.</p>
+
+  <div class="card">
+    <label for="err"><strong>Paste the last lines of the traceback</strong></label>
+    <textarea id="err" spellcheck="false" autocomplete="off" placeholder="RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x12544 and 3136x10)"></textarea>
+    <div class="row"><button id="explain" type="button">Explain</button>
+      <span class="ex">Try: <a href="#err" data-example="RuntimeError: mat1 and mat2 shapes cannot be multiplied (32x12544 and 3136x10)">mat1 and mat2</a> <a href="#err" data-example="RuntimeError: The size of tensor a (64) must match the size of tensor b (32) at non-singleton dimension 1">size of tensor a</a> <a href="#err" data-example="RuntimeError: Sizes of tensors must match except in dimension 1. Expected size 9600 but got size 9599 for tensor number 1 in the list.">expected size</a> <a href="#err" data-example="RuntimeError: Given groups=1, weight of size [64, 3, 7, 7], expected input[16, 224, 224, 3] to have 3 channels, but got 224 channels instead">channels</a> <a href="#err" data-example="RuntimeError: Error(s) in loading state_dict for ResNet:
+	size mismatch for fc.weight: copying a param with shape torch.Size([1000, 512]) from checkpoint, the shape in current model is torch.Size([10, 512]).
+	size mismatch for fc.bias: copying a param with shape torch.Size([1000]) from checkpoint, the shape in current model is torch.Size([10]).">size mismatch</a> <a href="#err" data-example="torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.00 GiB. GPU 0 has a total capacity of 23.69 GiB of which 1.12 GiB is free. Including non-PyTorch memory, this process has 22.55 GiB memory in use. Of the allocated memory 19.80 GiB is allocated by PyTorch, and 2.44 GiB is reserved by PyTorch but unallocated.">CUDA OOM</a></span></div>
+  </div>
+
+  <div id="result" aria-live="polite"></div>
+
+  <div class="card offer" id="cta-preflight" hidden data-l4-offer data-product="tensor_preflight" data-price="29" data-placement="result" data-cro="sprint-20261113-l4-preflight-result">
+    <h2>Fixed it? Keep it fixed.</h2>
+    <p>Tensor Preflight traces one forward pass of your model on your machine, writes an HTML report of every module's input and output shape, and saves the expected shapes as a contract you can re-run before the next training job. It ships with eight broken and fixed examples: Linear sizes, Conv2d layout, dtype, device, loss targets, ConvTranspose and Transformer layout.</p>
+    <a class="btn" href="https://buy.heytensor.com/?utm_source=ml0x&amp;utm_medium=explainer&amp;utm_campaign=preflight&amp;utm_content=result" data-l4-cta="explainer_result_preflight" data-product="tensor_preflight" data-price="29">See Tensor Preflight, $29 once</a>
+    <p class="after">Downloadable zip, no subscription, your model stays local.</p>
+  </div>
+  <div class="card offer" id="cta-oom" hidden>
+    <h2>Size the memory before the next run</h2>
+    <p>The <a href="/calculators/llm-memory-calculator.html">LLM memory calculator</a> and the <a href="/calculators/kv-cache-size-calculator.html">KV cache size calculator</a> estimate weights, gradients, optimizer state and cache for a model and batch before you start.</p>
+  </div>
+
+  <div class="card offer" data-l4-offer data-product="tensor_preflight" data-price="29" data-placement="inline" data-cro="sprint-20261113-l4-preflight-inline">
+    <h2>Catch shape errors before training, not after</h2>
+    <p>Most of the errors on this page surface minutes into a run, or on the last small batch. <strong>Tensor Preflight</strong> runs a traced forward pass locally, writes an HTML and JSON report of shapes, dtypes and devices per module, and keeps an output contract beside your code, so the same mistake fails fast next time.</p>
+    <a class="btn" href="https://buy.heytensor.com/?utm_source=ml0x&amp;utm_medium=explainer&amp;utm_campaign=preflight&amp;utm_content=inline" data-l4-cta="explainer_inline_preflight" data-product="tensor_preflight" data-price="29">See Tensor Preflight, $29 once</a>
+    <p class="after">Python 3.9+ and PyTorch 2.8+. Tested on CPU and Apple MPS; CUDA is untested by its author.</p>
+  </div>
+
+  <h2 style="margin:28px 0 10px">Every error this explainer knows</h2>
+  <ul class="toc"><li><a href="#e-mat1-mat2">mat1 and mat2 shapes cannot be multiplied (AxB and CxD)</a></li><li><a href="#e-broadcast">The size of tensor a (X) must match the size of tensor b (Y) at non-si</a></li><li><a href="#e-cat">Sizes of tensors must match except in dimension D. Expected size X but</a></li><li><a href="#e-stack">stack expects each tensor to be equal size, but got [..] at entry 0 an</a></li><li><a href="#e-conv-channels">Given groups=1, weight of size [O, I, k, k], expected input[N, C, H, W</a></li><li><a href="#e-conv-rank">Expected 3D (unbatched) or 4D (batched) input to conv2d, but got input</a></li><li><a href="#e-batch-size">Expected input batch_size (X) to match target batch_size (Y)</a></li><li><a href="#e-ce-target">Expected target size [N, C], got [N, T]</a></li><li><a href="#e-multi-target">0D or 1D target tensor expected, multi-target not supported</a></li><li><a href="#e-bce-target">Target size (torch.Size([N])) must be the same as input size (torch.Si</a></li><li><a href="#e-view-invalid">shape &#x27;[...]&#x27; is invalid for input of size N</a></li><li><a href="#e-view-stride">view size is not compatible with input tensor&#x27;s size and stride (at le</a></li><li><a href="#e-expand">The expanded size of the tensor (X) must match the existing size (Y) a</a></li><li><a href="#e-state-dict">Error(s) in loading state_dict: size mismatch for fc.weight: copying a</a></li><li><a href="#e-dim-range">Dimension out of range (expected to be in range of [-N, N-1], but got </a></li><li><a href="#e-rnn-input">input.size(-1) must be equal to input_size. Expected X, got Y</a></li><li><a href="#e-mha-embed">was expecting embedding dimension of X, but got Y</a></li><li><a href="#e-expected-dim">Expected dim X, got Y / got input tensor dim ... expected dim</a></li><li><a href="#e-broadcast-shape">output with shape [1, H, W] doesn&#x27;t match the broadcast shape [3, H, W</a></li><li><a href="#e-expected-size">Shape does not match expected size</a></li><li><a href="#e-device">Expected all tensors to be on the same device, but found at least two </a></li><li><a href="#e-dtype">expected scalar type Float but found Double  /  mat1 and mat2 must hav</a></li><li><a href="#e-input-weight-type">Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor</a></li><li><a href="#e-cuda-oom">CUDA out of memory. Tried to allocate X GiB</a></li><li><a href="#e-index-range">index out of range in self</a></li><li><a href="#e-device-assert">CUDA error: device-side assert triggered</a></li></ul>
+
+  <section class="card err" id="e-mat1-mat2" data-name="RuntimeError: mat1 and mat2 shapes cannot be multiplied (AxB and CxD)">
+    <h3>RuntimeError: mat1 and mat2 shapes cannot be multiplied (AxB and CxD)</h3>
+    <div class="body"><p>An <code>nn.Linear</code> (or <code>torch.mm</code>/<code>@</code>) got an input whose last dimension B is not the layer's <code>in_features</code> C. A is the number of rows (usually batch size), D is <code>out_features</code>. It almost always happens on the first Linear after a Conv or Flatten, when the flattened size differs from the number you typed into <code>nn.Linear</code>, often because the image size changed.</p><p><strong>Fix</strong></p><ul><li>Set the layer to the size that actually arrives: <code>nn.Linear(B, D)</code>.</li><li>Better: let PyTorch infer it with <code>nn.LazyLinear(D)</code>, or compute it with one dummy forward pass (<code>model.features(torch.zeros(1, 3, H, W)).numel()</code>).</li><li>If A looks wrong too (for example A = batch x channels), you flattened the wrong dimensions. Use <code>torch.flatten(x, 1)</code> or <code>nn.Flatten()</code>, never <code>x.view(-1, C)</code> with a hard-coded C.</li></ul><pre><code>x = self.features(x)           # (N, 64, 7, 7)
+x = torch.flatten(x, 1)         # (N, 3136)
+self.fc = nn.Linear(64 * 7 * 7, 10)   # in_features must be 3136
+# or: self.fc = nn.LazyLinear(10)</code></pre></div>
+  </section><section class="card err" id="e-broadcast" data-name="RuntimeError: The size of tensor a (X) must match the size of tensor b (Y) at non-singleton dimension Z">
+    <h3>RuntimeError: The size of tensor a (X) must match the size of tensor b (Y) at non-singleton dimension Z</h3>
+    <div class="body"><p>An element-wise operation (<code>+</code>, <code>-</code>, <code>*</code>, a loss, a mask) got two tensors whose sizes differ at dimension Z, and neither size is 1, so broadcasting cannot stretch one to the other. Common causes: predictions (N, 1) against targets (N), a sequence padded to a different length, an attention mask built for another sequence length, or the last batch being smaller than a tensor you cached.</p><p><strong>Fix</strong></p><ul><li>Print both shapes right before the line: <code>print(a.shape, b.shape)</code>.</li><li>If one side has an extra size-1 dimension, line them up with <code>.squeeze(-1)</code> or <code>.unsqueeze(-1)</code>.</li><li>If the sizes are sequence lengths, pad or truncate both to the same length, and build masks from the actual batch.</li><li>If it fails only on the last batch, do not cache tensors sized to <code>batch_size</code>; use <code>x.size(0)</code>, or set <code>drop_last=True</code>.</li></ul><pre><code>pred = model(x).squeeze(-1)   # (N, 1) -&gt; (N)
+loss = F.mse_loss(pred, y)     # y: (N)</code></pre></div>
+  </section><section class="card err" id="e-cat" data-name="RuntimeError: Sizes of tensors must match except in dimension D. Expected size X but got size Y for tensor number K in the list">
+    <h3>RuntimeError: Sizes of tensors must match except in dimension D. Expected size X but got size Y for tensor number K in the list</h3>
+    <div class="body"><p><code>torch.cat</code> joins tensors along one dimension D, and every other dimension must be identical. Tensor number K has size Y where the first tensor has X. In U-Nets and skip connections this means the encoder and decoder feature maps differ by a pixel or two, because the input size is not divisible by 2 to the number of down-sampling steps. In sequence code it means different lengths.</p><p><strong>Fix</strong></p><ul><li>Print the shapes of every tensor in the list.</li><li>U-Net / skip connection: resize or crop to match, e.g. <code>F.interpolate(x, size=skip.shape[-2:])</code>, or pad the input so H and W are divisible by 2<sup>depth</sup>.</li><li>Sequences: pad to the same length with <code>torch.nn.utils.rnn.pad_sequence</code>.</li><li>Check you are concatenating along the right dimension: features are usually <code>dim=1</code> for (N, C, ...) and <code>dim=-1</code> for (N, T, C).</li></ul><pre><code>x = self.up(x)
+if x.shape[-2:] != skip.shape[-2:]:
+    x = F.interpolate(x, size=skip.shape[-2:], mode=&quot;nearest&quot;)
+x = torch.cat([x, skip], dim=1)</code></pre></div>
+  </section><section class="card err" id="e-stack" data-name="RuntimeError: stack expects each tensor to be equal size, but got [..] at entry 0 and [..] at entry N">
+    <h3>RuntimeError: stack expects each tensor to be equal size, but got [..] at entry 0 and [..] at entry N</h3>
+    <div class="body"><p><code>torch.stack</code> needs every tensor to have exactly the same shape. You usually see this from a DataLoader: the default collate function stacks samples into a batch, and one sample has a different shape. Typical causes: images of different sizes, a grayscale image among RGB ones (1 vs 3 channels), or variable-length text.</p><p><strong>Fix</strong></p><ul><li>Images: add <code>transforms.Resize((H, W))</code> (or a crop) to every sample, and convert every image with <code>.convert("RGB")</code>.</li><li>Variable-length sequences: write a <code>collate_fn</code> that pads (<code>pad_sequence</code>) and returns the lengths.</li><li>Find the bad sample: loop over the dataset and print any index whose shape differs from item 0.</li></ul><pre><code>img = Image.open(path).convert(&quot;RGB&quot;)     # never 1 or 4 channels
+tfm = transforms.Compose([transforms.Resize((224, 224)), transforms.ToTensor()])</code></pre></div>
+  </section><section class="card err" id="e-conv-channels" data-name="RuntimeError: Given groups=1, weight of size [O, I, k, k], expected input[N, C, H, W] to have I channels, but got C channels instead">
+    <h3>RuntimeError: Given groups=1, weight of size [O, I, k, k], expected input[N, C, H, W] to have I channels, but got C channels instead</h3>
+    <div class="body"><p>The convolution was built with <code>in_channels=I</code>, but the input has C channels in dimension 1. Two usual causes: the data has a different channel count (grayscale 1 vs RGB 3, RGBA 4), or the tensor is channels-last (N, H, W, C) as it comes from NumPy, PIL or OpenCV, so PyTorch reads the height or width as channels.</p><p><strong>Fix</strong></p><ul><li>Channels-last input: <code>x = x.permute(0, 3, 1, 2)</code> (or use <code>transforms.ToTensor()</code>, which does it for you).</li><li>Grayscale into an RGB model: <code>x.repeat(1, 3, 1, 1)</code>, or change the first layer to <code>in_channels=1</code>.</li><li>RGBA images: <code>.convert("RGB")</code> when loading.</li><li>If this is not the first conv, the previous layer's <code>out_channels</code> does not equal this layer's <code>in_channels</code>.</li></ul><pre><code>x = torch.from_numpy(batch)        # (N, H, W, 3) from NumPy/OpenCV
+x = x.permute(0, 3, 1, 2).float()  # (N, 3, H, W)</code></pre></div>
+  </section><section class="card err" id="e-conv-rank" data-name="RuntimeError: Expected 3D (unbatched) or 4D (batched) input to conv2d, but got input of size: [...]">
+    <h3>RuntimeError: Expected 3D (unbatched) or 4D (batched) input to conv2d, but got input of size: [...]</h3>
+    <div class="body"><p>Conv2d wants (N, C, H, W) or (C, H, W). You passed a tensor with the wrong number of dimensions: a single (H, W) image, a batch that lost its channel dimension (N, H, W), or an extra dimension such as (N, 1, C, H, W) from stacking a list of batches. Conv1d has the same rule with 2D/3D, Conv3d with 4D/5D.</p><p><strong>Fix</strong></p><ul><li>Single grayscale image (H, W): <code>x.unsqueeze(0).unsqueeze(0)</code> gives (1, 1, H, W).</li><li>Batch without channel (N, H, W): <code>x.unsqueeze(1)</code>.</li><li>Extra dimension of size 1: <code>x.squeeze(1)</code>, or fix where you stack the batch.</li></ul><pre><code>x = img_tensor                 # (28, 28)
+x = x.unsqueeze(0).unsqueeze(0) # (1, 1, 28, 28)
+out = model(x)</code></pre></div>
+  </section><section class="card err" id="e-batch-size" data-name="ValueError: Expected input batch_size (X) to match target batch_size (Y)">
+    <h3>ValueError: Expected input batch_size (X) to match target batch_size (Y)</h3>
+    <div class="body"><p>The loss (usually <code>CrossEntropyLoss</code> or <code>NLLLoss</code>) got X rows of predictions and Y targets. When X is a multiple of Y, a <code>view</code> or <code>reshape</code> in the forward pass merged the batch with another dimension, typically <code>x.view(-1, C)</code> with a C that is smaller than the real flattened size. In sequence models it means logits were flattened to (N*T, V) but targets were not.</p><p><strong>Fix</strong></p><ul><li>Replace <code>x.view(-1, C)</code> with <code>x.view(x.size(0), -1)</code> or <code>torch.flatten(x, 1)</code>, and fix the next Linear's <code>in_features</code>.</li><li>Sequence models: flatten both sides the same way: <code>loss(logits.view(-1, V), targets.view(-1))</code>.</li><li>Check the DataLoader gives the same batch for inputs and labels (no extra <code>unsqueeze</code>).</li></ul><pre><code>x = torch.flatten(x, 1)            # keeps the batch dimension
+logits = self.fc(x)                 # (N, num_classes)
+loss = F.cross_entropy(logits, y)   # y: (N,)</code></pre></div>
+  </section><section class="card err" id="e-ce-target" data-name="RuntimeError: Expected target size [N, C], got [N, T]">
+    <h3>RuntimeError: Expected target size [N, C], got [N, T]</h3>
+    <div class="body"><p><code>CrossEntropyLoss</code> treats dimension 1 of the input as the class dimension. Sequence logits from a Transformer or RNN are (N, T, C), so the loss reads T as the class count and expects a target of shape (N, C). The classes must be in dimension 1.</p><p><strong>Fix</strong></p><ul><li>Move classes to dimension 1: <code>F.cross_entropy(logits.permute(0, 2, 1), targets)</code> with targets (N, T).</li><li>Or flatten both: <code>F.cross_entropy(logits.reshape(-1, C), targets.reshape(-1))</code>.</li></ul><pre><code>logits = model(tokens)               # (N, T, C)
+loss = F.cross_entropy(logits.reshape(-1, logits.size(-1)), targets.reshape(-1))</code></pre></div>
+  </section><section class="card err" id="e-multi-target" data-name="RuntimeError: 0D or 1D target tensor expected, multi-target not supported">
+    <h3>RuntimeError: 0D or 1D target tensor expected, multi-target not supported</h3>
+    <div class="body"><p><code>CrossEntropyLoss</code> wants class indices of shape (N,) and dtype long. You gave it (N, 1) labels, or one-hot (N, C) labels.</p><p><strong>Fix</strong></p><ul><li>Labels of shape (N, 1): <code>y = y.squeeze(1)</code>.</li><li>One-hot labels: <code>y = y.argmax(dim=1)</code>, or keep them as float probabilities (PyTorch 1.10+ accepts soft targets with the same shape as the input).</li><li>Make sure the dtype is <code>torch.long</code>: <code>y = y.long()</code>.</li></ul><pre><code>loss = F.cross_entropy(logits, y.squeeze(1).long())</code></pre></div>
+  </section><section class="card err" id="e-bce-target" data-name="ValueError: Target size (torch.Size([N])) must be the same as input size (torch.Size([N, 1]))">
+    <h3>ValueError: Target size (torch.Size([N])) must be the same as input size (torch.Size([N, 1]))</h3>
+    <div class="body"><p><code>BCEWithLogitsLoss</code> and <code>BCELoss</code> need the target and the input to have the identical shape. A model with one output unit returns (N, 1) while labels are (N). The <code>MSELoss</code> version of this is a warning ("Using a target size that is different to the input size"), and it is worse: it silently broadcasts to (N, N) and trains on the wrong loss.</p><p><strong>Fix</strong></p><ul><li><code>loss = criterion(logits.squeeze(-1), y.float())</code>.</li><li>Or keep labels as (N, 1): <code>y.float().unsqueeze(1)</code>.</li><li>Targets must be float for BCE, not long.</li></ul><pre><code>logits = model(x).squeeze(-1)                # (N,)
+loss = F.binary_cross_entropy_with_logits(logits, y.float())</code></pre></div>
+  </section><section class="card err" id="e-view-invalid" data-name="RuntimeError: shape &#x27;[...]&#x27; is invalid for input of size N">
+    <h3>RuntimeError: shape &#x27;[...]&#x27; is invalid for input of size N</h3>
+    <div class="body"><p><code>view</code> or <code>reshape</code> must keep the total number of elements. The product of the shape you asked for does not divide or equal N. Usually a hard-coded size (batch size, image size, hidden size) is wrong, often only on the last, smaller batch.</p><p><strong>Fix</strong></p><ul><li>Use <code>-1</code> for exactly one dimension and the real sizes for the rest: <code>x.view(x.size(0), -1)</code>.</li><li>Never hard-code the batch size in a reshape.</li><li>If N is not what you expected, print <code>x.shape</code> before the reshape; the bug is upstream.</li></ul><pre><code>x = x.view(x.size(0), -1)    # not x.view(32, 3136)</code></pre></div>
+  </section><section class="card err" id="e-view-stride" data-name="RuntimeError: view size is not compatible with input tensor&#x27;s size and stride (at least one dimension spans across two contiguous subspaces). Use .reshape(...) instead.">
+    <h3>RuntimeError: view size is not compatible with input tensor&#x27;s size and stride (at least one dimension spans across two contiguous subspaces). Use .reshape(...) instead.</h3>
+    <div class="body"><p><code>view</code> needs memory that is laid out contiguously. After <code>transpose</code>, <code>permute</code> or some slicing, the tensor is a strided view of the original data, and <code>view</code> cannot reinterpret it.</p><p><strong>Fix</strong></p><ul><li>Use <code>.reshape(...)</code>, which copies only when it must.</li><li>Or call <code>.contiguous()</code> first: <code>x.transpose(1, 2).contiguous().view(N, T, -1)</code> (the usual pattern in multi-head attention).</li></ul><pre><code>out = out.transpose(1, 2).contiguous().view(N, T, n_heads * head_dim)</code></pre></div>
+  </section><section class="card err" id="e-expand" data-name="RuntimeError: The expanded size of the tensor (X) must match the existing size (Y) at non-singleton dimension Z">
+    <h3>RuntimeError: The expanded size of the tensor (X) must match the existing size (Y) at non-singleton dimension Z</h3>
+    <div class="body"><p><code>expand</code> (also used inside broadcasting assignments and some indexing) can only stretch dimensions of size 1. Dimension Z has size Y, which is not 1, and you asked for X. A common trigger is assigning into a slice of a pre-allocated tensor of another shape, or an attention mask expanded to the wrong sequence length.</p><p><strong>Fix</strong></p><ul><li>Print the shape before <code>expand</code>; add the missing size-1 dimension with <code>unsqueeze</code> in the right place.</li><li>If you assign into a slice, check the slice shape equals the value shape.</li><li>Masks: build them from the current sequence length, not a cached maximum.</li></ul><pre><code>mask = mask[:, None, None, :]           # (N, 1, 1, T)
+scores = scores.masked_fill(mask == 0, float(&quot;-inf&quot;))</code></pre></div>
+  </section><section class="card err" id="e-state-dict" data-name="RuntimeError: Error(s) in loading state_dict: size mismatch for fc.weight: copying a param with shape torch.Size([A, B]) from checkpoint, the shape in current model is torch.Size([C, B])">
+    <h3>RuntimeError: Error(s) in loading state_dict: size mismatch for fc.weight: copying a param with shape torch.Size([A, B]) from checkpoint, the shape in current model is torch.Size([C, B])</h3>
+    <div class="body"><p>The checkpoint was trained with a different architecture or head size than the model you built. Most often: a pretrained model with 1000 ImageNet classes loaded into a model you built for your own number of classes, a different vocabulary size, or a different hidden size.</p><p><strong>Fix</strong></p><ul><li>Fine-tuning a new head: load the checkpoint first into the original architecture, then replace the head: <code>model.fc = nn.Linear(model.fc.in_features, num_classes)</code>.</li><li>Or drop the mismatched keys before loading: filter the state dict to keys whose shapes match, then <code>load_state_dict(sd, strict=False)</code>, and check the returned missing keys.</li><li>If every layer mismatches, you built the wrong model size (for example base vs large). Read the config saved with the checkpoint.</li></ul><pre><code>sd = torch.load(path, map_location=&quot;cpu&quot;)
+own = model.state_dict()
+sd = {k: v for k, v in sd.items() if k in own and v.shape == own[k].shape}
+print(model.load_state_dict(sd, strict=False))</code></pre></div>
+  </section><section class="card err" id="e-dim-range" data-name="IndexError: Dimension out of range (expected to be in range of [-N, N-1], but got D)">
+    <h3>IndexError: Dimension out of range (expected to be in range of [-N, N-1], but got D)</h3>
+    <div class="body"><p>You asked for dimension D of a tensor that has only N dimensions. Usually the tensor has fewer dimensions than the code assumes: a single sample without a batch dimension, a loss value that is already a scalar, or <code>softmax(dim=1)</code> on a 1D tensor.</p><p><strong>Fix</strong></p><ul><li>Print <code>x.dim()</code> and <code>x.shape</code> at that line.</li><li>Missing batch dimension: <code>x.unsqueeze(0)</code> before the model.</li><li>Prefer negative dimensions for feature axes: <code>softmax(dim=-1)</code> works for both (C) and (N, C).</li></ul><pre><code>probs = logits.softmax(dim=-1)</code></pre></div>
+  </section><section class="card err" id="e-rnn-input" data-name="RuntimeError: input.size(-1) must be equal to input_size. Expected X, got Y">
+    <h3>RuntimeError: input.size(-1) must be equal to input_size. Expected X, got Y</h3>
+    <div class="body"><p>An <code>nn.RNN</code>, <code>nn.LSTM</code> or <code>nn.GRU</code> was built with <code>input_size=X</code>, but the last dimension of its input is Y. Either the feature size changed (embedding dimension, number of features), or the input is laid out as (N, F, T) instead of (N, T, F).</p><p><strong>Fix</strong></p><ul><li>If Y is your feature size, build the layer with <code>input_size=Y</code>.</li><li>If Y is your sequence length, the time and feature axes are swapped: <code>x.transpose(1, 2)</code>.</li><li>With <code>batch_first=True</code> the input is (N, T, F); without it, (T, N, F).</li></ul><pre><code>self.lstm = nn.LSTM(input_size=emb_dim, hidden_size=256, batch_first=True)
+out, _ = self.lstm(x)    # x: (N, T, emb_dim)</code></pre></div>
+  </section><section class="card err" id="e-mha-embed" data-name="AssertionError: was expecting embedding dimension of X, but got Y">
+    <h3>AssertionError: was expecting embedding dimension of X, but got Y</h3>
+    <div class="body"><p><code>nn.MultiheadAttention</code> or <code>nn.TransformerEncoderLayer</code> was built with <code>embed_dim</code> / <code>d_model</code> = X, and the last dimension of the query is Y. Two causes: the model width is different from the embedding output, or <code>batch_first</code> is wrong so the layer reads a different axis.</p><p><strong>Fix</strong></p><ul><li>Make the embedding output size equal <code>d_model</code>, or add a projection <code>nn.Linear(Y, X)</code>.</li><li>Check <code>batch_first</code>: with the default <code>False</code> the layer expects (T, N, E); pass <code>batch_first=True</code> for (N, T, E).</li></ul><pre><code>layer = nn.TransformerEncoderLayer(d_model=512, nhead=8, batch_first=True)
+x = self.proj(x)   # (N, T, 512)</code></pre></div>
+  </section><section class="card err" id="e-expected-dim" data-name="Expected dim X, got Y / got input tensor dim ... expected dim">
+    <h3>Expected dim X, got Y / got input tensor dim ... expected dim</h3>
+    <div class="body"><p>A layer checked the size of a feature dimension and found Y where it was built for X. In attention, embedding and adapter code this is the model width (for example 512 vs 768); in vision models it is the channel or patch-embedding width.</p><p><strong>Fix</strong></p><ul><li>Find the layer from the stack trace and print its configured size and the input shape.</li><li>If the input is right, rebuild the layer with the new size, or add a projection <code>nn.Linear(Y, X)</code>.</li><li>If X and Y are a sequence length and a feature size, an axis is swapped: check <code>batch_first</code> and any <code>transpose</code>.</li></ul><pre><code>print(type(layer).__name__, x.shape)
+proj = nn.Linear(in_dim, expected_dim)</code></pre></div>
+  </section><section class="card err" id="e-broadcast-shape" data-name="RuntimeError: output with shape [1, H, W] doesn&#x27;t match the broadcast shape [3, H, W]">
+    <h3>RuntimeError: output with shape [1, H, W] doesn&#x27;t match the broadcast shape [3, H, W]</h3>
+    <div class="body"><p>An in-place operation (<code>x.sub_()</code>, <code>x += ...</code>, <code>transforms.Normalize</code>) cannot grow its output. The tensor has 1 channel and the other operand has 3. The classic case: <code>Normalize(mean=[3 values], std=[3 values])</code> applied to a grayscale image.</p><p><strong>Fix</strong></p><ul><li>Convert images to RGB when loading: <code>Image.open(p).convert("RGB")</code>.</li><li>Or use single-channel normalisation for grayscale data: <code>Normalize((0.5,), (0.5,))</code>.</li><li>In your own code, use the out-of-place version: <code>x = x - mean</code>.</li></ul><pre><code>transforms.Compose([
+    transforms.Grayscale(num_output_channels=3),
+    transforms.ToTensor(),
+    transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+])</code></pre></div>
+  </section><section class="card err" id="e-expected-size" data-name="Shape does not match expected size">
+    <h3>Shape does not match expected size</h3>
+    <div class="body"><p>A check comparing an actual shape with an expected one failed. The message comes from a library (a transform, a dataset, a model wrapper) or from an assertion. The two shapes in the message tell you which dimension differs and by how much.</p><p><strong>Fix</strong></p><ul><li>Read which dimension differs. A factor of 2, 3 or 4 suggests channels or stride; a small difference suggests padding or rounding.</li><li>Print shapes before the call and compare with what the layer or library documents.</li><li>Paste the full trace into the box above: a more specific rule may match the line below the top one.</li></ul><pre><code>print(x.shape, expected_shape)</code></pre></div>
+  </section><section class="card err" id="e-device" data-name="RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!">
+    <h3>RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cuda:0 and cpu!</h3>
+    <div class="body"><p>One operation mixes a tensor on the GPU with one on the CPU. Usually: the model is on CUDA but the batch is not, or a tensor created inside <code>forward</code> (a mask, positional ids, <code>torch.zeros(...)</code>) is on the CPU by default, or a plain tensor attribute was not registered as a buffer, so <code>model.to(device)</code> did not move it.</p><p><strong>Fix</strong></p><ul><li>Move every batch: <code>x, y = x.to(device), y.to(device)</code>.</li><li>Create tensors on the right device: <code>torch.zeros(n, device=x.device)</code>, <code>torch.arange(T, device=x.device)</code>.</li><li>Constant tensors in a module: <code>self.register_buffer("pe", pe)</code>, so <code>.to(device)</code> moves them.</li></ul><pre><code>self.register_buffer(&quot;pos&quot;, torch.arange(max_len))
+...
+mask = torch.ones(T, T, device=x.device).tril()</code></pre></div>
+  </section><section class="card err" id="e-dtype" data-name="RuntimeError: expected scalar type Float but found Double  /  mat1 and mat2 must have the same dtype">
+    <h3>RuntimeError: expected scalar type Float but found Double  /  mat1 and mat2 must have the same dtype</h3>
+    <div class="body"><p>Two tensors in one operation have different dtypes. NumPy arrays become float64 (Double) when converted, while model weights are float32 (Float). Under mixed precision you can also get Half or BFloat16 against Float. Labels as float where a long is needed give the reverse.</p><p><strong>Fix</strong></p><ul><li>Inputs from NumPy: <code>torch.from_numpy(a).float()</code>, or <code>torch.tensor(a, dtype=torch.float32)</code>.</li><li>Mixed precision: run the forward pass inside <code>torch.autocast(...)</code> instead of calling <code>.half()</code> on some tensors.</li><li>Classification labels must be <code>long</code>; BCE targets must be <code>float</code>.</li></ul><pre><code>x = torch.from_numpy(features).float()
+y = torch.from_numpy(labels).long()</code></pre></div>
+  </section><section class="card err" id="e-input-weight-type" data-name="RuntimeError: Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor) should be the same">
+    <h3>RuntimeError: Input type (torch.FloatTensor) and weight type (torch.cuda.FloatTensor) should be the same</h3>
+    <div class="body"><p>The input and the layer's weights differ in device (one says <code>cuda</code>, the other does not) or in dtype (Half vs Float). This is the older wording of the device and dtype errors above.</p><p><strong>Fix</strong></p><ul><li>Device: move the input with <code>x.to(next(model.parameters()).device)</code>.</li><li>Dtype: cast the input to the weight dtype, or use <code>torch.autocast</code>.</li></ul><pre><code>device = next(model.parameters()).device
+x = x.to(device)</code></pre></div>
+  </section><section class="card err" id="e-cuda-oom" data-name="torch.OutOfMemoryError: CUDA out of memory. Tried to allocate X GiB">
+    <h3>torch.OutOfMemoryError: CUDA out of memory. Tried to allocate X GiB</h3>
+    <div class="body"><p>The GPU does not have enough free memory for the next allocation. Training memory is weights + gradients + optimizer state (about 16 bytes per parameter with Adam in fp32) + activations, and activations grow with batch size x sequence length (or image size). If memory is fine for a while and then runs out, something keeps references across steps.</p><p><strong>Fix</strong></p><ul><li>Halve the batch size; keep the effective batch with gradient accumulation.</li><li>Use mixed precision (<code>torch.autocast</code> with bf16 or fp16) and, for large models, activation checkpointing.</li><li>Evaluation: wrap it in <code>torch.no_grad()</code> (or <code>torch.inference_mode()</code>).</li><li>Leak check: accumulate <code>loss.item()</code>, not <code>loss</code>; do not keep outputs or hidden states from earlier steps.</li><li>If the message shows a lot of memory "reserved by PyTorch but unallocated", it is fragmentation: set <code>PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True</code>.</li><li>Check other processes with <code>nvidia-smi</code>; a notebook kernel may still hold the GPU.</li></ul><pre><code>scaler_ctx = torch.autocast(&quot;cuda&quot;, dtype=torch.bfloat16)
+for i, (x, y) in enumerate(loader):
+    with scaler_ctx:
+        loss = model(x).loss / accum
+    loss.backward()
+    if (i + 1) % accum == 0:
+        opt.step(); opt.zero_grad(set_to_none=True)
+    running += loss.item()</code></pre></div>
+  </section><section class="card err" id="e-index-range" data-name="IndexError: index out of range in self">
+    <h3>IndexError: index out of range in self</h3>
+    <div class="body"><p>An <code>nn.Embedding</code> (or <code>index_select</code>/gather) got an index at or above its size. With text, a token id is greater than or equal to <code>num_embeddings</code>: the tokenizer and the embedding table disagree on the vocabulary size, or you added special tokens without resizing. Negative ids (like -100 padding) also trigger it.</p><p><strong>Fix</strong></p><ul><li>Print <code>ids.max()</code>, <code>ids.min()</code> and <code>embedding.num_embeddings</code>.</li><li>After adding tokens to a Hugging Face tokenizer: <code>model.resize_token_embeddings(len(tokenizer))</code>.</li><li>Replace -100 or other padding values with the real pad id before the embedding; keep -100 only in the labels.</li></ul><pre><code>assert ids.max() &lt; model.get_input_embeddings().num_embeddings, ids.max()</code></pre></div>
+  </section><section class="card err" id="e-device-assert" data-name="RuntimeError: CUDA error: device-side assert triggered">
+    <h3>RuntimeError: CUDA error: device-side assert triggered</h3>
+    <div class="body"><p>A check inside a GPU kernel failed. The real error is hidden because CUDA reports it late. In training code it is nearly always an index out of range: a class label that is greater than or equal to the number of classes, a label of -1, or a token id outside the embedding table.</p><p><strong>Fix</strong></p><ul><li>Run the same batch on the CPU, which gives the real message, or set <code>CUDA_LAUNCH_BLOCKING=1</code> to get the right line.</li><li>Check labels: <code>y.min() >= 0</code> and <code>y.max() < num_classes</code>.</li><li>After this error the CUDA context is broken; restart the process (or the notebook kernel).</li></ul><pre><code>CUDA_LAUNCH_BLOCKING=1 python train.py
+# or
+assert 0 &lt;= y.min() and y.max() &lt; num_classes, (y.min(), y.max())</code></pre></div>
+  </section>
+
+  <div class="card">
+    <h2>Questions</h2>
+    <details><summary>What does &quot;mat1 and mat2 shapes cannot be multiplied&quot; mean?</summary><p>The input to an nn.Linear layer has a last dimension that differs from the layer&#x27;s in_features. In (AxB and CxD), B is what arrives and C is what the layer expects. Set in_features to B, or use nn.LazyLinear.</p></details><details><summary>How do I fix &quot;Sizes of tensors must match except in dimension 1&quot;?</summary><p>torch.cat needs every dimension except the one you join along to be equal. In U-Nets, resize the upsampled feature map to the skip connection&#x27;s height and width before concatenating.</p></details><details><summary>How do I fix CUDA out of memory in PyTorch?</summary><p>Reduce the batch size and use gradient accumulation, train in bf16 or fp16 with torch.autocast, wrap evaluation in torch.no_grad(), and accumulate loss.item() instead of loss. If a lot of memory is reserved but unallocated, set PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True.</p></details><details><summary>Is my error text sent anywhere?</summary><p>No. The rules run in your browser. The page counts only which rule matched (for example mat1-mat2), never the text you paste.</p></details>
+  </div>
+
+  <hr class="rule">
+  <footer>
+    <a href="/">ml0x.com</a> &nbsp; <a href="/tools/">ML tools</a> &nbsp; <a href="/calculators/">Calculators</a> &nbsp; <a href="/claude-code-workflow-pack/">Claude Code workflow pack</a> &nbsp; <a href="/privacy/">Privacy</a> &nbsp; <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+  </footer>
+</main>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

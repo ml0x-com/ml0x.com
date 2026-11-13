@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Workflow Pack: CLAUDE.md Templates, Safety Hooks, 8 Slash Commands | ml0x</title>
+<meta name="description" content="A Claude Code workflow pack: 5 CLAUDE.md templates, 5 hooks (bash guard, protected files, per-session cost brake, auto-format, notifications) and 8 slash commands (/plan, /review, /test-fix, /commit, /pr, /handoff). Plain files, MIT. $19 at launch.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/claude-code-workflow-pack/">
+<meta property="og:type" content="product">
+<meta property="og:title" content="Claude Code Workflow Pack: CLAUDE.md templates, hooks and slash commands">
+<meta property="og:description" content="5 CLAUDE.md templates, 5 guard hooks and 8 slash commands for Claude Code. Plain files, MIT. $19 at launch.">
+<meta property="og:url" content="https://ml0x.com/claude-code-workflow-pack/">
+<meta property="og:site_name" content="ml0x">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Claude Code Workflow Pack: CLAUDE.md templates, hooks and slash commands">
+<meta name="twitter:description" content="5 CLAUDE.md templates, 5 guard hooks and 8 slash commands for Claude Code. $19 at launch.">
+<meta name="author" content="Michael Lip">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Product","name":"ml0x Claude Code Workflow Pack","description":"CLAUDE.md templates, five Claude Code hooks (bash guard, protected files, per-session cost brake, format on edit, notifications) and eight slash commands, as plain files under the MIT licence.","url":"https://ml0x.com/claude-code-workflow-pack/","brand":{"@type":"Brand","name":"ml0x"},"offers":{"@type":"Offer","price":"19.00","priceCurrency":"USD","availability":"https://schema.org/PreOrder","url":"https://ml0x.com/claude-code-workflow-pack/"}}
+</script>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:#FAFAF9;
+  color:#1A1A1A;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:640px;margin:0 auto;padding:28px 20px 64px}
+a{color:#1A1A1A}
+.eyebrow{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  color:#6E6E6E;margin:0 0 10px
+}
+h1{font-size:27px;line-height:1.24;letter-spacing:-.01em;margin:0 0 14px;font-weight:600}
+h2{font-size:19px;line-height:1.3;margin:0 0 10px;font-weight:600}
+h3{font-size:16px;line-height:1.35;margin:0 0 4px;font-weight:600}
+.lede{color:#4A4A4A;margin:0 0 24px}
+.card{
+  background:#FFFFFF;border:1px solid #E8E8E6;border-radius:12px;
+  padding:20px;margin:0 0 16px
+}
+.card p{margin:0 0 12px}
+.card p:last-child{margin-bottom:0}
+.price{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;color:#6E6E6E;margin:0 0 14px
+}
+.proof{
+  font-size:14px;color:#4A4A4A;border-left:3px solid #AA4F08;
+  padding:2px 0 2px 12px;margin:0 0 20px
+}
+.item{margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #F0EFED}
+.item:last-child{margin:0;padding:0;border-bottom:0}
+.item p{margin:0;color:#4A4A4A;font-size:15px}
+.meta{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:12px;color:#6E6E6E;margin:3px 0 0
+}
+pre{
+  background:#F4F4F2;border:1px solid #E8E8E6;border-radius:8px;
+  padding:12px 14px;overflow-x:auto;margin:0 0 12px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;line-height:1.7
+}
+.btn{
+  display:block;text-align:center;text-decoration:none;
+  background:#111111;color:#FFFFFF;
+  border-radius:8px;padding:14px 18px;min-height:48px;
+  font-weight:600;font-size:16px;margin:4px 0 0
+}
+.btn:hover{background:#000000;color:#FFFFFF}
+.after{font-size:13px;color:#6E6E6E;margin:8px 0 0;text-align:center}
+.refund{font-size:15px;color:#1A1A1A;margin:14px 0 0}
+ul{margin:0 0 12px;padding-left:20px}
+li{margin:0 0 8px;color:#4A4A4A;font-size:15px}
+.rule{border:0;border-top:1px solid #E8E8E6;margin:28px 0}
+footer{font-size:13px;color:#6E6E6E;margin:32px 0 0}
+footer a{color:#6E6E6E}
+@media (max-width:480px){h1{font-size:23px}.wrap{padding:20px 16px 48px}}
+</style>
+
+<style>
+.form{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 0}
+.form input[type=email]{flex:1 1 220px;min-height:48px;padding:10px 12px;border:1px solid #CFCFCC;border-radius:8px;font-size:16px;background:#fff;color:#1A1A1A}
+.form button{flex:0 0 auto;min-height:48px;padding:0 18px;border:0;border-radius:8px;background:#111;color:#fff;font-weight:600;font-size:16px;cursor:pointer}
+.form button:disabled{opacity:.6;cursor:default}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.msg{font-size:14px;color:#1A1A1A;margin:8px 0 0;min-height:1.2em}
+table{width:100%;border-collapse:collapse;font-size:14px;margin:0 0 8px}
+th,td{text-align:left;vertical-align:top;padding:8px 6px;border-bottom:1px solid #F0EFED}
+th{font-weight:600;color:#1A1A1A}
+td code,li code,p code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;background:#F4F4F2;padding:1px 4px;border-radius:4px}
+.tier{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tier .card{margin:0}
+details{border-top:1px solid #F0EFED;padding:10px 0}
+details summary{cursor:pointer;font-weight:600}
+@media (max-width:560px){.tier{grid-template-columns:1fr}table{font-size:13px}}
+</style>
+<script src="/site-analytics.js?v=1106r3" defer></script>
+<script src="/assets/js/sprint-l4.js?v=1" defer></script>
+</head>
+<body>
+<main class="wrap">
+
+  <p class="eyebrow">ml0x.com / Claude Code workflow pack</p>
+  <h1>A Claude Code setup that plans first, cannot wreck your repo, and stops before it burns your budget</h1>
+  <p class="lede">Five CLAUDE.md templates, five hooks and eight slash commands, as plain files you copy into <code>.claude/</code>. Markdown and standard-library Python, no account, no network calls. Read every line before you use it. That is why it ships as source.</p>
+
+  <div class="card" data-l4-offer data-product="ml0x_cc_pack" data-price="19" data-placement="hero" data-cro="sprint-20261113-l4-pack-hero">
+    <p class="price">$19 once at launch. One zip, MIT licence, every project you own.</p>
+    <p>The pack is written and its hook tests pass (64 checks). Checkout is not open yet. Leave your email and you get one message when it opens, with the $19 link.</p>
+    <form class="form-wrap" data-l4-lead data-offer-id="ml0x-cc-pack" data-product="ml0x_cc_pack" data-price="19" data-success="You are on the list. One email when the pack launches, with the $19 link. Nothing else." data-cro="sprint-20261113-l4-pack-waitlist-hero" novalidate>
+      <div class="form">
+        <label for="em-hero" class="hp">Email</label>
+        <input id="em-hero" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+        <span class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="hp" tabindex="-1" autocomplete="off"></label></span>
+        <button type="submit">Get it first, $19 at launch</button>
+      </div>
+      <p class="msg" data-l4-msg role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>What is in the zip</h2>
+<pre>claude-md/   CLAUDE.global.md      your rules for every project
+             CLAUDE.base.md        any repo: commands, layout, traps, done
+             CLAUDE.python-ml.md   PyTorch: shape rules, GPU-cost rules
+             CLAUDE.typescript-web.md
+             CLAUDE.subdir-example.md   monorepo packages
+hooks/       guard_bash.py   protect_files.py   cost_guard.py
+             format_on_edit.py   notify.py
+commands/    plan  review  test-fix  commit  pr
+             explain-error  handoff  secrets-check
+settings/    settings.json   (wires every hook)
+tests/       test_hooks.py   install.sh   README.md</pre>
+    <p class="meta">install.sh copies into a project and never overwrites a file you already have</p>
+  </div>
+
+  <div class="card">
+    <h2>The five hooks</h2>
+    <p>Claude Code runs a hook before or after each tool call. A PreToolUse hook that exits with code 2 blocks the call, and its message goes back to Claude as the reason, so the agent changes course instead of retrying.</p>
+    <table>
+      <tr><th>Hook</th><th>What it does</th></tr>
+      <tr><td><code>guard_bash</code></td><td>Blocks <code>rm -rf</code> of <code>/</code>, <code>~</code> or <code>.</code>, force push to main, <code>git reset --hard</code>, <code>git clean -f</code>, <code>curl | sh</code>, <code>sudo</code>, <code>DROP TABLE</code>, <code>terraform destroy</code>, <code>npm publish</code>, <code>cat .env</code> and more. Allows the safe versions, like <code>rm -rf ./build</code> or a force push to a feature branch.</td></tr>
+      <tr><td><code>protect_files</code></td><td>No edits to <code>.env</code>, keys, lockfiles, <code>node_modules/</code>, <code>.git/</code>, files outside the project, or the hooks and settings themselves. An agent should not be able to switch off its own guard.</td></tr>
+      <tr><td><code>cost_guard</code></td><td>Per-session brake on tool calls (400), minutes (120), transcript size (8 MB) and the same command run 5 times in a row. Warns at 80 %, then tells Claude to write a summary and hand back.</td></tr>
+      <tr><td><code>format_on_edit</code></td><td>Runs ruff or black, project prettier, gofmt, rustfmt or shfmt on each changed file. Never blocks.</td></tr>
+      <tr><td><code>notify</code></td><td>Desktop notification when Claude needs a permission or finishes, so you stop watching the terminal.</td></tr>
+    </table>
+    <p class="meta">every limit and rule is an environment variable; you do not edit the Python to tune it</p>
+  </div>
+
+  <div class="card">
+    <h2>The eight slash commands</h2>
+    <table>
+      <tr><th>Command</th><th>What it does</th></tr>
+      <tr><td><code>/plan</code></td><td>Reads the code and writes a numbered plan with files, checks and risks. Edits nothing. Waits for "go".</td></tr>
+      <tr><td><code>/review</code></td><td>Reviews the diff for bugs, security, API breaks and missing tests, each with <code>file:line</code> and an input that triggers it.</td></tr>
+      <tr><td><code>/test-fix</code></td><td>Fixes failing tests one at a time, root cause first. Max 3 tries per test. Never skips or loosens an assertion.</td></tr>
+      <tr><td><code>/commit</code></td><td>Commit message in your repo's style that says why. No AI attribution lines, never <code>--no-verify</code>.</td></tr>
+      <tr><td><code>/pr</code></td><td>PR title and body: what, why, how to test, risk, follow-ups.</td></tr>
+      <tr><td><code>/explain-error</code></td><td>Finds the first stack frame in your code and explains the cause before any edit.</td></tr>
+      <tr><td><code>/handoff</code></td><td>Writes HANDOFF.md so you can <code>/clear</code> and continue in a fresh, cheaper context.</td></tr>
+      <tr><td><code>/secrets-check</code></td><td>Scans added lines for keys, tokens and personal data, masked, and tells you when to rotate.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Free sample: the /plan command, complete</h2>
+    <p>This is one of the eight files, complete (long lines wrapped to fit here). Save it as <code>.claude/commands/plan.md</code> and type <code>/plan</code> in Claude Code.</p>
+<pre>---
+description: Read the code and write a step-by-step plan before any edit. Makes no changes.
+argument-hint: &lt;what you want built or fixed&gt;
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(ls:*)
+---
+Task: $ARGUMENTS
+
+You are in planning mode. Do not edit, create or delete any file in this turn.
+
+1. Restate the task in one sentence. If it is ambiguous, list the open
+   questions and stop.
+2. Find the code that the task touches. Read it. Name each file and the
+   function or section, with line numbers.
+3. Check how the project already solves similar problems (patterns,
+   helpers, tests) and reuse them.
+4. Write the plan as a numbered list. For each step give: the file, the
+   change, and how you will verify it (a test, a command, or a manual check).
+5. List the risks: what could break, which callers depend on the code you
+   change, and any migration or data change.
+6. Give a size estimate: number of files, rough lines changed, and whether
+   the change should be split into more than one commit.
+
+End with: "Reply 'go' to implement, or edit the plan." Then wait.</pre>
+    <p>The <code>allowed-tools</code> line is what makes it safe: the command can read and search, but it has no Edit or Write tool, so "plan only" is enforced, not requested.</p>
+  </div>
+
+  <div class="card">
+    <h2>Works in cloud sessions too</h2>
+    <p>A Claude Code cloud session reads the <code>.claude/settings.json</code> committed in the repo, not your laptop's user settings. The pack installs at project level, so the same guards and commands run there. More on what carries over in the <a href="/guides/claude-code-cloud-sessions/">cloud sessions guide</a>.</p>
+  </div>
+
+  <h2 style="margin:28px 0 12px">Pack or Pipeline</h2>
+  <div class="tier" data-cro="sprint-20261113-l4-pack-tiers">
+    <div class="card">
+      <h3>Workflow Pack, $19</h3>
+      <p class="meta">at launch</p>
+      <ul>
+        <li>CLAUDE.md templates</li>
+        <li>5 hooks, 8 slash commands</li>
+        <li>For: your own interactive Claude Code sessions</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>ml0x Pipeline, $99</h3>
+      <p class="meta">available now</p>
+      <ul>
+        <li>The 100x CLI, four-stage run with quality gates</li>
+        <li>Dollar budget ceiling per run, parallel research runner</li>
+        <li>For: unattended, multi-agent runs</li>
+      </ul>
+      <a class="btn" href="/pipeline/" data-cta="pack_tier_pipeline">See the Pipeline, $99</a>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2>Questions</h2>
+    <details><summary>Is this official Anthropic software?</summary><p>No. It is an independent set of files built on Claude Code's documented hooks, settings and slash command features.</p></details>
+    <details><summary>Does cost_guard know my real bill?</summary><p>No, a hook cannot see billing. It limits tool calls, time, transcript size (a proxy for context, which drives per-turn token cost) and repeat loops. Use it with the spend limits in your Anthropic account, not instead of them.</p></details>
+    <details><summary>What do I need?</summary><p>Claude Code and Python 3 (for the hooks). macOS or Linux. The commands are Markdown and work anywhere Claude Code runs.</p></details>
+    <details><summary>Why join a list instead of buying now?</summary><p>The files are done; the checkout for this tier is not set up yet. You get one email when it is, with the $19 link. No newsletter.</p></details>
+  </div>
+
+  <div class="card" data-l4-offer data-product="ml0x_cc_pack" data-price="19" data-placement="footer">
+    <h2>Get the pack at launch, $19</h2>
+    <form class="form-wrap" data-l4-lead data-offer-id="ml0x-cc-pack" data-product="ml0x_cc_pack" data-price="19" data-success="You are on the list. One email when the pack launches, with the $19 link. Nothing else." data-cro="sprint-20261113-l4-pack-waitlist-footer" novalidate>
+      <div class="form">
+        <label for="em-footer" class="hp">Email</label>
+        <input id="em-footer" type="email" name="email" autocomplete="email" placeholder="you@example.com" required>
+        <span class="hp" aria-hidden="true"><label>Leave this empty <input type="text" name="hp" tabindex="-1" autocomplete="off"></label></span>
+        <button type="submit">Get it first, $19 at launch</button>
+      </div>
+      <p class="msg" data-l4-msg role="status" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <hr class="rule">
+  <footer>
+    <a href="/">ml0x.com</a> &nbsp; <a href="/pipeline/">ml0x Pipeline</a> &nbsp; <a href="/guides/claude-code-cloud-sessions/">Claude Code cloud sessions</a> &nbsp; <a href="/tools/pytorch-error-explainer/">PyTorch error explainer</a> &nbsp; <a href="/privacy/">Privacy</a> &nbsp; <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+  </footer>
+</main>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>
