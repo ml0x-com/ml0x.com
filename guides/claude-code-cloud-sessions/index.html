@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude Code cloud sessions: setup, limits and costs (tested on 2.1.281) | ml0x</title>
-<meta name="description" content="Step-by-step setup for Claude Code cloud sessions, tested on Claude Code 2.1.281. Connect GitHub, start your first session from the terminal, know the VM limits and what it costs, and fix the errors people hit.">
+<title>Claude Code Cloud Sessions: Setup in 3 Commands, 4 vCPU/16 GB Limits, Cost</title>
+<meta name="description" content="Run Claude Code in the cloud: /web-setup, then claude --cloud &quot;task&quot;. Each session gets 4 vCPUs, 16 GB RAM and 30 GB disk. Network levels, what carries over, cost, and fixes for common errors. Tested on 2.1.281." data-cro="ml0x-ccs-title">
 <link rel="canonical" href="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <link rel="alternate" hreflang="en" href="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <link rel="alternate" hreflang="x-default" href="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Claude Code cloud sessions: setup, limits and costs">
+<meta property="og:title" content="Claude Code Cloud Sessions: Setup in 3 Commands, 4 vCPU/16 GB Limits, Cost">
 <meta property="og:description" content="Claim the credit, connect GitHub, run your first cloud session from the terminal, and fix the errors people hit. Tested on Claude Code 2.1.281.">
 <meta property="og:url" content="https://ml0x.com/guides/claude-code-cloud-sessions/">
 <meta property="og:site_name" content="ml0x">
@@ -222,6 +222,12 @@ Your local credentials are used to authenticate with GitHub
     <p><code>CLAUDE_CODE_REMOTE</code> is set to <code>true</code> inside cloud sessions, so the hook above installs dependencies in the cloud and leaves your laptop alone.</p>
     <p>The machine itself has 4 vCPUs, 16 GB of RAM and 30 GB of disk. It comes with Python 3 (pip, uv, poetry, pytest, ruff), Node 20 to 22 (npm, pnpm, yarn, bun), Ruby, PHP 8.3, Java 21, Go, Rust, and C and C++. Docker, PostgreSQL 16 and Redis 7 are installed too, along with the usual command-line tools including <code>git</code>, <code>gh</code>, <code>jq</code> and <code>ripgrep</code>.</p>
 
+    <aside class="callout ccs-offer" data-cro="ml0x-ccs-limits-cta" data-mr-placement="guide_limits_pipeline" aria-label="Spend cap for unattended Claude Code runs">
+      <p class="eyebrow">Limits cover the machine, not the bill</p>
+      <p>A cloud session caps CPU, RAM and disk, but nothing above stops a long task from using up your plan or API budget. If you also run Claude Code unattended on your own machine, the ml0x pipeline sets a dollar ceiling and a quality gate before each run starts (analyze, implement, test, review). $99 once, 60-day refund, you keep the files.</p>
+      <p class="ccs-offer-actions"><a class="btn" data-cta="guide_limits_pipeline" href="/pipeline/">See the ml0x pipeline, $99 once</a></p>
+    </aside>
+
     <h3>What carries over from your machine</h3>
     <p>Less than you'd expect. Your personal <code>~/.claude/settings.json</code>, your user-level hooks and your user-scope MCP servers stay on your laptop. A cloud session reads the <code>.claude/settings.json</code> committed in the repo, plus any settings your organization manages on the server. Anything the session needs has to live in the repo or in the environment.</p>
     <p>The CLI sends sessions to your default environment. Run <code>/remote-env</code> inside <code>claude</code> to pick a different one.</p>
@@ -264,7 +270,7 @@ claude --teleport session_013RJsJUzfWs11NhuKnFaKr2</code></pre>
       <p class="eyebrow">From the author of this guide</p>
       <h3>Running Claude Code unattended? Put a budget cap on it first.</h3>
       <p>The ml0x pipeline runs Claude Code on your own machine in four stages (analyze, implement, test, review), with a quality gate and a dollar ceiling you set before the run starts. I built it because the bill lands on me. The core is free and MIT on GitHub. The $99 package is the same system pinned at a version, with the configs, the runbook and the research behind it. One payment, 60-day refund, and you keep the files.</p>
-      <p class="ccs-offer-actions"><a class="btn" href="/pipeline/">Get the ml0x pipeline, $99 once</a> <a class="ccs-offer-free" href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">Clone the free core first</a></p>
+      <p class="ccs-offer-actions"><a class="btn" data-cta="guide_pipeline_offer" data-cro="ml0x-ccs-offer-cta" href="/pipeline/">Get the ml0x pipeline, $99 once</a> <a class="ccs-offer-free" href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">Clone the free core first</a></p>
     </aside>
 
     <h2>The $250 / $100 credit (closed to new claims Oct 7, 2026; expires Nov 4)</h2>

@@ -15,6 +15,9 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
   var w = window, d = document, n = navigator, ID = MR_GA_ID, BASIC = MR_CONSENT_MODE !== 'advanced';
   w.mrTrack = function () {};
   if (!/^G-[A-Z0-9]{4,}$/.test(ID) || /^G-X+$/.test(ID) || w.__mrAnalytics) return;
+  // cro-host-allowlist: GA loads only on the production host. localhost, 127.0.0.1, *.pages.dev, *.workers.dev and
+  // any other copy never report to the production property.
+  if (['ml0x.com', 'www.ml0x.com'].indexOf(location.hostname) < 0) return;
   w.__mrAnalytics = 1;
 
   var KEY = 'mr_consent_v1', TTL = 34164000; // seconds, 13 months: cookie_expires and the re-ask window
@@ -410,6 +413,16 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
       typeof window.mrTrack !== 'function' || !('IntersectionObserver' in window)) return;
   var products = {'28E3cw8My2Bq0tvgjj43S0t':'ml0x_pipeline','bJe00kbYK4Jyccd8QR43S0s':'training_run_triage','/pipeline/':'ml0x_pipeline','/triage/':'training_run_triage'};
   var seen = Object.create(null);
+  // offer_view only after a real interaction (scroll, pointer, key or touch), so headless full-page renders do not count.
+  var human = false, waiting = [];
+  function arm() {
+    if (human) return;
+    human = true;
+    ['scroll', 'pointerdown', 'keydown', 'touchstart', 'mousemove'].forEach(function (t) { window.removeEventListener(t, arm, true); });
+    waiting.forEach(function (f) { f(); });
+    waiting = [];
+  }
+  ['scroll', 'pointerdown', 'keydown', 'touchstart', 'mousemove'].forEach(function (t) { window.addEventListener(t, arm, { capture: true, passive: true }); });
   document.querySelectorAll('a[href^="https://buy.stripe.com/"],a[data-cta][href="/pipeline/"],a[data-cta][href="/triage/"]').forEach(function (a) {
     var href = a.href || '', product = '';
     Object.keys(products).some(function (key) {
@@ -424,13 +437,17 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     var observer = new IntersectionObserver(function (entries) {
       if (seen[key] || !entries.some(function (entry) { return entry.intersectionRatio >= 0.25; })) return;
       if (getComputedStyle(a).visibility === 'hidden' || getComputedStyle(a).display === 'none') return;
-      seen[key] = true;
-      (window.__mrRecent = window.__mrRecent || []).push({ t: Date.now(), n: 'offer_view', p: { site_id: 'ml0x.com', product_id: product, placement: placement, event_schema_version: '1', qa: false } });
-      window.mrTrack('offer_view', {
-        site_id: 'ml0x.com', product_id: product, placement: placement,
-        event_schema_version: '1', qa: false
-      });
+      var fire = function () {
+        if (seen[key]) return;
+        seen[key] = true;
+        (window.__mrRecent = window.__mrRecent || []).push({ t: Date.now(), n: 'offer_view', p: { site_id: 'ml0x.com', product_id: product, placement: placement, event_schema_version: '1', qa: false } });
+        window.mrTrack('offer_view', {
+          site_id: 'ml0x.com', product_id: product, placement: placement,
+          event_schema_version: '1', qa: false
+        });
+      };
       observer.disconnect();
+      if (human) fire(); else waiting.push(fire);
     }, { threshold: 0.25 });
     observer.observe(a);
   });
