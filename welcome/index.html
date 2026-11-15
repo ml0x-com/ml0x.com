@@ -186,8 +186,7 @@ footer a{color:#6E6E6E}
       if (d.title) { document.getElementById("title").textContent = "Your copy of " + d.title; }
       var panel = document.getElementById("panel-" + (d.sku || ""));
       if (panel) { panel.hidden = false; }
-      // The worker checked this session with Stripe, so count the sale once (site-analytics.js dedupes by session).
-      try { (window.mrPurchaseQ = window.mrPurchaseQ || []).push([sid, d.sku]); } catch (e) { /* analytics is optional */ }
+      // GA4 purchase: sent once by the sprint-20261115-purchase script below (server-verified value, any sku incl. ccpack).
       var n = document.createElement("p");
       n.className = "note";
       n.textContent = "Verified against your Stripe order.";
@@ -196,6 +195,55 @@ footer a{color:#6E6E6E}
     .catch(function () {
       say("We could not reach the download service. Reload in a minute, or reply to your Stripe receipt.", true);
     });
+})();
+</script>
+<script data-cro="sprint-20261115-purchase">
+/* sprint-20261115-purchase (lane D). Server-verified GA4 purchase for every ml0x product (Pipeline, Triage,
+   Claude Code Pack). Reads #s= or ?session_id=, asks the fleet verifier (Stripe check server side, success_url
+   must be ml0x.com), then fires purchase once through site-analytics.js's gtag, only after it has run its GA
+   config (so the consent banner and host gate still decide). Dedupe: localStorage per transaction_id, plus the
+   mr_buy_<hash> key of the older site-analytics.js purchase path. Delivery above is not touched. */
+(function () {
+  "use strict";
+  var SITE = "ml0x.com";
+  if ([SITE, "www." + SITE].indexOf(location.hostname) < 0) return;
+  var m = (location.search + "&" + location.hash).match(/(?:session_id=|[#&?]s=)(cs_live_[A-Za-z0-9]+)/);
+  if (!m) return;
+  var id = m[1];
+  function hid(s) { // same hash as site-analytics.js
+    var h1 = 0x811c9dc5, h2 = 0x01000193 ^ 0x5bd1e995;
+    for (var i = 0; i < s.length; i++) {
+      h1 = Math.imul(h1 ^ s.charCodeAt(i), 16777619) >>> 0;
+      h2 = Math.imul(h2 ^ s.charCodeAt(i), 2246822507) >>> 0;
+    }
+    return h1.toString(16) + h2.toString(16);
+  }
+  var key = "cro_purchase_" + hid(id), oldKey = "mr_buy_" + hid(id);
+  function seen() { try { return !!(localStorage.getItem(key) || localStorage.getItem(oldKey)); } catch (e) { return false; } }
+  if (seen()) return;
+  function configured() {
+    var dl = window.dataLayer || [];
+    for (var i = 0; i < dl.length; i++) if (dl[i] && dl[i][0] === "config") return true;
+    return false;
+  }
+  function when(cb) { var n = 0; (function t() { if (configured()) return cb(); if (++n < 1200) setTimeout(t, 500); })(); }
+  fetch("https://fleet-purchase-verify.lipmichal.workers.dev/v?session_id=" + encodeURIComponent(id), { cache: "no-store" })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.paid || d.transaction_id !== id) return;
+      when(function () {
+        if (window.__croPurchaseSent === id || seen()) return;
+        window.__croPurchaseSent = id;
+        try { localStorage.setItem(key, "1"); localStorage.setItem(oldKey, "1"); } catch (e) {}
+        var g = typeof window.gtag === "function" ? window.gtag : function () { (window.dataLayer = window.dataLayer || []).push(arguments); };
+        g("event", "purchase", {
+          transaction_id: d.transaction_id, value: d.value, currency: d.currency || "USD",
+          site: SITE, product: d.product, price: d.value, payment_verified: true, transport_type: "beacon",
+          items: [{ item_id: d.item_id || d.product, item_name: d.product, price: d.value, quantity: 1 }]
+        });
+      });
+    })
+    .catch(function () {});
 })();
 </script>
   <script src="/assets/js/mlx-ui.js" defer></script>
