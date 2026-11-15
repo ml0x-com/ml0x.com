@@ -112,6 +112,18 @@ footer a{color:#6E6E6E}
     <a class="btn" data-cta="hero_buy_pipeline" data-cro="ml0x-pipeline-begin-checkout" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t" rel="noopener">Buy the ml0x Pipeline, $99 once</a>
     <p class="after">Stripe checkout, then a download page. Sixty day refund, and you keep the files.</p>
   </div>
+  <div class="desk" data-cro="sprint-20261115-ml0x-desktop-link">
+    <style>.desk{display:none;margin:4px 0 14px;padding:12px 14px;border:1px solid rgba(127,127,127,.35);border-radius:10px;font-size:15px;line-height:1.5}.desk p{margin:0 0 8px}.desk form{display:flex;flex-wrap:wrap;gap:8px}.desk input[type=email]{flex:1 1 180px;min-height:48px;padding:0 12px;font-size:16px;border:1px solid rgba(127,127,127,.5);border-radius:8px}.desk button{min-height:48px;padding:0 16px;border-radius:999px;border:1px solid currentColor;background:transparent;font-weight:600;font-size:15px;cursor:pointer}@media (max-width:820px){.desk{display:block}}</style>
+    <p><strong>Runs on your laptop or desktop.</strong> The $99 Pipeline is a zip of bash and Python files that you unpack and run on a computer, not on a phone. You can buy here now and download on your computer later, or email yourself the link.</p>
+    <form id="desk-form" novalidate>
+      <label for="desk-email" style="position:absolute;left:-9999px">Email address</label>
+      <input id="desk-email" type="email" autocomplete="email" required placeholder="you@example.com">
+      <input type="text" name="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit" data-cta="mobile_email_link">Email me the link</button>
+    </form>
+    <p id="desk-msg" role="status" style="margin:8px 0 0"></p>
+    <script>(function(){var f=document.getElementById("desk-form");if(!f)return;f.addEventListener("submit",function(e){e.preventDefault();var m=document.getElementById("desk-msg"),v=(document.getElementById("desk-email").value||"").trim(),hp=f.querySelector("[name=hp]").value;if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){m.textContent="Please check the email address.";return;}m.textContent="Sending…";fetch("https://fleet-leads.lipmichal.workers.dev/lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:v,offer_id:"ml0x-desktop-link",offer_name:"ml0x Pipeline link for desktop",page:location.href.slice(0,500),price:"99",hp:hp})}).then(function(r){return r.json().then(function(d){if(!r.ok||!d.ok)throw 0;f.style.display="none";m.textContent="Saved. We will email you the link to this page, so you can buy or download on your computer.";if(typeof gtag==="function"&&!/^(localhost|127\.0\.0\.1)$|\.pages\.dev$|\.workers\.dev$/.test(location.hostname))gtag("event","generate_lead",{site:"ml0x.com",offer_id:"ml0x-desktop-link",currency:"USD",value:0});});}).catch(function(){m.textContent="That did not work. Please try again.";});});})();</script>
+  </div>
 
   <div class="proof">
     That is an unusual thing to put in the first paragraph of a sales page, so here is the reasoning. This offer has been advertised on the ml0x.com homepage since July with no checkout behind it, and the button sent you to a different company's pricing page. Fixing that honestly means saying what the money buys and what it does not. It does not buy the code, which was always yours.
@@ -177,6 +189,7 @@ DEEPSEEK_API_KEY="sk-..." python3 runner.py \
     <p>Payment runs through Stripe. You land on a download page immediately, the archive is yours to keep on every machine you own, and the MIT rights to the code stay yours whatever else happens.</p>
     <a class="btn" id="buy" data-cta="pricing_buy_pipeline" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t" rel="noopener">Buy the ml0x Pipeline, $99</a>
     <p class="after">Stripe checkout opens. Card, Apple Pay or Google Pay. Then a download page.</p>
+    <p class="after" data-cro="sprint-20261115-ml0x-desktop-note">You need a laptop or desktop to run it. On a phone you can pay now and download later on your computer.</p>
     <p class="refund">Sixty day refund, no questions asked, and you keep the files. If you would rather clone the free core and skip this, do that instead, the link is in the archive and on the homepage.</p>
     <p class="refund">Questions before you buy? Email <a href="mailto:lipmichal@gmail.com?subject=ml0x%20Pipeline" data-cta="pricing_question" style="display:inline-flex;align-items:center;min-height:48px">lipmichal@gmail.com</a>.</p>
   </div>
