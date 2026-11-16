@@ -29,9 +29,10 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
   var ITEMS = {
     '28E3cw8My2Bq0tvgjj43S0t': { item_id: 'ml0x_pipeline', item_name: 'ml0x Pipeline', price: 99 },
     'bJe00kbYK4Jyccd8QR43S0s': { item_id: 'ml0x_triage', item_name: 'Training Run Triage', price: 99 },
-    '4gMfZi1k6foc1xz1op43S3I': { item_id: 'ccpack', item_name: 'ml0x Claude Code Workflow Pack', price: 29 } // sprint-20261115-ml0x-ccpack-buy
+    '4gMfZi1k6foc1xz1op43S3I': { item_id: 'ccpack', item_name: 'ml0x Claude Code Workflow Pack', price: 29 }, // sprint-20261115-ml0x-ccpack-buy
+    '28EdRad2Ogsgfopc3343S43': { item_id: 'ml0x_cheatsheets', item_name: 'ML Systems Cheatsheet Pack', price: 9 } // sprint-20261116-px2b
   };
-  var SKU = { pipeline: '28E3cw8My2Bq0tvgjj43S0t', triage: 'bJe00kbYK4Jyccd8QR43S0s', ccpack: '4gMfZi1k6foc1xz1op43S3I' };
+  var SKU = { pipeline: '28E3cw8My2Bq0tvgjj43S0t', triage: 'bJe00kbYK4Jyccd8QR43S0s', ccpack: '4gMfZi1k6foc1xz1op43S3I', cheatsheets: '28EdRad2Ogsgfopc3343S43' };
   function itemFor(href) {
     var m = /^https:\/\/buy\.stripe\.com\/([A-Za-z0-9]+)/.exec(href || '');
     return m && ITEMS.hasOwnProperty(m[1]) ? ITEMS[m[1]] : null;

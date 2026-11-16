@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow"><title>Your ML Systems Cheatsheet Pack</title>
+<style>body{margin:0;font:17px/1.55 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif;color:#1a1a1a;background:#fafaf8}
+.wrap{max-width:640px;margin:0 auto;padding:28px 20px 60px}.brand{font-weight:800;text-decoration:none;color:#1a1a1a;font-size:20px}
+h1{font-size:26px;line-height:1.2;margin:18px 0 10px}.status{padding:12px 14px;border-radius:8px;background:#fff;border:1px solid #ddd}
+.status[data-state=error]{border-color:#c53030;background:#fff5f5}.files{list-style:none;padding:0;margin:16px 0}
+.files a{display:block;padding:14px 16px;border:2px solid #1a1a1a;border-radius:10px;background:#fff;color:inherit;text-decoration:none;font-weight:700;min-height:44px}
+.files a span{display:block;font-weight:400;font-size:14px;color:#555}.note{font-size:15px;color:#555}.ref{font-size:13px;word-break:break-all;color:#777}</style>
+<script src="/site-analytics.js?v=1117px2b" defer></script>
+</head>
+<body data-cro="sprint-20261116-purchase">
+<main class="wrap">
+  <a class="brand" href="/">ml0x</a>
+  <h1>Your ML Systems Cheatsheet Pack</h1>
+  <p class="status" id="status" role="status" aria-live="polite">Checking your payment with Stripe&hellip;</p>
+  <ul class="files" id="files" hidden></ul>
+  <div id="after" hidden>
+    <p class="note">One ZIP: the pack as a Letter-size PDF (one sheet per section), a print-ready HTML file and Markdown. Bookmark this page: the link on it keeps working.</p>
+    <p class="note">Questions or a problem with the file? Email lipmichal@gmail.com with your receipt. 60-day refund, no questions asked, and you keep the files.</p>
+  </div>
+  <p class="ref" id="ref"></p>
+  <p class="note"><a href="/research/ml-cheatsheet.html">Back to the ML cheatsheet</a></p>
+</main>
+<script>
+/* sprint-20261116-purchase (lane PX2B): Stripe returns ?session_id= from the Payment Link. The sprint-delivery Worker checks it
+   with Stripe (paid, live, this product's own link, at least $9) and only then returns the download URL. GA4 purchase fires
+   once per session (deduped in localStorage on the transaction id). */
+(function () {
+  'use strict';
+  var KEY = 'ml0x_cheatsheets_ref', API = 'https://sprint-delivery.lipmichal.workers.dev/claim?sku=ml0x-cheatsheets&session_id=';
+  var $ = function (id) { return document.getElementById(id); };
+  var m = /[?&#]session_id=(cs_live_[A-Za-z0-9]+)/.exec(location.search + '&' + location.hash);
+  var ref = m ? m[1] : null;
+  if (!ref) { try { ref = localStorage.getItem(KEY); } catch (_) {} }
+  function say(text, err) { var el = $('status'); el.textContent = text; el.setAttribute('data-state', err ? 'error' : 'ok'); }
+  if (!ref) { say('This page opens after you pay for the pack. If you paid, email lipmichal@gmail.com with your Stripe receipt and we send the file.', true); return; }
+  $('ref').textContent = 'Purchase reference: ' + ref;
+  function show(j) {
+    var ul = $('files'), li = document.createElement('li'), a = document.createElement('a');
+    a.href = j.download; a.setAttribute('download', j.filename); a.textContent = 'Download the pack (ZIP)';
+    var s = document.createElement('span'); s.textContent = j.filename; a.appendChild(s);
+    li.appendChild(a); ul.appendChild(li); ul.hidden = false; $('after').hidden = false;
+  }
+  function track(r) { (window.mrPurchaseQ = window.mrPurchaseQ || []).push([ref, 'cheatsheets']); }
+  function check(tries) {
+    fetch(API + encodeURIComponent(ref), { cache: 'no-store', credentials: 'omit' })
+      .then(function (r) { return r.json().catch(function () { return null; }); })
+      .then(function (j) {
+        if (j && !j.ok && j.retry && tries < 8) { say('Your payment is coming through. This page checks again by itself in a few seconds.'); setTimeout(function () { check(tries + 1); }, 5000); return; }
+        if (!j || !j.ok || !j.download) { say((j && j.reason) || 'Stripe did not confirm this payment. Email lipmichal@gmail.com with your receipt.', true); return; }
+        try { localStorage.setItem(KEY, ref); } catch (_) {}
+        say('Payment confirmed. Your pack is ready to download.');
+        show(j);
+        if (j.payment_receipt && j.payment_receipt.transaction_id === ref) track(j.payment_receipt);
+      })
+      .catch(function () { say('The download service could not be reached. Reload this page in a minute.', true); });
+  }
+  check(0);
+})();
+</script>
+</body>
+</html>
