@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature, top-p, top-k and min-p calculator for LLM sampling | ml0x</title>
+<meta name="description" content="Compute temperature-scaled softmax probabilities and top-p, top-k, min-p cutoffs from any logits, with the exact Hugging Face filter rules.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/temperature-top-p-calculator/">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/temperature-top-p-calculator/">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/temperature-top-p-calculator/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Temperature, top-p, top-k and min-p calculator, LLM sampling cutoffs from real logits">
+<meta property="og:description" content="Compute temperature-scaled softmax probabilities and top-p, top-k and min-p cutoffs from any logits you enter, with the exact Hugging Face filter rules, the llama.cpp sampler order and a worked 5-token example.">
+<meta property="og:url" content="https://ml0x.com/calculators/temperature-top-p-calculator/">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Temperature, top-p, top-k and min-p calculator, LLM sampling cutoffs from real logits">
+<meta name="twitter:description" content="Compute temperature-scaled softmax probabilities and top-p, top-k and min-p cutoffs from any logits you enter, with the exact Hugging Face filter rules, the llama.cpp sampler order and a worked 5-token example.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<script src="/site-analytics.js?v=1106r3" defer></script>
+<style>
+.samplercalc{max-width:880px;margin:0 auto;padding:8px 0}
+.samplercalc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:14px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.samplercalc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.samplercalc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.samplercalc table{display:block;overflow-x:auto;margin:24px 0}
+@media print{.samplercalc table{display:table;overflow:visible;width:100%}.samplercalc th,.samplercalc td{font-size:9px;white-space:normal;padding:2px 3px}}
+.samplercalc td{white-space:nowrap}
+.samplercalc input[type="text"]{max-width:440px;width:100%;box-sizing:border-box}
+.samplercalc label{font-size:14px;display:block;margin:10px 0 0}
+.samplercalc label,.samplercalc legend,.samplercalc th{text-transform:none}
+.samplercalc th,.samplercalc td{font-size:14px}
+.samplercalc fieldset{border:1px solid var(--line);border-radius:var(--radius);padding:6px 20px 18px;margin:24px 0;background:var(--surface)}
+.samplercalc legend{font-family:var(--font-mono);font-size:14px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--ink-muted);padding:0 6px}
+.samplercalc .readout{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--ink);border-radius:var(--radius-sm);padding:18px 20px;margin:24px 0;min-height:104px;font-variant-numeric:tabular-nums}
+.samplercalc .readout p{margin:0 0 10px}
+.samplercalc .muted-note{font-family:var(--font-mono);font-size:14px;color:var(--ink-faint);max-width:70ch}
+@media (max-width:767px){.samplercalc code{overflow-wrap:anywhere}.samplercalc .muted-note{overflow-wrap:anywhere}.samplercalc caption{white-space:normal;max-width:320px;font-size:12px}}
+.samplercalc .cutrow td{color:var(--ink-faint);text-decoration:line-through}
+.samplercalc .err{color:#8B0000;overflow-wrap:anywhere}
+html{scroll-padding-top:72px}
+.samplercalc code,.samplercalc .muted-note{overflow-wrap:anywhere}
+aside.support-cta a.sct-github small, a.support-cta__btn.sct-github small{font-size:12px}
+</style>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body><a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_triage" href="/triage/">Training Run Triage, $99</a>
+  </div>
+</header>
+
+<main id="main" class="container">
+<article class="samplercalc"><nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Temperature, top-p, top-k and min-p calculator</span></nav>
+<h1>Temperature, top-p, top-k and min-p calculator</h1>
+<div style="border-left:3px solid #1A1A1A;background:rgba(26,26,26,0.04);padding:14px 18px;margin:0 0 24px;border-radius:0 8px 8px 0"><p style="margin:0 0 8px;font-size:15px;line-height:1.65">This page computes what temperature, top-p, top-k and min-p do to a real sampling distribution. Enter any logits, and it applies the Hugging Face transformers filter rules in the order that the library appends its logits processors, temperature first, then top-k, then top-p, then min-p. It also runs the llama.cpp CLI order on the same logits, where temperature is applied last. For every token you see its probability at temperature 1, after temperature and after the filters, which filter removed it, and how the surviving mass renormalizes. On the worked example below, temperature 0.7 with top-p 0.9 keeps 3 of the 5 tokens at 73.69%, 17.66% and 8.65%. All arithmetic runs in your browser.</p><p style="margin:0;font-size:12px;color:#6E6E6E">Updated 17 November 2026</p></div>
+<p>By Michael Lip, <a href="https://zovo.one/">zovo.one</a>. Temperature divides the logits by a value before the softmax. The Hugging Face <code>TemperatureLogitsWarper</code> computes <code>scores_processed = scores / self.temperature</code>. Top-p keeps the smallest set of tokens whose cumulative probability reaches <code>top_p</code> when sorted in descending order, exactly as <code>TopPLogitsWarper</code> sorts the scores in ascending order and removes tokens whose cumulative probability is at or below <code>1 - top_p</code>. Hugging Face top-k keeps each token whose score is greater than or equal to the k-th score, so ties can keep more than k tokens, while llama.cpp keeps exactly k. Min-p keeps every token whose probability is not below <code>min_p</code> times the probability of the leading token. The page does not send your inputs to a server.</p>
+
+<h2>Compute the filtered distribution</h2>
+<div id="sampler-calc-box">
+<fieldset>
+<legend>Sampling parameters</legend>
+<label>Temperature (1 = unchanged, 0 = greedy) <input id="temp" type="text" inputmode="decimal" min="0" step="0.05" value="0.7" max="100"></label>
+<label>top-p (1.0 = disabled) <input id="topp" type="text" inputmode="decimal" min="0" step="0.05" value="0.9" max="1"></label>
+<label>top-k (0 = disabled) <input id="topk" type="text" inputmode="numeric" min="0" step="1" value="0" max="1000"></label>
+<label>min-p (0 = disabled) <input id="minp" type="text" inputmode="decimal" min="0" step="0.01" value="0" max="1"></label>
+</fieldset>
+<fieldset>
+<legend>Your logits (comma or space separated, negative and decimal values allowed)</legend>
+<label>Logits <input id="logitlist" type="text" value="2.0, 1.0, 0.5, 0.0, -1.0" size="40"></label>
+<p class="muted-note" style="margin:6px 0 0">Each value is one candidate token, in the order that you enter them. The worked example from the sources is the 5-token list 2.0, 1.0, 0.5, 0.0, -1.0.</p>
+</fieldset>
+<p><label><input id="temp-last" type="checkbox"> Show the llama.cpp order (top-k, top-p, min-p, temperature last) as the primary result</label></p>
+<p><button id="go" type="button">Compute</button></p>
+</div>
+<div id="sampler-out" class="readout" aria-live="polite"></div>
+
+<h2>Result, Hugging Face order (temperature, top-k, top-p, min-p)</h2>
+<table id="hf-table">
+<caption class="muted-note" style="caption-side:bottom;text-align:left;padding-top:6px">This is the order in which transformers appends its logits processors when all four filters are active.</caption>
+<thead><tr><th>Token</th><th>Raw logit</th><th>p at T=1</th><th>p after temperature</th><th>Final p (renormalized)</th><th>Kept or removed by</th></tr></thead>
+<tbody id="hf-rows"></tbody>
+</table>
+
+<h2>Result, llama.cpp CLI order (top-k, top-p, min-p, temperature last)</h2>
+<table id="lc-table">
+<thead><tr><th>Token</th><th>Raw logit</th><th>p at T=1</th><th>Final p (renormalized)</th><th>Kept or removed by</th></tr></thead>
+<tbody id="lc-rows"></tbody>
+</table>
+<p class="muted-note" id="order-note"></p>
+<noscript><p style="max-width:62ch">The interactive calculator needs JavaScript. The worked example and formula notes below are static and still fully readable without it.</p></noscript>
+
+<h2>The worked example, step by step</h2>
+<p class="muted-note">The default inputs give these exact numbers. The five logits 2.0, 1.0, 0.5, 0.0, -1.0 have a plain softmax of 56.30%, 20.71%, 12.56%, 7.62%, 2.80%. At temperature 0.7 the softmax becomes 70.02%, 16.78%, 8.21%, 4.02%, 0.96%. Top-p 0.90 keeps the smallest prefix whose cumulative mass reaches 0.90: after token 2 the mass is 86.80%, after token 3 it is 95.01%, so 3 tokens survive and renormalize to 73.69%, 17.66% and 8.65%. With top-p 0.9, top-k 0 and min-p 0 the calculator keeps those 3 tokens in the Hugging Face order and 4 in the llama.cpp order, where the cutoffs run on the temperature-1 probabilities first and only then rescale. Set temperature to 1, top-p to 1.0 and min-p to 0.1, and 4 of the 5 tokens survive, at 57.93%, 21.31%, 12.93% and 7.84%, because the leading probability 56.30% sets the cutoff at 5.63% and the weakest token at 2.80% falls below it. In the llama.cpp order the same settings give the same split, because at temperature 1 the position of the temperature step does not change the result.</p>
+
+<h2>What each filter does, in the exact words of the implementations</h2>
+<p>Temperature rescales all logits before the softmax. Hugging Face's <code>TemperatureLogitsWarper</code> computes <code>scores_processed = scores / self.temperature</code>, and the generation default is 1.0. Values below 1 sharpen the distribution toward the leading token, values above 1 flatten it. Top-p keeps the nucleus. <code>TopPLogitsWarper</code> sorts the scores in ascending order, computes the cumulative sum of their softmax and removes every token whose cumulative probability at its sorted position is at or below <code>1 - top_p</code>, which keeps the smallest prefix whose mass reaches <code>top_p</code> and always keeps at least one token. In Hugging Face, top-k keeps each score that is greater than or equal to the k-th highest score, so a tie at the cutoff keeps more than k tokens, and the warper always keeps at least <code>min_tokens_to_keep = 1</code>. Min-p removes each token whose probability is less than <code>min_p</code> times the top probability, and Hugging Face computes <code>scaled_min_p = self.min_p * top_probs</code> against the leading probability. The llama.cpp CLI table documents top-k 40, top-p 0.95 and min-p 0.05, and runs its samplers in the default chain order <code>penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature</code>, with temperature last. The prose of the same README gives top-p 0.9 and min-p 0.1, which differs from its own table. Hugging Face raises an error for temperature 0 and tells you to set <code>do_sample=False</code> for greedy decoding. This page treats temperature 0 as greedy, one token at probability 1, and never divides by zero.</p>
+
+<h2>Ties and exact boundaries</h2>
+<p>Hugging Face sorts with <code>torch.sort(scores, descending=False)</code> and does not pass <code>stable=True</code>, the option that the <a href="https://docs.pytorch.org/docs/2.15/generated/torch.sort.html">PyTorch torch.sort documentation</a> says "guarantees that the order of equivalent elements is preserved". llama.cpp ranks candidates in <a href="https://raw.githubusercontent.com/ggml-org/llama.cpp/c7518dbec59281c430ca5278ab4e60eadbc88b13/src/llama-sampler.cpp">llama-sampler.cpp</a> at c7518db with <code>std::partial_sort</code> and the comparator <code>return a.logit &gt; b.logit;</code>, which sets no order for equal logits. So when tied tokens sit on a cut, the libraries do not promise which one stays, and this page fixes the order. In the Hugging Face table, tied tokens keep their input order in the ascending sort, so at a top-p cut the higher-numbered token stays. In the llama.cpp table, tied tokens rank by input order, so at a top-k or top-p cut the lower-numbered token stays. Hugging Face top-k and both min-p rules keep every tied token, so no tie rule is needed there. A cumulative sum that comes within 0.000000000001 of the top-p value counts as reaching it, so 10 equal logits with top-p 0.9 keep 9 tokens, as in exact arithmetic.</p>
+
+<h2>What this tool does not do</h2>
+<p>This page is a computation aid, not advice. It does not decide what sampling values you should use for your model or your workload. Always verify the cutoffs against your own runtime before you rely on them in production.</p>
+<h2>Formula notes</h2>
+<p>The softmax at temperature T is p_i = exp(z_i / T) / sum_j exp(z_j / T). This page computes every softmax with the maximum logit subtracted first, so logits of 1000 and -1000 cannot overflow, and temperature 0 gives the greedy limit instead of a division by zero. For top-p, sort p in descending order, keep the smallest prefix with cumulative sum at or above <code>top_p</code>, remove the rest and renormalize. A top-p of 1.0 disables the filter, per the llama.cpp help text. For top-k, in the Hugging Face order, keep the scores at or above the k-th score, and in the llama.cpp order, keep exactly k tokens. A top-k of 0 disables it. Min-p keeps tokens with p_i at or above min_p times the maximum p, and a min-p of 0 disables it. The filters compose in the order that the library appends them, and the surviving probabilities renormalize over the kept set. The nucleus idea and its truncation of the "less reliable tail" come from Holtzman et al., <a href="https://arxiv.org/abs/1904.09751">arXiv 1904.09751</a>. Min-p as a dynamic truncation that scales the threshold with the top token's probability comes from Nguyen et al., <a href="https://arxiv.org/abs/2407.01082">arXiv 2407.01082</a>. The softmax that maps logits to probabilities in [0,1] summing to 1 is the standard PyTorch definition.</p>
+<h2>Where these numbers come from</h2>
+<p>All sources were fetched on 2026-11-17. The processor rules come from the Hugging Face transformers <a href="https://raw.githubusercontent.com/huggingface/transformers/fc7532755947ef0e756c5935703d0ca6f0adeda0/src/transformers/generation/logits_process.py">logits_process.py</a> at the pinned commit fc75327 (TemperatureLogitsWarper, TopKLogitsWarper, TopPLogitsWarper, MinPLogitsWarper), and the append order from <a href="https://raw.githubusercontent.com/huggingface/transformers/fc7532755947ef0e756c5935703d0ca6f0adeda0/src/transformers/generation/utils.py">generation/utils.py</a> at the same commit, lines 1616 to 1630. The generation defaults temperature 1.0, top_k 50 and top_p 1.0 come from <a href="https://raw.githubusercontent.com/huggingface/transformers/fc7532755947ef0e756c5935703d0ca6f0adeda0/src/transformers/generation/configuration_utils.py">configuration_utils.py</a> at the same commit. The llama.cpp sampler chain order, its CLI table defaults and its prose disagreement come from the <a href="https://raw.githubusercontent.com/ggml-org/llama.cpp/c7518dbec59281c430ca5278ab4e60eadbc88b13/tools/completion/README.md">llama.cpp completion README</a> at the pinned commit c7518db. The nucleus-sampling definition comes from Holtzman et al., <a href="https://arxiv.org/abs/1904.09751">arXiv 1904.09751</a>, and min-p from Nguyen et al., <a href="https://arxiv.org/abs/2407.01082">arXiv 2407.01082</a>. The results are calculations from your inputs. The arithmetic runs in this browser tab.</p>
+<section class="disclaimer">
+<p>Estimates use standard published formulas. Real results vary with your data, your settings, and your runtime.</p>
+<p>This tool is for planning and teaching. Check a result against your own measurement before you rely on it.</p>
+<p>All computation runs client side. No data leaves your browser.</p>
+</section>
+<p>ml0x publishes free machine learning calculators and explainers. Every calculator result on this page is computed in your browser from the inputs you enter. Nothing is sent to a server. Written by Michael Lip, part of the Zovo Tools network.</p>
+<p>By Michael Lip, <a href="https://zovo.one">zovo.one</a>.</p>
+</article>
+</main>
+
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee · $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_triage" href="/triage/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Training Run Triage, $99 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p><nav class="footer-links-seo" aria-label="ML tools and content"><a href="https://mcp.zovo.one" target="_blank" rel="noopener">MCP servers for Claude</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/tools/learning-rate-finder.html">Learning rate finder</a>
+    <a href="/tools/confusion-matrix-calculator.html">Confusion matrix calculator</a>
+    <a href="/tools/neural-network-playground.html">Neural network playground</a>
+    <a href="/tools/attention-mechanism-visualizer.html">Attention visualizer</a>
+    <a href="/tools/dataset-splitter.html">Dataset splitter</a>
+    <a href="/calculators/kv-cache-size-calculator.html">KV cache calculator</a>
+    <a href="/calculators/llm-memory-calculator.html">LLM memory calculator</a>
+    <a href="/calculators/quantization-calculator.html">Quantization calculator</a>
+    <a href="/guides/">Guides</a>
+    <a href="/guides/gradient-descent-explained.html">Gradient descent</a>
+    <a href="/answers/">Answers</a>
+    <a href="/answers/ml-algorithm-comparison.html">Algorithm comparison</a>
+    <a href="/research/">Research</a>
+    <a href="/research/ml-cheatsheet.html">ML cheat sheet</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+    </div>
+  </div>
+</footer>
+<script src="/assets/offer-events.js" defer></script>
+<script>
+"use strict";
+function parseLogitList(text){
+  /* Locale decimals: exactly one comma between digits with no spaces (for example "1,5" or "-0,5") is a decimal, not a list. */
+  var t=text.replace(/^\s+|\s+$/g,"");
+  if(/^-?\d+,\d+$/.test(t)){return {error:"\""+t+"\" is ambiguous. Write 1.5 for one decimal logit, or 1, 5 for two logits."};}
+  var parts=t.split(/[\s,;]+/).filter(function(p){return p.length>0;});
+  if(parts.length===0){return {error:"Enter at least one logit."};}
+  if(parts.length>64){return {error:"Enter at most 64 logits."};}
+  var vals=[];
+  for(var i=0;i<parts.length;i++){
+    var p=parts[i];
+    if(!/^-?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(p)){return {error:"\""+(p.length>40?p.slice(0,40)+"...":p)+"\" is not a number. Use decimal points, for example 2.0 or -1.1."};}
+    var v=parseFloat(p);
+    if(!isFinite(v)){return {error:"\""+(p.length>40?p.slice(0,40)+"...":p)+"\" is not a finite number."};}
+    if(v>1000||v<-1000){return {error:"Logit "+(p.length>40?p.slice(0,40)+"...":p)+" is outside the supported range of -1000 to 1000."};}
+    vals.push(v===0?0:v); /* -0 becomes 0 */
+  }
+  return {vals:vals};
+}
+function num(id){var s=String(document.getElementById(id).value).trim();if(!/^-?(\d+\.?\d*|\.\d+)([eE][+-]?\d+)?$/.test(s)){return NaN;}var v=parseFloat(s);return isFinite(v)?v:NaN;}
+function numInt(id){var el=document.getElementById(id);var s=el.value.trim();var v=parseFloat(s);if(!isFinite(v)||Math.floor(v)!==v){return NaN;}return v;}
+function softmax(z,T){
+  var m=Math.max.apply(null,z);
+  var ex=z.map(function(x){return Math.exp((x-m)/T);});
+  var s=ex.reduce(function(a,b){return a+b;},0);
+  return ex.map(function(e){return e/s;});
+}
+function fmt(n,dp){return n.toLocaleString("en-US",{maximumFractionDigits:dp===undefined?2:dp});}
+/* A cumulative sum within 1e-12 of the top-p boundary counts as on the boundary, so that rounding in the
+   double-precision sum does not decide the cut (10 equal logits with top-p 0.9 keep 9, as in exact arithmetic). */
+var EPS=1e-12;
+function maskedSoftmax(z,T,kept){
+  /* softmax of z/T over the kept tokens only, with the largest kept logit subtracted first */
+  var m=-Infinity;for(var i=0;i<z.length;i++){if(kept[i]&&z[i]>m){m=z[i];}}
+  var ex=z.map(function(x,i){return kept[i]?Math.exp((x-m)/T):0;});
+  var s=ex.reduce(function(a,b){return a+b;},0);
+  return ex.map(function(e){return e/s;});
+}
+function hfChain(z,T,topk,topp,minp,kept,who){
+  /* Hugging Face transformers order and rules: temperature, top-k, top-p, min-p */
+  var n=z.length,i,r;
+  if(topk>0){
+    /* TopKLogitsWarper removes scores < the k-th highest score, so ties at the cut stay */
+    var k=Math.min(topk,n),s=z.slice().sort(function(a,b){return b-a;}),kth=s[k-1];
+    for(i=0;i<n;i++){if(z[i]<kth){kept[i]=false;who[i]="top-k";}}
+  }
+  if(topp<1){
+    /* TopPLogitsWarper sorts ascending, removes cumulative probability <= 1 - top_p, always keeps the last (largest) token.
+       Tied scores keep their input order in the ascending sort, as torch.sort did on CPU for short inputs. */
+    var q=maskedSoftmax(z,T,kept),asc=z.map(function(v,j){return j;}).sort(function(a,b){return z[a]-z[b]||a-b;}),cum=0;
+    for(r=0;r<n;r++){var t=asc[r];cum+=q[t];if(r<n-1&&kept[t]&&cum<=1-topp+EPS){kept[t]=false;who[t]="top-p";}}
+  }
+  if(minp>0){
+    /* MinPLogitsWarper removes probabilities < min_p times the top probability */
+    var q2=maskedSoftmax(z,T,kept),top=Math.max.apply(null,q2);
+    for(i=0;i<n;i++){if(kept[i]&&q2[i]<minp*top){kept[i]=false;who[i]="min-p";}}
+  }
+}
+function lcChain(z,topk,topp,minp,kept,who){
+  /* llama.cpp CLI default order: top-k, top-p, min-p on the raw logits, temperature afterwards.
+     Tied logits are ranked by input order (lower token number first). */
+  var n=z.length,r;
+  var cand=z.map(function(v,j){return j;}).sort(function(a,b){return z[b]-z[a]||a-b;});
+  function cut(from,killer){for(var x=from;x<cand.length;x++){kept[cand[x]]=false;who[cand[x]]=killer;}cand=cand.slice(0,from);}
+  if(topk>0&&topk<n){cut(topk,"top-k");}
+  if(topp<1){
+    var m=z[cand[0]],e=cand.map(function(t){return Math.exp(z[t]-m);}),s=e.reduce(function(a,b){return a+b;},0),cum=0,last=cand.length;
+    for(r=0;r<cand.length;r++){cum+=e[r]/s;if(cum>=topp-EPS){last=r+1;break;}}
+    cut(last,"top-p");
+  }
+  if(minp>0){
+    /* keep logit >= max logit + ln(min_p), that is p_i >= min_p times p_max */
+    var ml=z[cand[0]]+Math.log(minp),keep=0;
+    while(keep<cand.length&&(keep===0||z[cand[keep]]>=ml)){keep++;}
+    cut(keep,"min-p");
+  }
+}
+function runChain(logits,T,topk,topp,minp,tempLast){
+  /* temperature first (Hugging Face) or last (llama.cpp). T=0 is greedy, never divide by zero. */
+  var n=logits.length,i;
+  var greedy=(T<=0);
+  var p1=softmax(logits,1);
+  var work=(!tempLast&&!greedy)?softmax(logits,T):p1.slice();
+  var kept=[],who=[];
+  for(i=0;i<n;i++){kept.push(true);who.push("");}
+  if(tempLast){lcChain(logits,topk,topp,minp,kept,who);}
+  else if(!greedy){hfChain(logits,T,topk,topp,minp,kept,who);}
+  if(greedy){
+    /* greedy: the first token with the highest remaining logit stays at probability 1 */
+    var gi=-1;for(i=0;i<n;i++){if(kept[i]&&(gi<0||logits[i]>logits[gi])){gi=i;}}
+    for(i=0;i<n;i++){if(kept[i]&&i!==gi){kept[i]=false;who[i]="temperature 0 (greedy)";}}
+  }
+  var fin=greedy?kept.map(function(k){return k?1:0;}):maskedSoftmax(logits,T,kept);
+  var out=[];
+  for(i=0;i<n;i++){out.push({i:i,logit:logits[i],p1:p1[i],pwork:work[i],kept:kept[i],who:who[i],final:kept[i]?fin[i]:work[i]});}
+  return out;
+}
+function renderTable(tbodyId,rows,showTempCol){
+  var tb=document.getElementById(tbodyId),html="";
+  for(var r=0;r<rows.length;r++){
+    var d=rows[r];
+    html+="<tr"+(d.kept?"":" class=\"cutrow\"")+"><td>Token "+(d.i+1)+"</td><td>"+fmt(d.logit,4)+"</td>"+(showTempCol?"<td>"+(d.p1*100).toFixed(2)+"%</td><td>"+(d.pwork*100).toFixed(2)+"%</td>":"<td>"+(d.p1*100).toFixed(2)+"%</td>")+"<td>"+(d.kept?(d.final*100).toFixed(2)+"%":(d.pwork*100).toFixed(2)+"% removed")+"</td><td>"+(d.kept?"kept":"removed by "+d.who)+"</td></tr>";
+  }
+  tb.innerHTML=html;
+}
+function run(){
+  var out=document.getElementById("sampler-out");if(!out){return;}
+  var temp=num("temp"),topp=num("topp"),topk=num("topk"),minp=num("minp");
+  var parsed=parseLogitList(document.getElementById("logitlist").value);
+  if(parsed.error){out.innerHTML="<p class=\"err\">"+parsed.error+"</p>";document.getElementById("hf-rows").innerHTML="";document.getElementById("lc-rows").innerHTML="";document.getElementById("order-note").textContent="";return;}
+  if(!(isFinite(temp)&&isFinite(topp)&&isFinite(topk)&&isFinite(minp))){out.innerHTML="<p class=\"err\">Enter temperature, top-p, top-k and min-p as plain numbers with a decimal point, for example 0.7.</p>";document.getElementById("hf-rows").innerHTML="";document.getElementById("lc-rows").innerHTML="";return;}
+  if(topk!==Math.floor(topk)){out.innerHTML="<p class=\"err\">top-k must be a whole number, for example 0, 40 or 50.</p>";document.getElementById("hf-rows").innerHTML="";document.getElementById("lc-rows").innerHTML="";return;}
+  if(temp<0||topp<0||topk<0||minp<0){out.innerHTML="<p class=\"err\">No parameter may be negative. Use 0 to disable top-k or min-p, and 1.0 to disable top-p.</p>";document.getElementById("hf-rows").innerHTML="";document.getElementById("lc-rows").innerHTML="";return;}
+  if(temp>100||topk>1000||topp>1||minp>1){out.innerHTML="<p class=\"err\">A value is above the maximum of its field. Temperature is at most 100, top-p and min-p are at most 1, top-k is at most 1000.</p>";document.getElementById("hf-rows").innerHTML="";document.getElementById("lc-rows").innerHTML="";return;}
+  var logits=parsed.vals;
+  var hf=runChain(logits,temp,topk,topp,minp,false);
+  var lc=runChain(logits,temp,topk,topp,minp,true);
+  var tempLast=document.getElementById("temp-last").checked;
+  var primary=tempLast?lc:hf, secondary=tempLast?hf:lc;
+  var nKeptHf=hf.filter(function(d){return d.kept;}).length;
+  var nKeptLc=lc.filter(function(d){return d.kept;}).length;
+  var same=(nKeptHf===nKeptLc)&&hf.every(function(d,i){return d.kept===lc[i].kept;});
+  renderTable("hf-rows",hf,true);
+  renderTable("lc-rows",lc,false);
+  var leadHf=primary.filter(function(d){return d.kept;}).sort(function(a,b){return b.final-a.final||a.i-b.i;})[0]||primary[0];
+  var msg="<p>"+nKeptHf+" of "+logits.length+" tokens survive in the Hugging Face order, "+nKeptLc+" of "+logits.length+" in the llama.cpp order.</p>";
+  if(leadHf.kept){msg+="<p>Token "+(leadHf.i+1)+" leads with <strong>"+(leadHf.final*100).toFixed(2)+"%</strong> after the filters (raw softmax share "+(leadHf.p1*100).toFixed(2)+"%).</p>";}
+  msg+=(temp<=0?"<p>Temperature 0 is greedy. Only the highest logit survives, at probability 100%. If several tokens tie for the highest logit, the first of them stays.</p>":(temp===1?"<p>Temperature 1 leaves the logits unchanged.</p>":"<p>Temperature "+fmt(temp,6)+" divides every logit before the softmax.</p>"));
+  msg+=(topp<1?"<p>top-p "+fmt(topp,6)+" keeps the smallest set of the most likely remaining tokens whose mass reaches "+fmt(topp*100,4)+"%.</p>":"<p>top-p is disabled at 1.0.</p>");
+  msg+=(topk>0?(topk>=logits.length?"<p>top-k "+fmt(topk,0)+" is not smaller than the number of logits ("+logits.length+"), so top-k removes no token.</p>":"<p>top-k "+fmt(topk,0)+" keeps every token whose score is at or above the score in place "+fmt(topk,0)+" in the Hugging Face order, so ties can keep more than "+fmt(topk,0)+" tokens. The llama.cpp order keeps exactly "+fmt(topk,0)+" tokens.</p>"):"<p>top-k is disabled at 0.</p>");
+  msg+=(minp>0?"<p>min-p keeps tokens with probability at least "+fmt(minp,6)+" times the leading token's probability.</p>":"<p>min-p is disabled at 0.</p>");
+  msg+=(same?"<p class=\"muted-note\">On these inputs both orders keep the same token set, so the two tables agree.</p>":"<p class=\"muted-note\">On these inputs the two orders keep different token sets.</p>");
+  out.innerHTML=msg;
+  document.getElementById("order-note").textContent="The llama.cpp CLI default sampler chain is penalties;dry;top_n_sigma;top_k;typ_p;top_p;min_p;xtc;temperature, so temperature is applied after the cutoff filters. Hugging Face appends its warpers in the order temperature, top-k, top-p, min-p.";
+}
+document.getElementById("go").addEventListener("click",run);
+["temp","topp","topk","minp","logitlist"].forEach(function(id){document.getElementById(id).addEventListener("change",run);});
+document.getElementById("temp-last").addEventListener("change",run);
+run();
+if(typeof window!=="undefined"){window.addEventListener("pageshow",run);}
+</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Article","headline":"Temperature, top-p, top-k and min-p calculator, LLM sampling cutoffs from real logits","description":"Compute temperature-scaled softmax probabilities and top-p, top-k, min-p cutoffs from any logits, with the exact Hugging Face filter rules.","author":{"@id":"https://ml0x.com/#michael-lip"},"datePublished":"2026-11-17","dateModified":"2026-11-17","publisher":{"@id":"https://ml0x.com/#organization"},"@id":"https://ml0x.com/calculators/temperature-top-p-calculator/#article"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Temperature, top-p, top-k and min-p calculator","item":"https://ml0x.com/calculators/temperature-top-p-calculator/"}],"@id":"https://ml0x.com/calculators/temperature-top-p-calculator/#breadcrumb"},{"@type":"Dataset","@id":"https://ml0x.com/calculators/temperature-top-p-calculator/#dataset","name":"LLM sampling distribution calculator","description":"Temperature, top-p, top-k and min-p filter computation over user-entered logits, following the Hugging Face transformers logits processors and the llama.cpp sampler chain order.","creator":{"@id":"https://ml0x.com/#michael-lip"},"isAccessibleForFree":true},{"@type":"Person","@id":"https://ml0x.com/#michael-lip","name":"Michael Lip","url":"https://ml0x.com/about.html","description":"Builds open-source ML tools and developer utilities at zovo.one","sameAs":["https://zovo.one/","https://github.com/theluckystrike"]},{"@type":"Organization","@id":"https://ml0x.com/#organization","name":"ml0x","url":"https://ml0x.com/"}]}</script>
+  <script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>
