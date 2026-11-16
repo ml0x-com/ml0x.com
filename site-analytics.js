@@ -351,7 +351,11 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     }
     if (STRIPE.test(href) || a.hasAttribute('data-mr-checkout')) {
       var it = itemFor(href), plan = it ? it.item_id : planOf(a, href), cp = { plan: plan, currency: 'USD', placement: placement(a), cta_id: clip(a.getAttribute('data-cta') || '') };
-      if (it) { cp.value = it.price; cp.items = [ext(it, { quantity: 1 })]; cp.site = 'ml0x.com'; cp.product = it.item_name; cp.price = it.price; } else if (VALUE[plan]) cp.value = VALUE[plan];
+      if (it) { cp.value = it.price; cp.items = [ext(it, { quantity: 1 })]; cp.site = 'ml0x.com'; cp.product = it.item_name; cp.price = it.price; } else { // sprint-20261116-direct: unknown links still send site, product, price, value, items
+        cp.site = 'ml0x.com'; cp.product = clip(a.getAttribute('data-product') || plan);
+        var pr = Number(a.getAttribute('data-price')) || VALUE[plan] || 0;
+        if (pr) { cp.price = pr; cp.value = pr; cp.items = [{ item_id: cp.product, item_name: cp.product, price: pr, quantity: 1 }]; }
+      }
       track('cta_click', { cta_id: cp.cta_id, cta_target: 'stripe', placement: cp.placement, page_path: location.pathname, link_text: clip(a.textContent) });
       // Same-tab click: hold the navigation until gtag confirms begin_checkout (max 1.2 s), so a click right after Accept is not lost.
       if (booted && plain && a.tagName === 'A' && !e.defaultPrevented && (!a.target || a.target === '_self')) {
