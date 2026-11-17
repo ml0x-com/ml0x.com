@@ -344,10 +344,11 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     if (a.origin === location.origin && /^\/(pipeline|triage)\/?$/.test(a.pathname) && !/^\/(pipeline|triage)\//.test(location.pathname)) {
       // gtag holds normal events for about 5 s, so a same-site click hands them to the next page (playbook ch. 09).
       var held = (w.__mrRecent || []).filter(function (r) { return Date.now() - r.t < 6000; });
-      held.push({ n: 'cta_click', p: { cta_target: a.pathname.replace(/\//g, ''), cta_id: clip(a.getAttribute('data-cta') || ''), placement: placement(a),
+      // sprint-20261117-c-navclick: a link to the /pipeline/ or /triage/ page is not a checkout -> nav_click (cta_click = Stripe only).
+      held.push({ n: 'nav_click', p: { cta_target: a.pathname.replace(/\//g, ''), cta_id: clip(a.getAttribute('data-cta') || ''), placement: placement(a),
         page_path: location.pathname, link_text: clip(a.textContent) } });
       try { if (plain && a.target !== '_blank') { sessionStorage.setItem('mr_handoff_v1', JSON.stringify(held)); return; } } catch (err) {}
-      track('cta_click', held[held.length - 1].p);
+      track('nav_click', held[held.length - 1].p);
       return;
     }
     if (STRIPE.test(href) || a.hasAttribute('data-mr-checkout')) {
@@ -372,7 +373,7 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
       track('case_cta_click', { cta_target: a.hash.slice(1), placement: placement(a), link_text: clip(a.textContent), link_url: clip(href) });
       return;
     }
-    if (HOME && a.getAttribute('data-track')) track('cta_click', { placement: placement(a) });
+    if (HOME && a.getAttribute('data-track')) track('nav_click', { placement: placement(a) });
   }
   d.addEventListener('click', function (e) { try { onClick(e); } catch (err) {} }, true);
   (function () { // deliver events handed over by the previous page
