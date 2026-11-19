@@ -376,6 +376,19 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     if (HOME && a.getAttribute('data-track')) track('nav_click', { placement: placement(a) });
   }
   d.addEventListener('click', function (e) { try { onClick(e); } catch (err) {} }, true);
+  // Sprint 2026-11-19 lane S: footer GitHub Sponsors line. sponsor_click + button_click with site and the
+  // line's data-cro id as placement. Same consent gate as every other event (track() queues until granted).
+  function s7Sponsor(e) {
+    var t = e.target;
+    if (t && t.nodeType !== 1) t = t.parentElement;
+    var a = t && t.closest ? t.closest('[data-cro^="sprint-20261119-s-"] a[href]') : null;
+    if (!a) return;
+    var pl = clip(a.closest('[data-cro]').getAttribute('data-cro'));
+    track('sponsor_click', { site: location.hostname, placement: pl, link_url: clip(a.href) });
+    track('button_click', { site: location.hostname, placement: pl });
+  }
+  d.addEventListener('click', function (e) { try { s7Sponsor(e); } catch (err) {} }, true);
+  d.addEventListener('auxclick', function (e) { try { if (e.button === 1) s7Sponsor(e); } catch (err) {} }, true);
   (function () { // deliver events handed over by the previous page
     var raw = null;
     try { raw = sessionStorage.getItem('mr_handoff_v1'); sessionStorage.removeItem('mr_handoff_v1'); } catch (err) {}
