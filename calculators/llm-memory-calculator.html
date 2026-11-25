@@ -113,6 +113,16 @@
 </div></div>
 <table><thead><tr><th>Line</th><th>Memory</th><th>How the number is computed</th></tr></thead><tbody id="out"></tbody></table>
 </div>
+<aside class="postresult-pro" data-cro="lane8-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+  <div style="flex:1 1 280px;">
+    <p style="margin:0 0 4px;font-weight:700;font-size:15px;">Running this workload in production?</p>
+    <p style="margin:0;font-size:14px;color:var(--ink-muted,#52525b);">Diagnose OOMs, loss spikes, and throughput bottlenecks offline with Training Run Triage, or ship reproducible runs with ml0x Pipeline.</p>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+    <a data-cta="postresult_triage" href="/triage/" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none;">Training Run Triage · $99</a>
+    <a data-cta="postresult_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline · $99</a>
+  </div>
+</aside>
 <p class="note">For a model outside the list, pick Custom and copy <code>num_hidden_layers</code>, <code>num_key_value_heads</code> and <code>head_dim</code> from its config.json. When <code>head_dim</code> is not published, divide <code>hidden_size</code> by <code>num_attention_heads</code>. Qwen2.5 7B, for instance, publishes <code>"hidden_size": 3584</code> alongside its 28 attention heads, and the head dimension follows from that division.</p>
 <p class="disclaimer">All computation runs client side. Nothing you enter leaves your browser.</p>
 </section>
