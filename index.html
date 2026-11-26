@@ -49,6 +49,7 @@ html { scroll-behavior: smooth; }
   [data-r="pipeline-row"] { flex-wrap: wrap !important; gap: 6px !important; }
   [data-r="pipeline-row"] > span { display: none !important; }
   [data-r="upstream-chips"] { flex-direction: column !important; gap: 8px !important; }
+  [data-r="tier-ladder"] { grid-template-columns: 1fr !important; }
 }
 @media (min-width: 768px) and (max-width: 1023px) {
   [data-r="hero-grid"] { grid-template-columns: 1fr !important; gap: 48px !important; }
@@ -112,12 +113,46 @@ img,svg{max-width:100%;height:auto}
 <!-- Urgency hook -->
 <p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6E6E; margin: 0 0 28px; line-height: 1.7; padding: 10px 14px; background: rgba(26,26,26,0.04); border-radius: 8px; border-left: 2px solid #1A1A1A;">My token bill says my development runs burned over 100 million tokens of inference. The budget layer in this system exists because I am the one paying that bill.</p>
 <h1 data-r="hero-h1" style="font-family: 'JetBrains Mono', monospace; font-size: clamp(40px, 5.5vw, 60px); font-weight: 700; line-height: 1.06; letter-spacing: -3px; color: #1A1A1A; margin: 0 0 24px;">Stop<br/>babysitting<br/>your agents.</h1>
-<p style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; color: #6E6E6E; margin: 0 0 36px; max-width: 400px;">A 4-stage pipeline around Claude Code that runs analyze, implement, test and review. Budget limits and quality gates run before you see anything.</p>
-<div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-<a class="h8507f75" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t" rel="nofollow" data-cta="hero_get_pipeline" data-mr-placement="hero" data-cro="sprint-20261117-c-ml0x-home" style="min-height:48px;display:inline-flex;align-items:center;box-sizing:border-box;font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #fff; background: #1A1A1A; padding: 12px 28px; border-radius: 980px; text-decoration: none; transition: background 0.2s;">Get the full system, $99</a>
-<a class="h5b14ad9" data-cta="hero_clone_core" data-mr-placement="hero" href="https://github.com/theluckystrike/100xagenticdev" style="min-height:48px;display:inline-flex;align-items:center;box-sizing:border-box;font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: #6a6a6a; text-decoration: none; padding: 12px 4px; transition: color 0.2s;" target="_blank" rel="noopener">Clone the free core</a>
+<p style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; color: #6E6E6E; margin: 0 0 22px; max-width: 440px;">A 4-stage pipeline around Claude Code that runs analyze, implement, test and review. Start with the $9 ML sheets, add the $29 Claude Code guard hooks, or get the full $99 pipeline.</p>
+<p data-cro="sprint9-m9a-disclosure" style="font-family: 'Inter', sans-serif; font-size: 12px; line-height: 1.5; color: #4A4A4A; background: #F2F2F0; border: 1px solid #E8E8E6; border-radius: 8px; padding: 8px 12px; margin: 0 0 14px;">Secure checkout by Stripe — your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+<div data-r="tier-ladder" data-cro="sprint9-m9a-ladder" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 12px;">
+  <div style="background: #fff; border: 1px solid #D8D8D6; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6E6E; text-transform: uppercase; letter-spacing: 0.5px;">Reference</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1A1A1A; margin: 2px 0 4px;">$9</div>
+      <div style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: #1A1A1A; margin-bottom: 4px;">ML Systems Cheatsheet Pack</div>
+      <div style="font-family: 'Inter', sans-serif; font-size: 11.5px; color: #555; line-height: 1.4; margin-bottom: 10px;">12 print-ready sheets (KV cache, LLM memory, quant, metrics). PDF, HTML &amp; Markdown.</div>
+    </div>
+    <a class="h8507f75" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s9_m9_ml0x_home_cs" rel="nofollow" data-cta="hero_get_cheatsheets" data-mr-placement="hero" data-cro="sprint9-m9a-home-cs" style="min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: #fff; background: #1A1A1A; padding: 8px 12px; border-radius: 980px; text-decoration: none; text-align: center;">Get Pack, $9</a>
+  </div>
+  <div style="background: #fff; border: 2px solid #1A1A1A; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #1A1A1A; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Most Popular</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1A1A1A; margin: 2px 0 4px;">$29</div>
+      <div style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: #1A1A1A; margin-bottom: 4px;">Claude Code Workflow Pack</div>
+      <div style="font-family: 'Inter', sans-serif; font-size: 11.5px; color: #555; line-height: 1.4; margin-bottom: 10px;">5 CLAUDE.md templates, 5 guard hooks &amp; 8 slash commands. MIT plain files.</div>
+    </div>
+    <a class="h8507f75" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s9_m9_ml0x_home_cc" rel="nofollow" data-cta="hero_get_ccpack" data-mr-placement="hero" data-cro="sprint9-m9a-home-cc" style="min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: #fff; background: #1A1A1A; padding: 8px 12px; border-radius: 980px; text-decoration: none; text-align: center;">Get Pack, $29</a>
+  </div>
+  <div style="background: #fff; border: 1px solid #D8D8D6; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
+    <div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E6E6E; text-transform: uppercase; letter-spacing: 0.5px;">Full System</div>
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; color: #1A1A1A; margin: 2px 0 4px;">$99</div>
+      <div style="font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; color: #1A1A1A; margin-bottom: 4px;">ml0x Agent Pipeline</div>
+      <div style="font-family: 'Inter', sans-serif; font-size: 11.5px; color: #555; line-height: 1.4; margin-bottom: 10px;">Pinned 100x CLI, parallel runner, NASA P10 gates &amp; 13 research docs.</div>
+    </div>
+    <a class="h8507f75" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s9_m9_ml0x_home_pl" rel="nofollow" data-cta="hero_get_pipeline" data-mr-placement="hero" data-cro="sprint-20261117-c-ml0x-home" style="min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; color: #fff; background: #1A1A1A; padding: 8px 12px; border-radius: 980px; text-decoration: none; text-align: center;">Get System, $99</a>
+  </div>
 </div>
-<p data-r="hero-offer" style="font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; color: #1A1A1A; margin: 18px 0 0; max-width: 420px;">The core code is free and MIT. The $99 version adds a pinned release, the configuration, the runbook and the written research. 60-day refund.</p>
+<details style="margin: 0 0 14px; font-family: 'Inter', sans-serif; font-size: 13px; color: #4A4A4A; background: #fff; border: 1px solid #E8E8E6; border-radius: 8px; padding: 8px 12px;">
+  <summary style="cursor: pointer; font-weight: 600; color: #1A1A1A;">Preview what is inside each pack</summary>
+  <ul style="margin: 8px 0 4px; padding-left: 18px; line-height: 1.55;">
+    <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size sheets (KV cache GQA formula, LLM VRAM &amp; quantization ladder, confusion matrix/MCC, overfitting checklist, scikit-learn snippets) as PDF, HTML &amp; Markdown.</li>
+    <li><strong>$29 Claude Code Workflow Pack:</strong> <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>cost_guard.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/" style="text-decoration: underline;">Full file list</a>.</li>
+    <li><strong>$99 ml0x Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/" style="text-decoration: underline;">Full breakdown</a>.</li>
+  </ul>
+</details>
+<p data-r="hero-offer" style="font-family: 'Inter', sans-serif; font-size: 13px; line-height: 1.55; color: #6E6E6E; margin: 0;">Prefer to inspect the MIT core first? <a class="h5b14ad9" data-cta="hero_clone_core" data-mr-placement="hero" href="https://github.com/theluckystrike/100xagenticdev" style="color: #4A4A4A; text-decoration: underline; text-underline-offset: 3px;" target="_blank" rel="noopener">Clone the free core on GitHub</a>.</p>
 </div>
 <!-- Terminal -->
 <div style="background: #111; border-radius: 12px; overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,0.12);">
