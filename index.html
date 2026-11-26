@@ -36,8 +36,11 @@ html { scroll-behavior: smooth; }
 @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
 
 @media (max-width: 767px) {
-  [data-r="hero-grid"] { grid-template-columns: 1fr !important; gap: 48px !important; padding: 48px 24px 0 !important; min-height: auto !important; }
-  [data-r="hero-h1"] { font-size: 40px !important; letter-spacing: -2px !important; }
+  [data-r="hero-grid"] { grid-template-columns: 1fr !important; gap: 36px !important; padding: 20px 20px 0 !important; min-height: auto !important; }
+  [data-r="hero-hook"] { margin-bottom: 14px !important; padding: 8px 12px !important; font-size: 11px !important; line-height: 1.5 !important; }
+  [data-r="hero-h1"] { font-size: 36px !important; letter-spacing: -1.8px !important; margin-bottom: 14px !important; }
+  [data-r="hero-sub"] { font-size: 14.5px !important; line-height: 1.5 !important; margin-bottom: 12px !important; }
+  [data-cro="sprint9-m9a-disclosure"] { margin-bottom: 10px !important; padding: 6px 10px !important; font-size: 11.5px !important; line-height: 1.4 !important; }
   [data-r="stats-row"] { grid-template-columns: repeat(3, 1fr) !important; gap: 24px !important; }
   [data-r="products-grid"] { grid-template-columns: repeat(2, 1fr) !important; }
   [data-r="products-grid"] > a:last-child:nth-child(odd) { grid-column: span 2 !important; }
@@ -83,7 +86,7 @@ img,svg{max-width:100%;height:auto}
 .hee81a6f:hover{background: #E8E8E6}
 .h57e0e31:hover{color: #6a6a6a}
 </style>
-<script src="/site-analytics.js?v=1119s" defer></script>
+<script src="/site-analytics.js?v=1126m" defer></script>
 <style id="support-cta-css">.support-cta { background: var(--surface-2, #F2F2F0); border: 1px solid var(--line, #E8E8E6); border-left: 3px solid var(--ink, #1A1A1A); border-radius: var(--radius-sm, 8px); padding: 16px 20px; margin: 24px 0; color: var(--ink-2, #4A4A4A); font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); font-size: 14px; line-height: 1.6; } .support-cta p { margin: 0 0 12px; color: var(--ink-2, #4A4A4A); font-size: 14px; } .support-cta .support-cta__title { font-weight: 600; font-size: 16px; color: var(--ink, #1A1A1A); margin: 0 0 4px; letter-spacing: -0.2px; } .support-cta__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; margin: 0; } .support-cta__btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 20px; box-sizing: border-box; background: var(--ink, #1A1A1A); color: #fff; border: 1px solid var(--ink, #1A1A1A); border-radius: var(--radius-pill, 980px); font-family: var(--font-body, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif); font-size: 14px; font-weight: 500; line-height: 1.2; text-decoration: none; } .support-cta__btn:hover { background: #333; border-color: #333; color: #fff; } .support-cta__btn--alt { background: var(--surface, #FFFFFF); color: var(--ink, #1A1A1A); border-color: var(--line-strong, #D8D8D6); } .support-cta__btn--alt:hover { background: var(--surface, #FFFFFF); color: var(--ink, #1A1A1A); border-color: var(--ink, #1A1A1A); } .support-cta a:focus-visible { outline: 2px solid var(--ink, #1A1A1A); outline-offset: 3px; } .support-cta__why { font-size: 14px; color: var(--ink, #1A1A1A); text-decoration: underline; text-underline-offset: 3px; } .support-cta__fine { font-size: 12px; color: var(--ink-faint, #6E6E6E); margin: 10px 0 0 !important; } .support-cta-wrap { max-width: var(--wrap, 1080px); margin: 64px auto 0; padding: 0 var(--pad-x, 40px); box-sizing: border-box; } .support-cta-wrap .support-cta { margin: 0; } @media (max-width: 767px) { .support-cta-wrap { padding: 0 20px; } }</style>
 <link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
 <script src="/assets/support-v3.js?v=3"></script>
@@ -111,9 +114,9 @@ img,svg{max-width:100%;height:auto}
 <div data-r="hero-grid" style="max-width: 1080px; margin: 0 auto; padding: 64px 40px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; min-height: calc(100vh - 52px);">
 <div>
 <!-- Urgency hook -->
-<p style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6E6E; margin: 0 0 28px; line-height: 1.7; padding: 10px 14px; background: rgba(26,26,26,0.04); border-radius: 8px; border-left: 2px solid #1A1A1A;">My token bill says my development runs burned over 100 million tokens of inference. The budget layer in this system exists because I am the one paying that bill.</p>
+<p data-r="hero-hook" style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #6E6E6E; margin: 0 0 28px; line-height: 1.7; padding: 10px 14px; background: rgba(26,26,26,0.04); border-radius: 8px; border-left: 2px solid #1A1A1A;">My token bill says my development runs burned over 100 million tokens of inference. The budget layer in this system exists because I am the one paying that bill.</p>
 <h1 data-r="hero-h1" style="font-family: 'JetBrains Mono', monospace; font-size: clamp(40px, 5.5vw, 60px); font-weight: 700; line-height: 1.06; letter-spacing: -3px; color: #1A1A1A; margin: 0 0 24px;">Stop<br/>babysitting<br/>your agents.</h1>
-<p style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; color: #6E6E6E; margin: 0 0 22px; max-width: 440px;">A 4-stage pipeline around Claude Code that runs analyze, implement, test and review. Start with the $9 ML sheets, add the $29 Claude Code guard hooks, or get the full $99 pipeline.</p>
+<p data-r="hero-sub" style="font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.7; color: #6E6E6E; margin: 0 0 22px; max-width: 440px;">A 4-stage pipeline around Claude Code that runs analyze, implement, test and review. Start with the $9 ML sheets, add the $29 Claude Code guard hooks, or get the full $99 pipeline.</p>
 <p data-cro="sprint9-m9a-disclosure" style="font-family: 'Inter', sans-serif; font-size: 12px; line-height: 1.5; color: #4A4A4A; background: #F2F2F0; border: 1px solid #E8E8E6; border-radius: 8px; padding: 8px 12px; margin: 0 0 14px;">Secure checkout by Stripe — your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
 <div data-r="tier-ladder" data-cro="sprint9-m9a-ladder" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 0 0 12px;">
   <div style="background: #fff; border: 1px solid #D8D8D6; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;">
