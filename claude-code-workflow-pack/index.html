@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Claude Code Workflow Pack: CLAUDE.md Templates, Safety Hooks, 8 Slash Commands | ml0x</title>
-<meta name="description" content="A Claude Code workflow pack: 5 CLAUDE.md templates, 5 hooks (bash guard, protected files, per-session cost brake, auto-format, notifications) and 8 slash commands (/plan, /review, /test-fix, /commit, /pr, /handoff). Plain files, MIT. $29 once.">
+<title>Claude Code Workflow Pack &mdash; CLAUDE.md Templates, Safety Hooks, 8 Slash Commands | ml0x</title>
+<meta name="description" content="A Claude Code workflow pack with 5 CLAUDE.md templates, 5 hooks (bash guard, protected files, per-session cost brake, auto-format, notifications) and 8 slash commands (/plan, /review, /test-fix, /commit, /pr, /handoff). Plain files, MIT. $29 once.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://ml0x.com/claude-code-workflow-pack/">
 <meta property="og:type" content="product">
-<meta property="og:title" content="Claude Code Workflow Pack: CLAUDE.md templates, hooks and slash commands">
+<meta property="og:title" content="Claude Code Workflow Pack &mdash; CLAUDE.md templates, hooks and slash commands">
 <meta property="og:description" content="5 CLAUDE.md templates, 5 guard hooks and 8 slash commands for Claude Code. Plain files, MIT. $29 once.">
 <meta property="og:url" content="https://ml0x.com/claude-code-workflow-pack/">
 <meta property="og:site_name" content="ml0x">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Claude Code Workflow Pack: CLAUDE.md templates, hooks and slash commands">
+<meta name="twitter:title" content="Claude Code Workflow Pack &mdash; CLAUDE.md templates, hooks and slash commands">
 <meta name="twitter:description" content="5 CLAUDE.md templates, 5 guard hooks and 8 slash commands for Claude Code. $29 once.">
 <meta name="author" content="Michael Lip">
 <script type="application/ld+json">
@@ -120,9 +120,9 @@ details summary{cursor:pointer;font-weight:600}
     <details style="margin-top:10px;font-size:13px;color:#4A4A4A">
       <summary>Preview all 18 files in the $29 ZIP (plus $9 ML Cheatsheet option)</summary>
       <ul style="margin:6px 0 0;padding-left:18px;line-height:1.5">
-        <li><strong>5 CLAUDE.md templates:</strong> global, base, Python/PyTorch ML, TypeScript web, and monorepo subdir.</li>
-        <li><strong>5 hooks (64 tests):</strong> <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>cost_guard.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code>.</li>
-        <li><strong>8 slash commands:</strong> <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/explain-error</code>, <code>/handoff</code>, <code>/secrets-check</code>.</li>
+        <li><strong>5 CLAUDE.md templates</strong> &mdash; global, base, Python/PyTorch ML, TypeScript web, and monorepo subdir.</li>
+        <li><strong>5 hooks (64 tests)</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>cost_guard.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code>.</li>
+        <li><strong>8 slash commands</strong> &mdash; <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/explain-error</code>, <code>/handoff</code>, <code>/secrets-check</code>.</li>
         <li><strong>Just want offline ML reference sheets?</strong> <a href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s9_w2_ml0x_ccpack" rel="noopener">Get the 12-sheet ML Systems Cheatsheet Pack ($9 once)</a>.</li>
       </ul>
     </details>
@@ -131,8 +131,8 @@ details summary{cursor:pointer;font-weight:600}
   <div class="card">
     <h2>What is in the zip</h2>
 <pre>claude-md/   CLAUDE.global.md      your rules for every project
-             CLAUDE.base.md        any repo: commands, layout, traps, done
-             CLAUDE.python-ml.md   PyTorch: shape rules, GPU-cost rules
+             CLAUDE.base.md        any repo (commands, layout, traps, done)
+             CLAUDE.python-ml.md   PyTorch (shape rules, GPU-cost rules)
              CLAUDE.typescript-web.md
              CLAUDE.subdir-example.md   monorepo packages
 hooks/       guard_bash.py   protect_files.py   cost_guard.py
@@ -163,10 +163,10 @@ tests/       test_hooks.py   install.sh   README.md</pre>
     <table>
       <tr><th>Command</th><th>What it does</th></tr>
       <tr><td><code>/plan</code></td><td>Reads the code and writes a numbered plan with files, checks and risks. Edits nothing. Waits for "go".</td></tr>
-      <tr><td><code>/review</code></td><td>Reviews the diff for bugs, security, API breaks and missing tests, each with <code>file:line</code> and an input that triggers it.</td></tr>
+      <tr><td><code>/review</code></td><td>Reviews the diff for bugs, security, API breaks and missing tests, each with the exact file and line number plus an input that triggers it.</td></tr>
       <tr><td><code>/test-fix</code></td><td>Fixes failing tests one at a time, root cause first. Max 3 tries per test. Never skips or loosens an assertion.</td></tr>
       <tr><td><code>/commit</code></td><td>Commit message in your repo's style that says why. No AI attribution lines, never <code>--no-verify</code>.</td></tr>
-      <tr><td><code>/pr</code></td><td>PR title and body: what, why, how to test, risk, follow-ups.</td></tr>
+      <tr><td><code>/pr</code></td><td>Writes a PR title and body covering what changed, why, how to test, risks, and follow-ups.</td></tr>
       <tr><td><code>/explain-error</code></td><td>Finds the first stack frame in your code and explains the cause before any edit.</td></tr>
       <tr><td><code>/handoff</code></td><td>Writes HANDOFF.md so you can <code>/clear</code> and continue in a fresh, cheaper context.</td></tr>
       <tr><td><code>/secrets-check</code></td><td>Scans added lines for keys, tokens and personal data, masked, and tells you when to rotate.</td></tr>
@@ -174,16 +174,9 @@ tests/       test_hooks.py   install.sh   README.md</pre>
   </div>
 
   <div class="card">
-    <h2>Free sample: the /plan command, complete</h2>
-    <p>This is one of the eight files, complete (long lines wrapped to fit here). Save it as <code>.claude/commands/plan.md</code> and type <code>/plan</code> in Claude Code.</p>
-<pre>---
-description: Read the code and write a step-by-step plan before any edit. Makes no changes.
-argument-hint: &lt;what you want built or fixed&gt;
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(ls:*)
----
-Task: $ARGUMENTS
-
-You are in planning mode. Do not edit, create or delete any file in this turn.
+    <h2>Free sample &mdash; the /plan command</h2>
+    <p>Here is what <code>.claude/commands/plan.md</code> enforces when you type <code>/plan</code> in Claude Code. Its frontmatter grants only read-only tools (<code>Read</code>, <code>Grep</code>, <code>Glob</code>, and read-only git/ls commands) with zero write access.</p>
+<pre>You are in planning mode. Do not edit, create or delete any file in this turn.
 
 1. Restate the task in one sentence. If it is ambiguous, list the open
    questions and stop.
@@ -191,15 +184,15 @@ You are in planning mode. Do not edit, create or delete any file in this turn.
    function or section, with line numbers.
 3. Check how the project already solves similar problems (patterns,
    helpers, tests) and reuse them.
-4. Write the plan as a numbered list. For each step give: the file, the
+4. Write the plan as a numbered list. For each step include the file, the
    change, and how you will verify it (a test, a command, or a manual check).
-5. List the risks: what could break, which callers depend on the code you
+5. List the risks &mdash; what could break, which callers depend on the code you
    change, and any migration or data change.
-6. Give a size estimate: number of files, rough lines changed, and whether
-   the change should be split into more than one commit.
+6. Give a size estimate covering number of files, rough lines changed, and
+   whether the change should be split into more than one commit.
 
-End with: "Reply 'go' to implement, or edit the plan." Then wait.</pre>
-    <p>The <code>allowed-tools</code> line is what makes it safe: the command can read and search, but it has no Edit or Write tool, so "plan only" is enforced, not requested.</p>
+End by saying "Reply 'go' to implement, or edit the plan." Then wait.</pre>
+    <p>The <code>allowed-tools</code> line in the file is what makes it safe &mdash; the command can read and search, yet has no Edit or Write tool, so "plan only" is enforced rather than requested.</p>
   </div>
 
   <div class="card">
@@ -215,7 +208,7 @@ End with: "Reply 'go' to implement, or edit the plan." Then wait.</pre>
       <ul>
         <li>CLAUDE.md templates</li>
         <li>5 hooks, 8 slash commands</li>
-        <li>For: your own interactive Claude Code sessions</li>
+        <li>Built for your own interactive Claude Code sessions</li>
       </ul>
       <a class="btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I" data-cta="pack_tier_buy" data-product="ml0x_cc_pack" data-price="29" data-cro="sprint-20261115-ml0x-ccpack-buy">Get the pack, $29</a>
     </div>
@@ -225,7 +218,7 @@ End with: "Reply 'go' to implement, or edit the plan." Then wait.</pre>
       <ul>
         <li>The 100x CLI, four-stage run with quality gates</li>
         <li>Dollar budget ceiling per run, parallel research runner</li>
-        <li>For: unattended, multi-agent runs</li>
+        <li>Built for unattended, multi-agent runs</li>
       </ul>
       <a class="btn" href="/pipeline/" data-cta="pack_tier_pipeline">See the Pipeline, $99</a>
     </div>
