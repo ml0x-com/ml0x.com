@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeepSeek vs Claude API Cost Calculator (V3/R1 vs Sonnet 4/Opus 4) | ml0x</title>
+<meta name="description" content="Compare exact monthly API spend between DeepSeek-V3, DeepSeek-R1 (with context caching and off-peak discounts) and Claude Sonnet 4, Opus 4, and Haiku 3.5.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/deepseek-vs-claude-api-cost-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/deepseek-vs-claude-api-cost-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/deepseek-vs-claude-api-cost-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DeepSeek vs Claude API Cost Calculator (V3/R1 vs Sonnet 4/Opus 4)">
+<meta property="og:description" content="Compare exact monthly API spend between DeepSeek-V3, DeepSeek-R1 (with context caching and off-peak discounts) and Claude Sonnet 4, Opus 4, and Haiku 3.5.">
+<meta property="og:url" content="https://ml0x.com/calculators/deepseek-vs-claude-api-cost-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DeepSeek vs Claude API Cost Calculator (V3/R1 vs Sonnet 4/Opus 4)">
+<meta name="twitter:description" content="Compare exact monthly API spend between DeepSeek-V3, DeepSeek-R1 (with context caching and off-peak discounts) and Claude Sonnet 4, Opus 4, and Haiku 3.5.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 11 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"DeepSeek vs Claude API cost calculator","url":"https://ml0x.com/calculators/deepseek-vs-claude-api-cost-calculator.html","description":"Compare exact monthly API spend between DeepSeek-V3, DeepSeek-R1 (with context caching and off-peak discounts) and Claude Sonnet 4, Opus 4, and Haiku 3.5.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much cheaper is DeepSeek-V3 than Claude Sonnet 4?","acceptedAnswer":{"@type":"Answer","text":"At standard rates ($0.27/$1.10 vs $3.00/$15.00 per 1M tokens), DeepSeek-V3 is roughly 11x-13x cheaper than Claude Sonnet 4 before off-peak discounts. For output-heavy generation, the gap approaches 14x."}},{"@type":"Question","name":"Does DeepSeek R1 reasoning generate more output tokens than Claude?","acceptedAnswer":{"@type":"Answer","text":"Yes. Reasoning models emit chain-of-thought tokens billed as output tokens. Even if DeepSeek-R1 emits 2x-3x more output tokens than non-thinking Sonnet 4, its $2.19/1M output rate still stays 2x-3x cheaper than Sonnet 4's $15/1M output rate."}},{"@type":"Question","name":"How does DeepSeek off-peak pricing work?","acceptedAnswer":{"@type":"Answer","text":"DeepSeek applies steep discounts (up to 50% on V3 and 75% on R1) during off-peak UTC hours (16:30-00:30 UTC), making batch extraction and nightly evaluation pipelines dramatically cheaper."}},{"@type":"Question","name":"When is Claude still worth the higher API price?","acceptedAnswer":{"@type":"Answer","text":"Claude Sonnet 4 and Opus 4 excel at complex agentic tool-use loops, multi-file software engineering, strict instruction following, and US/EU enterprise zero-data-retention compliance via Anthropic, AWS Bedrock, or Google Vertex AI."}},{"@type":"Question","name":"What is the best hybrid routing split between DeepSeek and Claude?","acceptedAnswer":{"@type":"Answer","text":"Routing 65%-80% of classification, summarization, extraction, and test-scaffolding traffic to DeepSeek-V3 while reserving Claude Sonnet 4 or Opus 4 for the hardest 20%-35% of requests typically cuts total API bills by 60%-75%."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"DeepSeek vs Claude API cost calculator","item":"https://ml0x.com/calculators/deepseek-vs-claude-api-cost-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>DeepSeek vs Claude API cost calculator</span></nav>
+  <h1>DeepSeek vs Claude API cost calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-deepseek_vs_claude" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint11-ml0x-ladder" data-mr-placement="s11_top_deepseek_vs_claude" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Routing between DeepSeek and Claude?</strong> Automate per-task model routing and hard token caps with the $99 ml0x Pipeline, grab the $29 Claude Code Workflow Pack, or keep the $9 ML Systems Cheatsheets on your desk.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s11_ml0x_deepseek_vs_claude" rel="nofollow noopener" data-cta="s11_buy_cs_deepseek_vs_claude" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s11_ml0x_deepseek_vs_claude" rel="nofollow noopener" data-cta="s11_buy_cc_deepseek_vs_claude" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s11_ml0x_deepseek_vs_claude" rel="nofollow noopener" data-cta="s11_buy_pl_deepseek_vs_claude" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>DeepSeek-V3 and DeepSeek-R1 can undercut Claude Sonnet 4 and Opus 4 by <strong>10&times;&ndash;30&times;</strong> on raw token rates, especially with automatic prefix caching and UTC off-peak discounts. Enter your monthly input/output token volume and cache hit rate to see the exact dollar gap and hybrid-routing savings.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="dsModel">DeepSeek model</label>
+          <select id="dsModel">
+            <option value="v3" selected>DeepSeek-V3 ($0.27 in / $0.07 cache / $1.10 out)</option>
+            <option value="r1">DeepSeek-R1 ($0.55 in / $0.14 cache / $2.19 out)</option>
+          </select>
+        </div>
+        <div class="field"><label for="clModel">Claude model</label>
+          <select id="clModel">
+            <option value="sonnet4" selected>Claude Sonnet 4 ($3.00 in / $0.30 cache / $15.00 out)</option>
+            <option value="opus4">Claude Opus 4 ($15.00 in / $1.50 cache / $75.00 out)</option>
+            <option value="haiku35">Claude Haiku 3.5 ($0.80 in / $0.08 cache / $4.00 out)</option>
+          </select>
+        </div>
+        <div class="field"><label for="inM">Monthly input tokens (millions)</label><input id="inM" type="number" min="1" max="100000" value="250"></div>
+        <div class="field"><label for="outM">Monthly output tokens (millions)</label><input id="outM" type="number" min="1" max="100000" value="60"></div>
+        <div class="field"><label for="cacheHit">Prompt cache hit rate (%)</label><input id="cacheHit" type="number" min="0" max="95" value="65"></div>
+        <div class="field"><label for="offPeak">DeepSeek off-peak share (% UTC 16:30&ndash;00:30)</label><input id="offPeak" type="number" min="0" max="100" value="25"></div>
+        <div class="field"><label for="hybridPct">Hybrid route share to DeepSeek (%)</label><input id="hybridPct" type="number" min="0" max="100" value="70"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Model / Routing Mix</th><th class="num">Input / Mo</th><th class="num">Output / Mo</th><th class="num">Total / Mo</th><th class="num">Blended $/1M</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <aside class="postresult-pro" data-cro="sprint11-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="flex:1 1 280px;">
+        <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Route easy tasks to cheap models and keep Claude for hard architecture</p>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">ml0x Hybrid Routing sends linting, formatting, and boilerplate to low-cost models while keeping Claude for high-stakes diffs. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <a data-cta="postresult_cc_deepseek_vs_claude" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s11_ml0x_deepseek_vs_claude" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+        <a data-cta="postresult_pipeline_deepseek_vs_claude" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s11_ml0x_deepseek_vs_claude" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline &middot; $99</a>
+      </div>
+    </aside>
+  </section>
+
+
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>How much cheaper is DeepSeek-V3 than Claude Sonnet 4?</h3><p>At standard rates ($0.27/$1.10 vs $3.00/$15.00 per 1M tokens), DeepSeek-V3 is roughly 11x-13x cheaper than Claude Sonnet 4 before off-peak discounts. For output-heavy generation, the gap approaches 14x.</p></div>
+    <div class="faq-item"><h3>Does DeepSeek R1 reasoning generate more output tokens than Claude?</h3><p>Yes. Reasoning models emit chain-of-thought tokens billed as output tokens. Even if DeepSeek-R1 emits 2x-3x more output tokens than non-thinking Sonnet 4, its $2.19/1M output rate still stays 2x-3x cheaper than Sonnet 4's $15/1M output rate.</p></div>
+    <div class="faq-item"><h3>How does DeepSeek off-peak pricing work?</h3><p>DeepSeek applies steep discounts (up to 50% on V3 and 75% on R1) during off-peak UTC hours (16:30-00:30 UTC), making batch extraction and nightly evaluation pipelines dramatically cheaper.</p></div>
+    <div class="faq-item"><h3>When is Claude still worth the higher API price?</h3><p>Claude Sonnet 4 and Opus 4 excel at complex agentic tool-use loops, multi-file software engineering, strict instruction following, and US/EU enterprise zero-data-retention compliance via Anthropic, AWS Bedrock, or Google Vertex AI.</p></div>
+    <div class="faq-item"><h3>What is the best hybrid routing split between DeepSeek and Claude?</h3><p>Routing 65%-80% of classification, summarization, extraction, and test-scaffolding traffic to DeepSeek-V3 while reserving Claude Sonnet 4 or Opus 4 for the hardest 20%-35% of requests typically cuts total API bills by 60%-75%.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/llm-api-cost-calculator.html">LLM API price calculator</a> &mdash; Compare 73 first-party LLM API models side by side.</li>
+      <li><a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM calculator</a> &mdash; Size H100/H200/B200 GPUs if you self-host DeepSeek-V3.</li>
+      <li><a href="/calculators/openai-vs-anthropic-batch-api-calculator.html">OpenAI vs Anthropic Batch API calculator</a> &mdash; Cut Claude and OpenAI offline workload bills by 50%.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. DeepSeek and Anthropic API rates reflect published 2026 standard, cache-hit, and off-peak pricing tiers; verify current provider rate cards for Bedrock/Vertex markups.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-deepseek_vs_claude" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/cursor-vs-claude-code-cost-calculator.html">Cursor vs Claude Code</a>
+    <a href="/calculators/deepseek-vs-claude-api-cost-calculator.html">DeepSeek vs Claude API</a>
+    <a href="/calculators/h100-vs-b200-tco-calculator.html">H100 vs B200 TCO</a>
+    <a href="/calculators/aws-vs-runpod-vs-lambda-gpu-calculator.html">AWS vs RunPod vs Lambda</a>
+    <a href="/calculators/rag-chunk-size-embedding-cost-calculator.html">RAG chunk &amp; embedding cost</a>
+    <a href="/calculators/openai-vs-anthropic-batch-api-calculator.html">OpenAI vs Anthropic Batch</a>
+    <a href="/calculators/ai-agent-token-budget-calculator.html">AI agent token budget</a>
+    <a href="/calculators/local-llm-pc-build-vs-cloud-calculator.html">Local LLM PC vs cloud</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const MODELS = {
+    v3:      { name:"DeepSeek-V3",     inp:0.27, cache:0.07, out:1.10, offDisc:0.50, isDS:true },
+    r1:      { name:"DeepSeek-R1",     inp:0.55, cache:0.14, out:2.19, offDisc:0.75, isDS:true },
+    sonnet4: { name:"Claude Sonnet 4", inp:3.00, cache:0.30, out:15.00, offDisc:0, isDS:false },
+    opus4:   { name:"Claude Opus 4",   inp:15.0, cache:1.50, out:75.00, offDisc:0, isDS:false },
+    haiku35: { name:"Claude Haiku 3.5",inp:0.80, cache:0.08, out:4.00,  offDisc:0, isDS:false }
+  };
+  const $ = id => document.getElementById(id);
+  function costFor(m, inM, outM, hit, offShare){
+    const mult = m.isDS ? (1 - offShare * m.offDisc) : 1;
+    const inC = inM * (hit * m.cache + (1 - hit) * m.inp) * mult;
+    const outC = outM * m.out * mult;
+    return { inC, outC, tot: inC + outC };
+  }
+  function calc(){
+    const ds = MODELS[$('dsModel').value];
+    const cl = MODELS[$('clModel').value];
+    const inM = Math.max(0.1, +$('inM').value||250);
+    const outM = Math.max(0.1, +$('outM').value||60);
+    const totM = inM + outM;
+    const hit = Math.min(95, Math.max(0, +$('cacheHit').value||65))/100;
+    const off = Math.min(100, Math.max(0, +$('offPeak').value||25))/100;
+    const hPct = Math.min(100, Math.max(0, +$('hybridPct').value||70))/100;
+
+    const cDs = costFor(ds, inM, outM, hit, off);
+    const cCl = costFor(cl, inM, outM, hit, off);
+    const cHyb = {
+      inC: cDs.inC * hPct + cCl.inC * (1 - hPct),
+      outC: cDs.outC * hPct + cCl.outC * (1 - hPct),
+      tot: cDs.tot * hPct + cCl.tot * (1 - hPct)
+    };
+    const ratio = cCl.tot / Math.max(0.01, cDs.tot);
+    const saveFull = cCl.tot - cDs.tot;
+    const saveHyb = cCl.tot - cHyb.tot;
+
+    $('kpis').innerHTML = `
+      <div class="kpi kpi--ok"><div class="kpi__label">${ds.name} / Mo</div><div class="kpi__val">$${Math.round(cDs.tot).toLocaleString()}</div><div class="kpi__sub">$${(cDs.tot/totM).toFixed(2)} / 1M blended</div></div>
+      <div class="kpi"><div class="kpi__label">${cl.name} / Mo</div><div class="kpi__val">$${Math.round(cCl.tot).toLocaleString()}</div><div class="kpi__sub">$${(cCl.tot/totM).toFixed(2)} / 1M blended</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Hybrid (${Math.round(hPct*100)}% DS)</div><div class="kpi__val">$${Math.round(cHyb.tot).toLocaleString()}</div><div class="kpi__sub">Saves $${Math.round(saveHyb).toLocaleString()}/mo vs pure Claude</div></div>
+      <div class="kpi"><div class="kpi__label">Price Multiple</div><div class="kpi__val">${ratio.toFixed(1)}x</div><div class="kpi__sub">${ds.name} saves $${Math.round(saveFull*12).toLocaleString()}/yr</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> <strong>${ds.name}</strong> is <strong>${ratio.toFixed(1)}&times; cheaper</strong> than ${cl.name} ($${Math.round(cDs.tot).toLocaleString()}/mo vs $${Math.round(cCl.tot).toLocaleString()}/mo). A <strong>${Math.round(hPct*100)}/${Math.round((1-hPct)*100)} hybrid router</strong> cuts your Claude bill by <strong>$${Math.round(saveHyb).toLocaleString()}/mo (${((saveHyb/Math.max(1,cCl.tot))*100).toFixed(1)}%)</strong>.`;
+
+    const rows = [
+      { label: ds.name + ' (100%)', c: cDs, hi: false },
+      { label: 'Hybrid ('+Math.round(hPct*100)+'% '+ds.name+' / '+Math.round((1-hPct)*100)+'% '+cl.name+')', c: cHyb, hi: true },
+      { label: cl.name + ' (100%)', c: cCl, hi: false },
+      { label: 'Claude Haiku 3.5 (100% ref)', c: costFor(MODELS.haiku35, inM, outM, hit, 0), hi: false }
+    ];
+    $('rows').innerHTML = rows.map(r =>
+      `<tr class="${r.hi?'tt':''}"><td>${r.label}</td><td class="num">$${Math.round(r.c.inC).toLocaleString()}</td><td class="num">$${Math.round(r.c.outC).toLocaleString()}</td><td class="num">$${Math.round(r.c.tot).toLocaleString()}</td><td class="num">$${(r.c.tot/totM).toFixed(2)}</td></tr>`
+    ).join('');
+  }
+  ['dsModel','clModel','inM','outM','cacheHit','offPeak','hybridPct'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

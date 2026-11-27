@@ -1,0 +1,83 @@
+# ml0x.com
+
+> Free, client-side ML/LLM/GPU engineering calculators, open-source Claude Code guardrails, and benchmark research by Michael Lip (@theluckystrike). All calculators run 100% locally in the browser using primary-source formulas and published 2026 hardware/API rate cards.
+
+## Products & Engineering Packs ($9 / $29 / $99 Ladder)
+
+- [ML Systems Cheatsheet Pack ($9)](https://ml0x.com/cheatsheet-pack/): 12 print-ready Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, quantization ladder, ROC/PR & MCC, scikit-learn snippets) in PDF, print HTML & Markdown. One-time $9 payment, instant download, 60-day refund.
+- [Claude Code Workflow Pack ($29)](https://ml0x.com/claude-code-workflow-pack/): 5 CLAUDE.md templates, 5 guard hooks (`cost_guard.py`, `guard_bash.py`, `protect_files.py`, `format_on_edit.py`, `notify.py` with 64 passing tests), and 8 slash commands (`/plan`, `/review`, `/test-fix`, `/commit`, `/pr`, `/handoff`). MIT-licensed plain files, one-time $29 payment, 60-day refund.
+- [ml0x Agent Pipeline ($99)](https://ml0x.com/pipeline/): Full 4-stage pipeline around Claude Code (analyze, implement, test, review) with hard gateway budget caps, pinned 1,160-line 100x CLI, parallel runner, NASA Power of 10 quality gates, 8 research presets, and 13 research docs. Free MIT core on GitHub; full pinned system $99 once, 60-day refund.
+- [Training Run Triage ($99)](https://ml0x.com/triage/): Diagnostic runbook and toolkit for failing LLM/ML training runs, loss spikes, OOM debugging, and checkpoint recovery. $99 once, 60-day refund.
+- [All 5 Production Pipelines](https://ml0x.com/x/): Index of all 5 pipelines built and run on 33 production sites (ml0x Pipeline, Training Run Triage, handsofflinks, toolsthatrank, aiwebsitepipeline).
+
+## Interactive AI Engineering, LLM & GPU Calculators (31 Free Browser Tools)
+
+- [All Calculators Directory](https://ml0x.com/calculators/): Complete index of all interactive client-side ML, LLM, and GPU calculators.
+
+### 2026 AI Engineering Cost & Benchmark Calculators
+- [Cursor vs Claude Code Cost Calculator](https://ml0x.com/calculators/cursor-vs-claude-code-cost-calculator.html): Compare Cursor Pro/Ultra ($20/$200) and Team seats against Claude Code API (with 90% prompt caching) and Claude Max ($100/$200) across daily coding turns, context size, and team headcount.
+- [DeepSeek vs Claude API Cost Calculator](https://ml0x.com/calculators/deepseek-vs-claude-api-cost-calculator.html): Side-by-side monthly token bill comparison between DeepSeek-V3 / DeepSeek-R1 (including cache hits and off-peak discounts) and Claude Sonnet 4 / Opus 4 / Haiku 3.5.
+- [H100 vs B200 TCO Calculator](https://ml0x.com/calculators/h100-vs-b200-tco-calculator.html): 3-year total cost of ownership comparing NVIDIA Hopper H100 SXM vs Blackwell B200 clusters across CapEx, power/cooling PUE, rack colocation, FP8/FP4 throughput, and $/1M tokens.
+- [AWS vs RunPod vs Lambda GPU Calculator](https://ml0x.com/calculators/aws-vs-runpod-vs-lambda-gpu-calculator.html): Compare on-demand, spot/interruptible, and 1-year reserved H100/H200/A100/L40S hourly and monthly bills across AWS EC2, RunPod, Lambda Cloud, CoreWeave, and Vast.ai.
+- [RAG Chunk Size & Embedding Cost Calculator](https://ml0x.com/calculators/rag-chunk-size-embedding-cost-calculator.html): Optimize RAG chunk size (128–2048 tokens) and overlap % across corpus size, re-indexing cadence, OpenAI/Cohere/Voyage/BGE embedding APIs, and vector DB RAM/storage cost.
+- [OpenAI vs Anthropic Batch API Calculator](https://ml0x.com/calculators/openai-vs-anthropic-batch-api-calculator.html): Calculate 50% asynchronous Batch API savings across GPT-4o, GPT-4.1, o3-mini, Claude Sonnet 4, Claude Opus 4, and Haiku 3.5 for offline evals, extraction, and synthetic data pipelines.
+- [AI Agent Token Budget Calculator](https://ml0x.com/calculators/ai-agent-token-budget-calculator.html): Model multi-step autonomous agent token burn with context growth per step, tool-call overhead, retry multipliers, prompt caching, and per-run/monthly hard budget caps.
+- [Local LLM PC Build vs Cloud Calculator](https://ml0x.com/calculators/local-llm-pc-build-vs-cloud-calculator.html): Find exact payback months between buying a local AI rig (RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra 192GB/512GB, RTX 6000 Ada) including electricity vs renting cloud GPUs or APIs.
+
+### GPU, VRAM & Inference Sizing Calculators
+- [B200 vs H200 Inference Cost Calculator](https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html): Compare NVIDIA Blackwell B200 (192GB HBM3e, 8 TB/s, FP4) vs H200 (141GB, 4.8 TB/s, FP8) on GPU count, cluster throughput, $/1M tokens, and break-even hourly rates.
+- [DeepSeek-V3 VRAM Calculator](https://ml0x.com/calculators/deepseek-v3-vram-calculator.html): Exact 671B total / 37B active MoE memory sizing with Multi-head Latent Attention (MLA) KV cache compression and H100/H200/B200 GPU counts.
+- [Llama 4 VRAM Calculator](https://ml0x.com/calculators/llama-4-vram-calculator.html): Size Meta Llama 4 Scout (109B/17B, 10M context), Maverick (400B/17B, 1M context), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.
+- [Claude Code Token Cost Calculator](https://ml0x.com/calculators/claude-code-token-cost-calculator.html): Model Claude Code session spend across Opus 4, Sonnet 4, Haiku 3.5, and hybrid routing with 90% Anthropic prompt caching and Claude Max break-even.
+- [vLLM vs SGLang Throughput Calculator](https://ml0x.com/calculators/vllm-vs-sglang-throughput-calculator.html): Compare SGLang RadixAttention vs vLLM PagedAttention on TTFT, inter-token latency, aggregate tok/s, and $/1M output tokens.
+- [Qwen 3 Quantization Calculator](https://ml0x.com/calculators/qwen-3-quantization-calculator.html): File size, VRAM, KV cache, GPU fit, and decode speed for Qwen3 dense (0.6B–32B) and MoE (30B-A3B, 235B-A22B) models from BF16 down to GGUF Q2_K.
+- [FP8 vs INT4 Memory Calculator](https://ml0x.com/calculators/fp8-vs-int4-memory-calculator.html): Compare FP8 (E4M3) vs INT4 (AWQ, GPTQ, NF4) and BF16 weights VRAM, KV cache, minimum GPUs, and decode speed across H100, H200, B200, L40S, RTX 4090/5090.
+- [LLM Fine-Tuning Cost Calculator](https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html): Estimate training FLOPs, VRAM, minimum GPUs, wall-clock hours, and total cloud bill for Full Fine-Tuning vs BF16 LoRA vs 4-bit QLoRA.
+- [Context Window VRAM Calculator](https://ml0x.com/calculators/context-window-vram-calculator.html): Sweep KV cache growth from 4K to 1M tokens across GQA and MLA architectures to find the max context your GPU pool supports.
+- [LLM Batch Size & Throughput Calculator](https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html): Model continuous batching from batch 1 to 256 to find the memory-to-compute roofline ridge point, TPOT, OOM ceiling, and $/1M output tokens.
+- [LoRA Rank Sizing Calculator](https://ml0x.com/calculators/lora-rank-sizing-calculator.html): Exact trainable parameter counts, alpha scaling, BF16 adapter size, and QLoRA/BF16 training VRAM across ranks r=4 to r=256.
+- [LLM API vs Self-Host Calculator](https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html): Monthly token break-even between hosted APIs (Claude Sonnet 4, GPT-4o, DeepSeek-V3) and self-hosted H100/H200/B200 clusters with prompt caching and MLOps overhead.
+
+### Foundational ML & LLM Calculators
+- [LLM API Price Calculator](https://ml0x.com/calculators/llm-api-cost-calculator.html): Price your token shape across 73 first-party models with cache hit rate and pairwise break-even.
+- [LLM Memory Calculator](https://ml0x.com/calculators/llm-memory-calculator.html): Weights, KV cache, gradients, optimizer states, and activations for 19 open models in inference and training modes.
+- [KV Cache Size Calculator](https://ml0x.com/calculators/kv-cache-size-calculator.html): Per-token KV cache for 19 open models read from config.json with GQA and naive over-report comparison.
+- [LoRA Hyperparameters Calculator](https://ml0x.com/calculators/lora-hyperparameters.html): Rank, alpha, dropout, target modules, trainable parameters, and GPU fit from the QLoRA paper.
+- [Embeddings Cost Calculator](https://ml0x.com/calculators/embeddings-cost-calculator/): Embedding and vector-database cost across 7 embedding models and 3 vector stores.
+- [Chinchilla Scaling Calculator](https://ml0x.com/calculators/chinchilla-scaling-calculator/): Compute-optimal parameter and token counts for a FLOPs budget under Hoffmann et al. 2022 and 2024 replication fits.
+- [Speculative Decoding Speedup Calculator](https://ml0x.com/calculators/speculative-decoding-speedup-calculator/): Expected tokens per step, wall-clock speedup, and optimal draft length from Leviathan et al. 2023.
+- [MFU Calculator](https://ml0x.com/calculators/mfu-calculator/): Model FLOPs Utilization from tok/s, parameter count, and accelerator peak using the 6N + attention rule.
+- [Tokens Per Second Calculator](https://ml0x.com/calculators/tokens-per-second-calculator/): Single-stream decode ceiling from GPU memory bandwidth and real GGUF file sizes.
+- [Temperature & Top-P Calculator](https://ml0x.com/calculators/temperature-top-p-calculator/): Softmax probabilities and top-p, top-k, and min-p cutoffs with Hugging Face and llama.cpp sampler order.
+- [ROC AUC Calculator](https://ml0x.com/calculators/roc-auc-calculator.html): Rank-based Mann-Whitney U AUC with bootstrap confidence intervals, tie counts, and PR-AUC.
+
+## Interactive ML Tools & Visualizers
+
+- [All ML Tools](https://ml0x.com/tools/): Full directory of browser-based ML visualizers and utilities.
+- [PyTorch Error Explainer](https://ml0x.com/tools/pytorch-error-explainer/): Diagnose and fix common PyTorch CUDA, shape, and autograd errors.
+- [Learning Rate Finder](https://ml0x.com/tools/learning-rate-finder.html): Interactive learning rate schedule and convergence explorer.
+- [Confusion Matrix Calculator](https://ml0x.com/tools/confusion-matrix-calculator.html): Precision, recall, F1, MCC, specificity, and error breakdown.
+- [Attention Mechanism Visualizer](https://ml0x.com/tools/attention-mechanism-visualizer.html): Visual walkthrough of scaled dot-product and multi-head attention.
+- [Neural Network Playground](https://ml0x.com/tools/neural-network-playground.html): Interactive browser neural network architecture and decision boundary explorer.
+- [Dataset Splitter](https://ml0x.com/tools/dataset-splitter.html): Train/validation/test split sizing and stratification helper.
+
+## Research, Case Studies & Engineering Guides
+
+- [Research Index](https://ml0x.com/research/): Primary-source empirical studies and engineering checklists.
+- [Claude Max vs API Cost Study](https://ml0x.com/research/claude-max-vs-api-cost.html): Empirical break-even analysis of Claude Max subscriptions vs direct Anthropic API billing ([raw data](https://ml0x.com/research/claude-max-vs-api-cost-data.html)).
+- [GPU Rent vs Buy Tokens Study](https://ml0x.com/research/gpu-rent-vs-buy-tokens.html): Dollar-per-token analysis of renting cloud GPUs vs buying hardware ([raw data](https://ml0x.com/research/gpu-rent-vs-buy-tokens-data.html)).
+- [Telegram Bot Privacy Audit](https://ml0x.com/research/telegram-bot-privacy-audit.html): Security and data-handling audit of Telegram bot workflows.
+- [ML Systems Cheatsheet](https://ml0x.com/research/ml-cheatsheet.html): Concise online ML equations and reference.
+- [ML Pipeline Builder](https://ml0x.com/research/ml-pipeline-builder.html): End-to-end ML pipeline design reference.
+- [Feature Engineering Checklist](https://ml0x.com/research/feature-engineering-checklist.html): Practical tabular and ML feature engineering checks.
+- [Regularization Techniques](https://ml0x.com/research/regularization-techniques.html): L1/L2, dropout, weight decay, and early stopping guide.
+- [Transfer Learning Guide](https://ml0x.com/research/transfer-learning-guide.html): Freezing, fine-tuning, and domain adaptation patterns.
+- [Hermes on GLM 5.3 Flash Case Study](https://ml0x.com/case-studies/hermes-glm-5-3-flash/): Auditing an agentic cost ledger (17x discrepancy), moving compaction from 153k to 51k tokens, and cutting calls from 315 to 160.
+- [Guides Index](https://ml0x.com/guides/): Engineering deep-dives including [Claude Code Cloud Sessions](https://ml0x.com/guides/claude-code-cloud-sessions/), [Gradient Descent Explained](https://ml0x.com/guides/gradient-descent-explained.html), [Cross-Validation Explained](https://ml0x.com/guides/cross-validation-explained.html), [Overfitting & Underfitting Guide](https://ml0x.com/guides/overfitting-underfitting-guide.html), and [Data Augmentation Gallery](https://ml0x.com/guides/data-augmentation-gallery.html).
+- [Answers Index](https://ml0x.com/answers/): Quick engineering answers covering [ML Algorithm Comparison](https://ml0x.com/answers/ml-algorithm-comparison.html), [ML Metrics Explained](https://ml0x.com/answers/ml-metrics-explained.html), [Batch Size Optimizer](https://ml0x.com/answers/batch-size-optimizer.html), [Hyperparameter Tuning Guide](https://ml0x.com/answers/hyperparameter-tuning-guide.html), and [Supervised vs Unsupervised](https://ml0x.com/answers/supervised-vs-unsupervised.html).
+
+## About & Policies
+
+- [About ml0x](https://ml0x.com/about.html): Background on Michael Lip, open-source core (`github.com/theluckystrike/100xagenticdev`), and methodology.
+- [Privacy Policy](https://ml0x.com/privacy/): Client-side calculator privacy and cookie settings.
+- [Support ml0x](https://ml0x.com/support/): Support independent open-source ML tooling.
