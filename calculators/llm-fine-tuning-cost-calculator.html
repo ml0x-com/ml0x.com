@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Fine-Tuning Cost Calculator (Full FT vs LoRA vs QLoRA) | ml0x</title>
+<meta name="description" content="Estimate GPU-hours, VRAM, wall-clock time, and cloud dollar cost for LLM fine-tuning. Compare Full Fine-Tuning, BF16 LoRA, and 4-bit QLoRA across H100, H200, B200, A100, and RTX 4090.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LLM Fine-Tuning Cost Calculator (Full FT vs LoRA vs QLoRA)">
+<meta property="og:description" content="Estimate GPU-hours, VRAM, wall-clock time, and cloud dollar cost for LLM fine-tuning. Compare Full Fine-Tuning, BF16 LoRA, and 4-bit QLoRA across H100, H200, B200, A100, and RTX 4090.">
+<meta property="og:url" content="https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LLM Fine-Tuning Cost Calculator (Full FT vs LoRA vs QLoRA)">
+<meta name="twitter:description" content="Estimate GPU-hours, VRAM, wall-clock time, and cloud dollar cost for LLM fine-tuning. Compare Full Fine-Tuning, BF16 LoRA, and 4-bit QLoRA across H100, H200, B200, A100, and RTX 4090.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"LLM fine-tuning cost calculator","url":"https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html","description":"Estimate GPU-hours, VRAM, wall-clock time, and cloud dollar cost for LLM fine-tuning. Compare Full Fine-Tuning, BF16 LoRA, and 4-bit QLoRA across H100, H200, B200, A100, and RTX 4090.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How are LLM fine-tuning FLOPs calculated?","acceptedAnswer":{"@type":"Answer","text":"Full fine-tuning uses approximately 6 * N * D FLOPs (2N for forward pass, 4N for backward pass over activations and weights), where N is parameter count and D is total training tokens (dataset tokens * epochs). LoRA skips base weight gradients and uses roughly 4.2 * N * D FLOPs, while QLoRA adds ~25-35% dequantization overhead on top of LoRA."}},{"@type":"Question","name":"How much VRAM does Full Fine-Tuning require vs LoRA and QLoRA?","acceptedAnswer":{"@type":"Answer","text":"Full BF16 fine-tuning with AdamW requires ~16-18 bytes per parameter (2B weights + 2B grads + 12B FP32 master weights and optimizer states) plus activations, or ~1,200 GB for a 70B model. BF16 LoRA needs ~2.3 bytes/param (~165 GB for 70B), and 4-bit QLoRA needs ~0.75 bytes/param (~52 GB for 70B), fitting on a single 80 GB GPU."}},{"@type":"Question","name":"Why is QLoRA sometimes slower per token than BF16 LoRA?","acceptedAnswer":{"@type":"Answer","text":"QLoRA must dequantize 4-bit NF4 base weights to BF16 during every forward and backward pass, reducing effective MFU by roughly 25-35%. However, because QLoRA requires far fewer GPUs, it often costs less in total cloud dollars when you would otherwise have to rent an 8x GPU node."}},{"@type":"Question","name":"What Model FLOPs Utilization (MFU) should I expect in practice?","acceptedAnswer":{"@type":"Answer","text":"Well-tuned frameworks like Unsloth, Axolotl with FlashAttention-2/3, or Megatron-LM achieve 35%-48% MFU for full fine-tuning on H100/H200, 30%-40% for BF16 LoRA, and 22%-30% for 4-bit QLoRA. Unoptimized PyTorch loops often sit around 15%-25%."}},{"@type":"Question","name":"How many epochs should I fine-tune an LLM?","acceptedAnswer":{"@type":"Answer","text":"For instruction or chat SFT, 2-3 epochs is standard; beyond 3-4 epochs, models rapidly overfit and lose general reasoning. For continued pretraining on domain corpora, 1 epoch is usually optimal."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"LLM fine-tuning cost calculator","item":"https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>LLM fine-tuning cost calculator</span></nav>
+  <h1>LLM fine-tuning cost calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-finetune_cost" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_finetune_cost" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Budgeting fine-tuning runs or shipping AI agents?</strong> Grab the $9 ML Systems Cheatsheets for offline VRAM &amp; FLOPs math, the $29 Claude Code Workflow Pack for hard cost guards, or the $99 ml0x Pipeline.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_finetune_cost" rel="nofollow noopener" data-cta="s10_buy_cs_finetune_cost" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_finetune_cost" rel="nofollow noopener" data-cta="s10_buy_cc_finetune_cost" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_finetune_cost" rel="nofollow noopener" data-cta="s10_buy_pl_finetune_cost" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, training FLOPs &amp; quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>Calculate exact training FLOPs, VRAM, minimum GPU count, wall-clock duration, and total cloud bill for fine-tuning open LLMs. Compare <strong>Full Fine-Tuning</strong>, <strong>BF16 LoRA</strong>, and <strong>4-bit QLoRA</strong> side by side before renting a cluster.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="model">Base model size</label>
+          <select id="model">
+            <option value="8">Llama 3.1 / Qwen3 8B (8.0B)</option>
+            <option value="14">Qwen3 14B (14.8B)</option>
+            <option value="32">Qwen3 32B (32.8B)</option>
+            <option value="70" selected>Llama 3.3 70B (70.6B)</option>
+            <option value="123">Mistral Large 2 (123B)</option>
+            <option value="405">Llama 3.1 405B (405B)</option>
+            <option value="custom">Custom parameter count</option>
+          </select>
+        </div>
+        <div class="field"><label for="method">Primary method (for KPI highlight)</label>
+          <select id="method">
+            <option value="qlora" selected>4-bit QLoRA (NF4 base + BF16 adapters)</option>
+            <option value="lora">BF16 LoRA (BF16 base + BF16 adapters)</option>
+            <option value="full">Full Fine-Tuning (BF16 + AdamW)</option>
+          </select>
+        </div>
+        <div class="field"><label for="gpu">GPU type</label>
+          <select id="gpu">
+            <option value="h100" selected>H100 80GB SXM (989 BF16 TFLOPS)</option>
+            <option value="h200">H200 141GB SXM (989 BF16 TFLOPS)</option>
+            <option value="b200">B200 192GB SXM (2,250 BF16 TFLOPS)</option>
+            <option value="a100">A100 80GB SXM (312 BF16 TFLOPS)</option>
+            <option value="l40s">L40S 48GB (362 BF16 TFLOPS)</option>
+            <option value="rtx4090">RTX 4090 24GB (165 BF16 TFLOPS)</option>
+          </select>
+        </div>
+        <div class="field"><label for="rate">Cloud rate ($ / GPU-hr)</label><input id="rate" type="number" min="0.1" max="50" step="0.1" value="2.80"></div>
+        <div class="field"><label for="tokensM">Dataset size (million tokens)</label><input id="tokensM" type="number" min="0.5" max="100000" step="1" value="50"></div>
+        <div class="field"><label for="epochs">Epochs</label><input id="epochs" type="number" min="1" max="20" step="1" value="3"></div>
+        <div class="field"><label for="mfu">Base MFU (%)</label><input id="mfu" type="number" min="10" max="65" step="1" value="38"></div>
+        <div class="field"><label for="gradCkpt">Gradient checkpointing</label>
+          <select id="gradCkpt">
+            <option value="on" selected>Enabled (saves ~60% activation VRAM, +25% FLOPs)</option>
+            <option value="off">Disabled (faster, higher activation VRAM)</option>
+          </select>
+        </div>
+      </div>
+      <div id="customRow" class="grid" style="margin-top:12px;" hidden>
+        <div class="field"><label for="cParamsB">Custom parameters (B)</label><input id="cParamsB" type="number" min="0.5" max="2000" step="0.5" value="27"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Metric</th><th class="num">Full Fine-Tuning</th><th class="num">BF16 LoRA</th><th class="num">4-bit QLoRA</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="flex:1 1 280px;">
+        <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Debugging a stalled or NaN training run?</p>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Grab the $9 ML Systems Cheatsheets or automate code + eval runs with the $29 Claude Code Pack. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <a data-cta="postresult_cc_finetune_cost" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_finetune_cost" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+        <a data-cta="postresult_pipeline_finetune_cost" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_finetune_cost" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline &middot; $99</a>
+      </div>
+    </aside>
+  </section>
+
+  <section>
+    <h2>Memory &amp; compute formulas used</h2>
+    <ul>
+      <li><strong>Full Fine-Tuning:</strong> <code>6 &times; N &times; D</code> FLOPs (plus <code>+25%</code> if gradient checkpointing recomputes activations). Memory is <code>~16 bytes/param</code> (BF16 weights + BF16 grads + FP32 AdamW master/m/v) plus activations.</li>
+      <li><strong>BF16 LoRA:</strong> <code>~4.2 &times; N &times; D</code> FLOPs (frozen base skips weight-gradient GEMMs). Memory is <code>~2.25 bytes/param</code> plus activations.</li>
+      <li><strong>4-bit QLoRA:</strong> <code>~4.2 &times; N &times; D</code> FLOPs at ~0.72x effective MFU due to NF4&rarr;BF16 on-the-fly dequantization. Memory is <code>~0.75 bytes/param</code> plus activations.</li>
+    </ul>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>How are LLM fine-tuning FLOPs calculated?</h3><p>Full fine-tuning uses approximately 6 &times; N &times; D FLOPs (2N for forward pass, 4N for backward pass over activations and weights), where N is parameter count and D is total training tokens (dataset tokens &times; epochs). LoRA skips base weight gradients and uses roughly 4.2 &times; N &times; D FLOPs, while QLoRA adds ~25&ndash;35% dequantization overhead on top of LoRA.</p></div>
+    <div class="faq-item"><h3>How much VRAM does Full Fine-Tuning require vs LoRA and QLoRA?</h3><p>Full BF16 fine-tuning with AdamW requires ~16&ndash;18 bytes per parameter (2B weights + 2B grads + 12B FP32 master weights and optimizer states) plus activations, or ~1,200 GB for a 70B model. BF16 LoRA needs ~2.3 bytes/param (~165 GB for 70B), and 4-bit QLoRA needs ~0.75 bytes/param (~52 GB for 70B), fitting on a single 80 GB GPU.</p></div>
+    <div class="faq-item"><h3>Why is QLoRA sometimes slower per token than BF16 LoRA?</h3><p>QLoRA must dequantize 4-bit NF4 base weights to BF16 during every forward and backward pass, reducing effective MFU by roughly 25&ndash;35%. However, because QLoRA requires far fewer GPUs, it often costs less in total cloud dollars when you would otherwise have to rent an 8&times; GPU node.</p></div>
+    <div class="faq-item"><h3>What Model FLOPs Utilization (MFU) should I expect in practice?</h3><p>Well-tuned frameworks like Unsloth, Axolotl with FlashAttention-2/3, or Megatron-LM achieve 35%&ndash;48% MFU for full fine-tuning on H100/H200, 30%&ndash;40% for BF16 LoRA, and 22%&ndash;30% for 4-bit QLoRA. Unoptimized PyTorch loops often sit around 15%&ndash;25%.</p></div>
+    <div class="faq-item"><h3>How many epochs should I fine-tune an LLM?</h3><p>For instruction or chat SFT, 2&ndash;3 epochs is standard; beyond 3&ndash;4 epochs, models rapidly overfit and lose general reasoning. For continued pretraining on domain corpora, 1 epoch is usually optimal.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/lora-rank-sizing-calculator.html">LoRA rank sizing calculator</a> &mdash; Pick rank <code>r</code>, alpha, target modules, and adapter checkpoint size.</li>
+      <li><a href="/calculators/mfu-calculator/">MFU calculator</a> &mdash; Measure your actual Model FLOPs Utilization from training logs.</li>
+      <li><a href="/calculators/chinchilla-scaling-calculator/">Chinchilla scaling calculator</a> &mdash; Compute-optimal parameter vs token allocation.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. Actual training cost depends on sequence packing efficiency, DataLoader bottlenecks, ZeRO/FSDP communication overhead, and spot vs on-demand pricing.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-finetune_cost" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/fp8-vs-int4-memory-calculator.html">FP8 vs INT4 memory</a>
+    <a href="/calculators/llm-fine-tuning-cost-calculator.html">Fine-tuning cost</a>
+    <a href="/calculators/context-window-vram-calculator.html">Context window VRAM</a>
+    <a href="/calculators/llm-batch-size-throughput-calculator.html">Batch size throughput</a>
+    <a href="/calculators/lora-rank-sizing-calculator.html">LoRA rank sizing</a>
+    <a href="/calculators/llm-api-vs-self-host-calculator.html">API vs self-host</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const GPUS = {
+    h100:    { name:"H100 80GB", vram:80,  tflops:989,  defaultRate:2.80 },
+    h200:    { name:"H200 141GB", vram:141, tflops:989, defaultRate:3.80 },
+    b200:    { name:"B200 192GB", vram:192, tflops:2250, defaultRate:6.50 },
+    a100:    { name:"A100 80GB", vram:80,  tflops:312,  defaultRate:1.65 },
+    l40s:    { name:"L40S 48GB", vram:48,  tflops:362,  defaultRate:1.15 },
+    rtx4090: { name:"RTX 4090 24GB", vram:24, tflops:165, defaultRate:0.45 }
+  };
+  const $ = id => document.getElementById(id);
+
+  function minGpus(vramGB, gpuVram){
+    const valid = [1,2,4,8,16,32,64];
+    const needed = vramGB / (gpuVram * 0.88);
+    for (const g of valid) if (g >= needed) return g;
+    return Math.ceil(needed / 8) * 8;
+  }
+  function simMethod(paramsB, totalTokens, gpu, rate, baseMfu, ckptOn, kind){
+    const ckptFlopMult = ckptOn ? 1.25 : 1.0;
+    const actMult = ckptOn ? 0.35 : 0.90;
+    let flopCoeff, bpp, mfuMult;
+    if (kind === 'full') { flopCoeff = 6.0; bpp = 16.2; mfuMult = 1.0; }
+    else if (kind === 'lora') { flopCoeff = 4.2; bpp = 2.25; mfuMult = 0.88; }
+    else { flopCoeff = 4.2; bpp = 0.78; mfuMult = 0.68; }
+
+    const actGB = Math.max(3, paramsB * actMult * 0.35);
+    const vramGB = paramsB * bpp + actGB;
+    const nGpu = minGpus(vramGB, gpu.vram);
+    const scaleEff = nGpu === 1 ? 1.0 : (nGpu <= 8 ? 0.92 : 0.85);
+    const effMfu = Math.max(0.08, (baseMfu / 100) * mfuMult * scaleEff);
+
+    const totalFlops = flopCoeff * ckptFlopMult * (paramsB * 1e9) * totalTokens;
+    const achievedFlopsPerGpu = gpu.tflops * 1e12 * effMfu;
+    const gpuHours = (totalFlops / achievedFlopsPerGpu) / 3600;
+    const wallHours = gpuHours / nGpu;
+    const totalCost = gpuHours * rate;
+    const costPer1MTok = totalCost / (totalTokens / 1e6);
+    return { vramGB, nGpu, effMfu: effMfu*100, gpuHours, wallHours, totalCost, costPer1MTok, totalFlops };
+  }
+  function fmtHrs(h){
+    if (h < 1) return (h * 60).toFixed(0) + ' min';
+    if (h < 48) return h.toFixed(1) + ' hr';
+    return (h / 24).toFixed(1) + ' days';
+  }
+  function calc(){
+    const mv = $('model').value;
+    $('customRow').hidden = mv !== 'custom';
+    const paramsB = mv === 'custom' ? Math.max(0.5, +$('cParamsB').value||27) : +mv;
+    const gpu = GPUS[$('gpu').value];
+    const rate = Math.max(0.05, +$('rate').value||2.80);
+    const tokensM = Math.max(0.1, +$('tokensM').value||50);
+    const epochs = Math.max(1, +$('epochs').value||3);
+    const baseMfu = Math.min(65, Math.max(10, +$('mfu').value||38));
+    const ckptOn = $('gradCkpt').value === 'on';
+    const totalTokens = tokensM * 1e6 * epochs;
+
+    const full = simMethod(paramsB, totalTokens, gpu, rate, baseMfu, ckptOn, 'full');
+    const lora = simMethod(paramsB, totalTokens, gpu, rate, baseMfu, ckptOn, 'lora');
+    const qlora = simMethod(paramsB, totalTokens, gpu, rate, baseMfu, ckptOn, 'qlora');
+
+    const pickKey = $('method').value;
+    const pick = pickKey === 'full' ? full : (pickKey === 'lora' ? lora : qlora);
+    const pickLabel = pickKey === 'full' ? 'Full Fine-Tuning' : (pickKey === 'lora' ? 'BF16 LoRA' : '4-bit QLoRA');
+
+    $('kpis').innerHTML = `
+      <div class="kpi kpi--ok"><div class="kpi__label">${pickLabel} Cost</div><div class="kpi__val">$${pick.totalCost < 100 ? pick.totalCost.toFixed(2) : Math.round(pick.totalCost).toLocaleString()}</div><div class="kpi__sub">$${pick.costPer1MTok.toFixed(2)} / 1M trained tokens</div></div>
+      <div class="kpi"><div class="kpi__label">Minimum GPUs (${pickLabel})</div><div class="kpi__val">${pick.nGpu}&times; ${gpu.name}</div><div class="kpi__sub">${pick.vramGB.toFixed(0)} GB total VRAM needed</div></div>
+      <div class="kpi"><div class="kpi__label">Wall-Clock Time</div><div class="kpi__val">${fmtHrs(pick.wallHours)}</div><div class="kpi__sub">${pick.gpuHours.toFixed(1)} total GPU-hours</div></div>
+      <div class="kpi"><div class="kpi__label">Total Trained Tokens</div><div class="kpi__val">${(tokensM*epochs).toLocaleString()}M</div><div class="kpi__sub">${(pick.totalFlops/1e18).toFixed(2)} EFLOPs (${epochs} epochs)</div></div>
+    `;
+    const cheapest = [
+      { name:'Full Fine-Tuning', r:full },
+      { name:'BF16 LoRA', r:lora },
+      { name:'4-bit QLoRA', r:qlora }
+    ].sort((a,b)=>a.r.totalCost - b.r.totalCost)[0];
+    $('verdict').innerHTML = `<strong>Lowest cloud bill: ${cheapest.name} at $${cheapest.r.totalCost < 100 ? cheapest.r.totalCost.toFixed(2) : Math.round(cheapest.r.totalCost).toLocaleString()}</strong> (${cheapest.r.nGpu}&times; ${gpu.name}, ${fmtHrs(cheapest.r.wallHours)} wall-clock). 4-bit QLoRA cuts minimum GPU count from <strong>${full.nGpu}&times;</strong> (Full FT) down to <strong>${qlora.nGpu}&times; ${gpu.name}</strong>.`;
+
+    $('rows').innerHTML = `
+      <tr><td>Total VRAM required</td><td class="num">${full.vramGB.toFixed(1)} GB</td><td class="num">${lora.vramGB.toFixed(1)} GB</td><td class="num">${qlora.vramGB.toFixed(1)} GB</td></tr>
+      <tr><td>Minimum ${gpu.name} GPUs</td><td class="num">${full.nGpu}&times;</td><td class="num">${lora.nGpu}&times;</td><td class="num">${qlora.nGpu}&times;</td></tr>
+      <tr><td>Effective MFU</td><td class="num">${full.effMfu.toFixed(1)}%</td><td class="num">${lora.effMfu.toFixed(1)}%</td><td class="num">${qlora.effMfu.toFixed(1)}%</td></tr>
+      <tr><td>Total GPU-hours</td><td class="num">${full.gpuHours.toFixed(1)} hr</td><td class="num">${lora.gpuHours.toFixed(1)} hr</td><td class="num">${qlora.gpuHours.toFixed(1)} hr</td></tr>
+      <tr><td>Wall-clock time (min cluster)</td><td class="num">${fmtHrs(full.wallHours)}</td><td class="num">${fmtHrs(lora.wallHours)}</td><td class="num">${fmtHrs(qlora.wallHours)}</td></tr>
+      <tr class="tt"><td>Estimated total cloud cost</td><td class="num">$${full.totalCost < 100 ? full.totalCost.toFixed(2) : Math.round(full.totalCost).toLocaleString()}</td><td class="num">$${lora.totalCost < 100 ? lora.totalCost.toFixed(2) : Math.round(lora.totalCost).toLocaleString()}</td><td class="num">$${qlora.totalCost < 100 ? qlora.totalCost.toFixed(2) : Math.round(qlora.totalCost).toLocaleString()}</td></tr>
+      <tr><td>Cost per 1M trained tokens</td><td class="num">$${full.costPer1MTok.toFixed(2)}</td><td class="num">$${lora.costPer1MTok.toFixed(2)}</td><td class="num">$${qlora.costPer1MTok.toFixed(2)}</td></tr>
+    `;
+  }
+  $('gpu').addEventListener('change', ()=>{
+    $('rate').value = GPUS[$('gpu').value].defaultRate.toFixed(2);
+    calc();
+  });
+  ['model','method','rate','tokensM','epochs','mfu','gradCkpt','cParamsB'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

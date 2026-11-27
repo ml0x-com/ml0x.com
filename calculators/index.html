@@ -43,6 +43,30 @@
   </div>
 
   <div class="grid-2">
+    <a href="/calculators/fp8-vs-int4-memory-calculator.html" class="link-card">
+      <div class="link-card__title">FP8 vs INT4 memory calculator</div>
+      <p class="link-card__desc">Compare FP8 (E4M3) vs INT4 (AWQ, GPTQ, NF4) and BF16 weights VRAM, KV cache, minimum GPUs, and single-stream decode speed across H100, H200, B200, L40S, and RTX 4090/5090.</p>
+    </a>
+    <a href="/calculators/llm-fine-tuning-cost-calculator.html" class="link-card">
+      <div class="link-card__title">LLM fine-tuning cost calculator</div>
+      <p class="link-card__desc">Estimate training FLOPs, VRAM, minimum GPUs, wall-clock duration, and total cloud bill for Full Fine-Tuning vs BF16 LoRA vs 4-bit QLoRA.</p>
+    </a>
+    <a href="/calculators/context-window-vram-calculator.html" class="link-card">
+      <div class="link-card__title">Context window VRAM calculator</div>
+      <p class="link-card__desc">Sweep KV cache growth from 4K to 1M tokens across GQA and MLA architectures (Llama 3.3, Qwen3, DeepSeek-V3, Llama 4) and find the exact max context your GPU pool supports.</p>
+    </a>
+    <a href="/calculators/llm-batch-size-throughput-calculator.html" class="link-card">
+      <div class="link-card__title">LLM batch size &amp; throughput calculator</div>
+      <p class="link-card__desc">Model continuous batching from batch 1 to 256 to find the memory-to-compute roofline ridge point, per-user tok/s &amp; TPOT, OOM ceiling, and $/1M output tokens.</p>
+    </a>
+    <a href="/calculators/lora-rank-sizing-calculator.html" class="link-card">
+      <div class="link-card__title">LoRA rank sizing calculator</div>
+      <p class="link-card__desc">Compute exact trainable parameter counts, alpha scaling, BF16 adapter checkpoint size (MB), and QLoRA/BF16 training VRAM across ranks r=4 to r=256 and target modules.</p>
+    </a>
+    <a href="/calculators/llm-api-vs-self-host-calculator.html" class="link-card">
+      <div class="link-card__title">LLM API vs self-host calculator</div>
+      <p class="link-card__desc">Find the exact monthly token break-even between hosted APIs (Claude Sonnet 4, GPT-4o, DeepSeek-V3) and self-hosted H100/H200/B200 clusters with prompt caching and MLOps overhead.</p>
+    </a>
     <a href="/calculators/b200-vs-h200-inference-cost-calculator.html" class="link-card">
       <div class="link-card__title">B200 vs H200 inference cost calculator</div>
       <p class="link-card__desc">Compare NVIDIA Blackwell B200 (192GB HBM3e, 8 TB/s, FP4) against H200 (141GB, 4.8 TB/s, FP8) on required GPUs, cluster throughput, $/1M tokens, and break-even hourly rates.</p>
@@ -146,6 +170,7 @@
     <div class="site-footer__links">
       <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
       <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
       <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
       <a href="/privacy/">Privacy</a>
       <a href="/support/">Support</a>

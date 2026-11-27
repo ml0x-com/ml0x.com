@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Context Window VRAM Calculator (4K to 1M Tokens &amp; Max Context) | ml0x</title>
+<meta name="description" content="Calculate how LLM context window length (4K to 1M tokens) scales KV cache VRAM across GQA and MLA architectures. Find the exact max context length that fits on your GPU.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/context-window-vram-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/context-window-vram-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/context-window-vram-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Context Window VRAM Calculator (4K to 1M Tokens &amp; Max Context)">
+<meta property="og:description" content="Calculate how LLM context window length (4K to 1M tokens) scales KV cache VRAM across GQA and MLA architectures. Find the exact max context length that fits on your GPU.">
+<meta property="og:url" content="https://ml0x.com/calculators/context-window-vram-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Context Window VRAM Calculator (4K to 1M Tokens &amp; Max Context)">
+<meta name="twitter:description" content="Calculate how LLM context window length (4K to 1M tokens) scales KV cache VRAM across GQA and MLA architectures. Find the exact max context length that fits on your GPU.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Context window VRAM calculator","url":"https://ml0x.com/calculators/context-window-vram-calculator.html","description":"Calculate how LLM context window length (4K to 1M tokens) scales KV cache VRAM across GQA and MLA architectures. Find the exact max context length that fits on your GPU.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does a 128K context window cause OOM even when model weights easily fit?","acceptedAnswer":{"@type":"Answer","text":"KV cache grows linearly with context length and concurrent batch size. For Llama 3.3 70B in FP16 KV precision (320 KB/token), a single 128K sequence consumes 40 GB of VRAM on top of model weights — and 8 concurrent 128K requests require 320 GB of KV cache alone."}},{"@type":"Question","name":"How does Multi-head Latent Attention (MLA) in DeepSeek-V3 shrink context VRAM?","acceptedAnswer":{"@type":"Answer","text":"Instead of caching full K and V heads per layer, DeepSeek-V3 compresses KV into a shared 512-dim latent vector plus a 64-dim RoPE key (576 dims total per layer). That drops FP16 KV cache to just ~70.2 KB/token across 61 layers — roughly 4.5x smaller than Llama 3.3 70B."}},{"@type":"Question","name":"How much extra context does FP8 KV cache unlock?","acceptedAnswer":{"@type":"Answer","text":"Switching KV cache from FP16/BF16 (2 bytes/element) to FP8 E4M3 (1 byte/element) cuts KV memory in half, effectively doubling your maximum context length or maximum concurrent batch size with minimal quality impact."}},{"@type":"Question","name":"Does sliding-window attention reduce context VRAM?","acceptedAnswer":{"@type":"Answer","text":"Yes. Models with hybrid local/global attention (such as Gemma 3 or Llama 4 Scout) cap KV cache on local-attention layers at the sliding window size, so only global attention layers grow linearly with full context length."}},{"@type":"Question","name":"How do I compute per-token KV cache for a custom GQA model?","acceptedAnswer":{"@type":"Answer","text":"Multiply 2 (for K and V) x num_layers x num_kv_heads x head_dim x bytes_per_element. For example, 80 layers x 8 KV heads x 128 head_dim x 2 x 2 bytes = 327,680 bytes (320 KiB) per token in FP16."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Context window VRAM calculator","item":"https://ml0x.com/calculators/context-window-vram-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Context window VRAM calculator</span></nav>
+  <h1>Context window VRAM calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-context_vram" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_context_vram" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Serving long-context RAG or coding agents?</strong> Grab the $9 ML Systems Cheatsheets for offline KV cache formulas, the $29 Claude Code Workflow Pack for hard token caps, or the $99 ml0x Pipeline.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_context_vram" rel="nofollow noopener" data-cta="s10_buy_cs_context_vram" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_context_vram" rel="nofollow noopener" data-cta="s10_buy_cc_context_vram" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_context_vram" rel="nofollow noopener" data-cta="s10_buy_pl_context_vram" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, GGUF quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>Long context windows eat GPU memory fast. Enter your model, context length, batch size, and total cluster VRAM to see exact KV cache growth from 4K to 1M tokens and the maximum OOM-safe context length for your hardware.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="model">Model architecture</label>
+          <select id="model">
+            <option value="llama33_70b" selected>Llama 3.3 70B (GQA: 80L, 8 KV heads, 128d)</option>
+            <option value="qwen3_32b">Qwen3-32B (GQA: 64L, 8 KV heads, 128d)</option>
+            <option value="llama31_8b">Llama 3.1 8B (GQA: 32L, 8 KV heads, 128d)</option>
+            <option value="ds_v3">DeepSeek-V3 671B (MLA: 61L, 576 compressed dim)</option>
+            <option value="llama4_scout">Llama 4 Scout 109B (GQA: 48L, 8 KV heads, 128d)</option>
+            <option value="gemma3_27b">Gemma 3 27B (GQA: 62L, 16 KV heads, 128d)</option>
+            <option value="custom">Custom GQA architecture</option>
+          </select>
+        </div>
+        <div class="field"><label for="wPrec">Model weight precision</label>
+          <select id="wPrec">
+            <option value="2.02">BF16 / FP16 (~2.02 B/param)</option>
+            <option value="1.05" selected>FP8 E4M3 (~1.05 B/param)</option>
+            <option value="0.56">INT4 AWQ / GPTQ (~0.56 B/param)</option>
+          </select>
+        </div>
+        <div class="field"><label for="kvPrec">KV cache precision</label>
+          <select id="kvPrec">
+            <option value="2" selected>FP16 / BF16 (2 bytes/elem)</option>
+            <option value="1">FP8 / INT8 (1 byte/elem)</option>
+            <option value="0.55">INT4 KV cache (~0.55 bytes/elem)</option>
+          </select>
+        </div>
+        <div class="field"><label for="ctx">Target context window (tokens)</label><input id="ctx" type="number" min="1024" max="2000000" step="4096" value="131072"></div>
+        <div class="field"><label for="batch">Concurrent users (batch size)</label><input id="batch" type="number" min="1" max="512" value="4"></div>
+        <div class="field"><label for="vramPool">Available GPU VRAM pool (GB)</label>
+          <select id="vramPool">
+            <option value="24">1&times; RTX 4090 (24 GB)</option>
+            <option value="32">1&times; RTX 5090 (32 GB)</option>
+            <option value="48">1&times; L40S (48 GB)</option>
+            <option value="80">1&times; H100 / A100 (80 GB)</option>
+            <option value="141">1&times; H200 (141 GB)</option>
+            <option value="160" selected>2&times; H100 (160 GB)</option>
+            <option value="320">4&times; H100 (320 GB)</option>
+            <option value="640">8&times; H100 (640 GB)</option>
+            <option value="1128">8&times; H200 (1,128 GB)</option>
+            <option value="768">4&times; B200 (768 GB)</option>
+          </select>
+        </div>
+      </div>
+      <div id="customRow" class="grid" style="margin-top:12px;" hidden>
+        <div class="field"><label for="cParamsB">Total parameters (B)</label><input id="cParamsB" type="number" min="1" max="2000" value="32"></div>
+        <div class="field"><label for="cLayers">Transformer layers</label><input id="cLayers" type="number" min="1" max="200" value="64"></div>
+        <div class="field"><label for="cKvHeads">KV heads per layer</label><input id="cKvHeads" type="number" min="1" max="128" value="8"></div>
+        <div class="field"><label for="cHeadDim">Head dimension</label><input id="cHeadDim" type="number" min="32" max="512" step="32" value="128"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Context Length</th><th class="num">KV / Sequence</th><th class="num">KV (Batch)</th><th class="num">Total VRAM</th><th class="num">Fits Pool?</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="flex:1 1 280px;">
+        <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Keep your KV cache &amp; agent token bills under control</p>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Get the $9 ML Systems Cheatsheets (exact GQA/MLA formulas) or $29 Claude Code Workflow Pack. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <a data-cta="postresult_cs_context_vram" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_context_vram" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Cheatsheets &middot; $9</a>
+        <a data-cta="postresult_cc_context_vram" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_context_vram" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+      </div>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Why does a 128K context window cause OOM even when model weights easily fit?</h3><p>KV cache grows linearly with context length and concurrent batch size. For Llama 3.3 70B in FP16 KV precision (320 KiB/token), a single 128K sequence consumes 40 GiB of VRAM on top of model weights &mdash; and 8 concurrent 128K requests require 320 GiB of KV cache alone.</p></div>
+    <div class="faq-item"><h3>How does Multi-head Latent Attention (MLA) in DeepSeek-V3 shrink context VRAM?</h3><p>Instead of caching full K and V heads per layer, DeepSeek-V3 compresses KV into a shared 512-dim latent vector plus a 64-dim RoPE key (576 dims total per layer). That drops FP16 KV cache to just ~70.2 KB/token across 61 layers &mdash; roughly 4.5x smaller than Llama 3.3 70B.</p></div>
+    <div class="faq-item"><h3>How much extra context does FP8 KV cache unlock?</h3><p>Switching KV cache from FP16/BF16 (2 bytes/element) to FP8 E4M3 (1 byte/element) cuts KV memory in half, effectively doubling your maximum context length or maximum concurrent batch size with minimal quality impact.</p></div>
+    <div class="faq-item"><h3>Does sliding-window attention reduce context VRAM?</h3><p>Yes. Models with hybrid local/global attention (such as Gemma 3 or Llama 4 Scout) cap KV cache on local-attention layers at the sliding window size, so only global attention layers grow linearly with full context length.</p></div>
+    <div class="faq-item"><h3>How do I compute per-token KV cache for a custom GQA model?</h3><p>Multiply <code>2 &times; num_layers &times; num_kv_heads &times; head_dim &times; bytes_per_element</code>. For example, 80 layers &times; 8 KV heads &times; 128 head_dim &times; 2 &times; 2 bytes = 327,680 bytes (320 KiB) per token in FP16.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/kv-cache-size-calculator.html">KV cache size calculator</a> &mdash; Per-token KV math for 19 open models from <code>config.json</code>.</li>
+      <li><a href="/calculators/fp8-vs-int4-memory-calculator.html">FP8 vs INT4 memory calculator</a> &mdash; Shrink weight memory to free up more context headroom.</li>
+      <li><a href="/calculators/llm-batch-size-throughput-calculator.html">LLM batch size throughput calculator</a> &mdash; Balance batch concurrency against KV cache OOM limits.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. Usable VRAM reserves 8% for CUDA graphs, PagedAttention block tables, and runtime activations.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-context_vram" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/fp8-vs-int4-memory-calculator.html">FP8 vs INT4 memory</a>
+    <a href="/calculators/llm-fine-tuning-cost-calculator.html">Fine-tuning cost</a>
+    <a href="/calculators/context-window-vram-calculator.html">Context window VRAM</a>
+    <a href="/calculators/llm-batch-size-throughput-calculator.html">Batch size throughput</a>
+    <a href="/calculators/lora-rank-sizing-calculator.html">LoRA rank sizing</a>
+    <a href="/calculators/llm-api-vs-self-host-calculator.html">API vs self-host</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const MODELS = {
+    llama33_70b: { name:"Llama 3.3 70B", paramsB:70.6, kvElemsPerTok: 2 * 80 * 8 * 128 },
+    qwen3_32b:   { name:"Qwen3-32B",     paramsB:32.8, kvElemsPerTok: 2 * 64 * 8 * 128 },
+    llama31_8b:  { name:"Llama 3.1 8B",  paramsB:8.03, kvElemsPerTok: 2 * 32 * 8 * 128 },
+    ds_v3:       { name:"DeepSeek-V3",   paramsB:671,  kvElemsPerTok: 61 * 576 },
+    llama4_scout:{ name:"Llama 4 Scout", paramsB:109,  kvElemsPerTok: 2 * 48 * 8 * 128 },
+    gemma3_27b:  { name:"Gemma 3 27B",   paramsB:27.4, kvElemsPerTok: 2 * 62 * 16 * 128 }
+  };
+  const SWEEP = [4096, 8192, 32768, 65536, 131072, 262144, 524288, 1048576];
+  const $ = id => document.getElementById(id);
+
+  function fmtTok(n){
+    if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+    if (n >= 1000) return Math.round(n/1024) + 'K';
+    return Math.round(n).toString();
+  }
+  function calc(){
+    const mk = $('model').value;
+    $('customRow').hidden = mk !== 'custom';
+    let m;
+    if (mk === 'custom') {
+      const pB = Math.max(0.5, +$('cParamsB').value||32);
+      const L = Math.max(1, +$('cLayers').value||64);
+      const H = Math.max(1, +$('cKvHeads').value||8);
+      const D = Math.max(32, +$('cHeadDim').value||128);
+      m = { name:"Custom", paramsB:pB, kvElemsPerTok: 2 * L * H * D };
+    } else {
+      m = MODELS[mk];
+    }
+    const wBpp = +$('wPrec').value;
+    const kvBpe = +$('kvPrec').value;
+    const ctx = Math.max(512, +$('ctx').value||131072);
+    const batch = Math.max(1, +$('batch').value||4);
+    const vramPool = +$('vramPool').value;
+
+    const bytesPerTok = m.kvElemsPerTok * kvBpe;
+    const kbPerTok = bytesPerTok / 1024;
+    const weightGB = m.paramsB * wBpp;
+    const overheadGB = Math.max(2, vramPool * 0.08);
+    const kvPerSeqGB = (bytesPerTok * ctx) / (1024 * 1024 * 1024);
+    const kvBatchGB = kvPerSeqGB * batch;
+    const totalGB = weightGB + kvBatchGB + overheadGB;
+    const availForKvGB = Math.max(0, vramPool - weightGB - overheadGB);
+    const maxCtxPerUser = availForKvGB > 0 ? Math.floor((availForKvGB * 1024 * 1024 * 1024) / (bytesPerTok * batch)) : 0;
+    const fits = totalGB <= vramPool;
+
+    $('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi__label">KV Cache / Token</div><div class="kpi__val">${kbPerTok.toFixed(1)} KiB</div><div class="kpi__sub">${kvPerSeqGB.toFixed(2)} GiB per ${fmtTok(ctx)} seq</div></div>
+      <div class="kpi ${fits?'kpi--ok':'kpi--bad'}"><div class="kpi__label">Total VRAM (${batch}&times; ${fmtTok(ctx)})</div><div class="kpi__val">${totalGB.toFixed(1)} GB</div><div class="kpi__sub">${weightGB.toFixed(1)} GB weights + ${kvBatchGB.toFixed(1)} GB KV</div></div>
+      <div class="kpi ${maxCtxPerUser>=ctx?'kpi--ok':'kpi--warn'}"><div class="kpi__label">Max Context / User</div><div class="kpi__val">${maxCtxPerUser > 0 ? fmtTok(maxCtxPerUser) : 'OOM'}</div><div class="kpi__sub">At batch ${batch} on ${vramPool} GB pool</div></div>
+      <div class="kpi"><div class="kpi__label">KV Budget Remaining</div><div class="kpi__val">${availForKvGB.toFixed(1)} GB</div><div class="kpi__sub">After weights &amp; 8% CUDA reserve</div></div>
+    `;
+    if (fits) {
+      $('verdict').innerHTML = `<strong>Fits with ${(vramPool - totalGB).toFixed(1)} GB to spare.</strong> Your ${vramPool} GB pool supports up to <strong>${fmtTok(maxCtxPerUser)} tokens per user</strong> at batch ${batch} (or ${Math.floor(availForKvGB / Math.max(0.001, kvPerSeqGB))} concurrent users at ${fmtTok(ctx)} context).`;
+    } else if (availForKvGB <= 0) {
+      $('verdict').innerHTML = `<strong>Model weights alone (${weightGB.toFixed(1)} GB) exceed the ${vramPool} GB pool.</strong> Quantize weights to INT4/FP8 or move to a larger GPU pool before allocating KV cache.`;
+    } else {
+      $('verdict').innerHTML = `<strong>OOM by ${(totalGB - vramPool).toFixed(1)} GB.</strong> At batch ${batch}, cap context at <strong>${fmtTok(maxCtxPerUser)} tokens</strong>, switch KV cache to FP8 (2x context), or reduce batch size to ${Math.max(1, Math.floor(availForKvGB / kvPerSeqGB))}.`;
+    }
+
+    $('rows').innerHTML = SWEEP.map(c => {
+      const seqGB = (bytesPerTok * c) / (1024*1024*1024);
+      const bGB = seqGB * batch;
+      const tot = weightGB + bGB + overheadGB;
+      const ok = tot <= vramPool;
+      const isTarget = Math.abs(c - ctx) < 1024;
+      return `<tr class="${isTarget?'tt':''}"><td>${fmtTok(c)} tokens</td><td class="num">${seqGB.toFixed(2)} GB</td><td class="num">${bGB.toFixed(2)} GB</td><td class="num">${tot.toFixed(1)} GB</td><td class="num">${ok?'Yes (+'+(vramPool-tot).toFixed(0)+' GB)':'OOM (-'+(tot-vramPool).toFixed(0)+' GB)'}</td></tr>`;
+    }).join('');
+  }
+  ['model','wPrec','kvPrec','ctx','batch','vramPool','cParamsB','cLayers','cKvHeads','cHeadDim'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

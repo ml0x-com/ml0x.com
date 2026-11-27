@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LoRA Rank Sizing Calculator (Trainable Params, Adapter MB &amp; VRAM) | ml0x</title>
+<meta name="description" content="Calculate exact LoRA trainable parameters, adapter checkpoint size, alpha scaling, and QLoRA/BF16 training VRAM across ranks r=4 to r=256 and target modules (q,v vs all-linear).">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/lora-rank-sizing-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/lora-rank-sizing-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/lora-rank-sizing-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LoRA Rank Sizing Calculator (Trainable Params, Adapter MB &amp; VRAM)">
+<meta property="og:description" content="Calculate exact LoRA trainable parameters, adapter checkpoint size, alpha scaling, and QLoRA/BF16 training VRAM across ranks r=4 to r=256 and target modules (q,v vs all-linear).">
+<meta property="og:url" content="https://ml0x.com/calculators/lora-rank-sizing-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LoRA Rank Sizing Calculator (Trainable Params, Adapter MB &amp; VRAM)">
+<meta name="twitter:description" content="Calculate exact LoRA trainable parameters, adapter checkpoint size, alpha scaling, and QLoRA/BF16 training VRAM across ranks r=4 to r=256 and target modules (q,v vs all-linear).">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"LoRA rank sizing calculator","url":"https://ml0x.com/calculators/lora-rank-sizing-calculator.html","description":"Calculate exact LoRA trainable parameters, adapter checkpoint size, alpha scaling, and QLoRA/BF16 training VRAM across ranks r=4 to r=256 and target modules (q,v vs all-linear).","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What LoRA rank (r) should I start with for LLM fine-tuning?","acceptedAnswer":{"@type":"Answer","text":"For most instruction tuning, JSON extraction, and style tasks, r=16 or r=32 applied to all linear layers (q, k, v, o, gate, up, down) matches full fine-tuning quality. Use r=64 to r=128 only for heavy domain adaptation, new coding languages, or large (>50M token) datasets."}},{"@type":"Question","name":"Why does targeting all linear layers matter more than cranking up rank on q,v?","acceptedAnswer":{"@type":"Answer","text":"The QLoRA paper (Dettmers et al., 2023) showed that applying LoRA to all 7 transformer linear projections (attention + SwiGLU MLP) at r=16 outperforms attention-only q,v LoRA even at r=64, because most factual and behavioral capacity sits in the MLP layers."}},{"@type":"Question","name":"How should I set lora_alpha relative to rank r?","acceptedAnswer":{"@type":"Answer","text":"The standard heuristic is lora_alpha = 2 * r (effective scaling = 2.0) or lora_alpha = r (scaling = 1.0). For high ranks (r >= 64), enable rsLoRA (alpha / sqrt(r)) so gradient magnitudes stay stable without shrinking the learning rate."}},{"@type":"Question","name":"How much extra VRAM does increasing LoRA rank from 16 to 64 actually use?","acceptedAnswer":{"@type":"Answer","text":"Surprisingly little. On Llama 3.1 8B with all-linear adapters and paged 8-bit AdamW, jumping from r=16 (42M trainable params) to r=64 (168M trainable params) adds only ~0.75 GB of VRAM — far smaller than the base model weights or activation memory."}},{"@type":"Question","name":"How big is a saved LoRA adapter checkpoint on disk?","acceptedAnswer":{"@type":"Answer","text":"In BF16/FP16 safetensors format, a LoRA adapter takes exactly 2 bytes per trainable parameter. A 42M-parameter adapter (Llama 3.1 8B, r=16, all-linear) is ~84 MB on disk, making it easy to hot-swap multiple adapters on one base model."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"LoRA rank sizing calculator","item":"https://ml0x.com/calculators/lora-rank-sizing-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>LoRA rank sizing calculator</span></nav>
+  <h1>LoRA rank sizing calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-lora_rank" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_lora_rank" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Configuring LoRA/QLoRA runs or shipping Claude Code agents?</strong> Grab the $9 ML Systems Cheatsheets for offline LoRA/VRAM math, the $29 Claude Code Workflow Pack for guard hooks, or the $99 ml0x Pipeline.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_lora_rank" rel="nofollow noopener" data-cta="s10_buy_cs_lora_rank" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_lora_rank" rel="nofollow noopener" data-cta="s10_buy_cc_lora_rank" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_lora_rank" rel="nofollow noopener" data-cta="s10_buy_pl_lora_rank" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, LoRA &amp; quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>Pick your base model, LoRA rank <code>r</code>, target linear modules, and base quantization to compute exact trainable parameter counts from real transformer dimensions (<code>d_model</code>, <code>d_ff</code>, <code>d_kv</code>, <code>n_layers</code>), adapter checkpoint size on disk, and total training VRAM.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="model">Base model</label>
+          <select id="model">
+            <option value="llama31_8b" selected>Llama 3.1 8B (32L, d=4096, ff=14336)</option>
+            <option value="qwen3_14b">Qwen3 14B (40L, d=5120, ff=17408)</option>
+            <option value="gemma3_27b">Gemma 3 27B (62L, d=5376, ff=21504)</option>
+            <option value="qwen3_32b">Qwen3 32B (64L, d=5120, ff=25600)</option>
+            <option value="llama33_70b">Llama 3.3 70B (80L, d=8192, ff=28672)</option>
+            <option value="custom">Custom transformer</option>
+          </select>
+        </div>
+        <div class="field"><label for="rank">LoRA rank (r)</label>
+          <select id="rank">
+            <option value="4">r = 4 (tiny / style)</option>
+            <option value="8">r = 8 (lightweight)</option>
+            <option value="16" selected>r = 16 (standard SFT)</option>
+            <option value="32">r = 32 (complex reasoning / code)</option>
+            <option value="64">r = 64 (heavy domain adaptation)</option>
+            <option value="128">r = 128 (high capacity / rsLoRA)</option>
+            <option value="256">r = 256 (near-full capacity)</option>
+          </select>
+        </div>
+        <div class="field"><label for="modules">Target modules</label>
+          <select id="modules">
+            <option value="all" selected>All linear (q, k, v, o, gate, up, down)</option>
+            <option value="qkvo">Attention only (q, k, v, o)</option>
+            <option value="qv">Minimal attention (q, v)</option>
+          </select>
+        </div>
+        <div class="field"><label for="baseQuant">Base model quantization</label>
+          <select id="baseQuant">
+            <option value="nf4" selected>4-bit NF4 (QLoRA ~0.56 B/param)</option>
+            <option value="fp8">FP8 base (~1.05 B/param)</option>
+            <option value="bf16">BF16 base (~2.02 B/param)</option>
+          </select>
+        </div>
+        <div class="field"><label for="opt">Optimizer</label>
+          <select id="opt">
+            <option value="adam8" selected>Paged AdamW 8-bit (~2 B/trainable)</option>
+            <option value="adam32">AdamW FP32 states (~12 B/trainable)</option>
+            <option value="sgd">SGD with momentum (~4 B/trainable)</option>
+          </select>
+        </div>
+        <div class="field"><label for="seqLen">Training sequence length</label><input id="seqLen" type="number" min="512" max="32768" step="512" value="4096"></div>
+      </div>
+      <div id="customRow" class="grid" style="margin-top:12px;" hidden>
+        <div class="field"><label for="cParamsB">Total base params (B)</label><input id="cParamsB" type="number" min="1" max="500" value="8"></div>
+        <div class="field"><label for="cLayers">Layers (L)</label><input id="cLayers" type="number" min="1" max="160" value="32"></div>
+        <div class="field"><label for="cD">Hidden size (d_model)</label><input id="cD" type="number" min="512" max="16384" step="256" value="4096"></div>
+        <div class="field"><label for="cFf">MLP intermediate (d_ff)</label><input id="cFf" type="number" min="1024" max="65536" step="512" value="14336"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Rank (r)</th><th class="num">Rec. Alpha</th><th class="num">Trainable Params</th><th class="num">% of Base</th><th class="num">Adapter File (BF16)</th><th class="num">Total Train VRAM</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="flex:1 1 280px;">
+        <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Want offline LoRA &amp; LLM VRAM reference sheets?</p>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Grab the $9 ML Systems Cheatsheet Pack (12 print-ready sheets) or $29 Claude Code Workflow Pack. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <a data-cta="postresult_cs_lora_rank" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_lora_rank" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Cheatsheets &middot; $9</a>
+        <a data-cta="postresult_cc_lora_rank" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_lora_rank" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+      </div>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>What LoRA rank (r) should I start with for LLM fine-tuning?</h3><p>For most instruction tuning, JSON extraction, and style tasks, <code>r=16</code> or <code>r=32</code> applied to all linear layers (<code>q, k, v, o, gate, up, down</code>) matches full fine-tuning quality. Use <code>r=64</code> to <code>r=128</code> only for heavy domain adaptation, new coding languages, or large (&gt;50M token) datasets.</p></div>
+    <div class="faq-item"><h3>Why does targeting all linear layers matter more than cranking up rank on q,v?</h3><p>The QLoRA paper (Dettmers et al., 2023) showed that applying LoRA to all 7 transformer linear projections (attention + SwiGLU MLP) at <code>r=16</code> outperforms attention-only <code>q,v</code> LoRA even at <code>r=64</code>, because most factual and behavioral capacity sits in the MLP layers.</p></div>
+    <div class="faq-item"><h3>How should I set lora_alpha relative to rank r?</h3><p>The standard heuristic is <code>lora_alpha = 2 * r</code> (effective scaling = 2.0) or <code>lora_alpha = r</code> (scaling = 1.0). For high ranks (<code>r &gt;= 64</code>), enable rsLoRA (<code>alpha / sqrt(r)</code>) so gradient magnitudes stay stable without shrinking the learning rate.</p></div>
+    <div class="faq-item"><h3>How much extra VRAM does increasing LoRA rank from 16 to 64 actually use?</h3><p>Surprisingly little. On Llama 3.1 8B with all-linear adapters and paged 8-bit AdamW, jumping from <code>r=16</code> (42M trainable params) to <code>r=64</code> (168M trainable params) adds only ~0.75 GB of VRAM &mdash; far smaller than the base model weights or activation memory.</p></div>
+    <div class="faq-item"><h3>How big is a saved LoRA adapter checkpoint on disk?</h3><p>In BF16/FP16 safetensors format, a LoRA adapter takes exactly 2 bytes per trainable parameter. A 42M-parameter adapter (Llama 3.1 8B, <code>r=16</code>, all-linear) is ~84 MB on disk, making it easy to hot-swap multiple adapters on one base model.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/llm-fine-tuning-cost-calculator.html">LLM fine-tuning cost calculator</a> &mdash; Estimate total GPU-hours and cloud bill for your LoRA/QLoRA run.</li>
+      <li><a href="/calculators/lora-hyperparameters.html">LoRA hyperparameters reference</a> &mdash; QLoRA paper defaults and fit verdicts for 19 open models.</li>
+      <li><a href="/calculators/fp8-vs-int4-memory-calculator.html">FP8 vs INT4 memory calculator</a> &mdash; Size deployment VRAM after merging your LoRA adapter.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. VRAM estimates assume gradient checkpointing enabled with FlashAttention-2 and micro-batch size 1; larger micro-batches increase activation memory proportionally.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-lora_rank" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/fp8-vs-int4-memory-calculator.html">FP8 vs INT4 memory</a>
+    <a href="/calculators/llm-fine-tuning-cost-calculator.html">Fine-tuning cost</a>
+    <a href="/calculators/context-window-vram-calculator.html">Context window VRAM</a>
+    <a href="/calculators/llm-batch-size-throughput-calculator.html">Batch size throughput</a>
+    <a href="/calculators/lora-rank-sizing-calculator.html">LoRA rank sizing</a>
+    <a href="/calculators/llm-api-vs-self-host-calculator.html">API vs self-host</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const MODELS = {
+    llama31_8b:  { name:"Llama 3.1 8B",  paramsB:8.03, L:32, d:4096, dKv:1024, ff:14336 },
+    qwen3_14b:   { name:"Qwen3 14B",     paramsB:14.8, L:40, d:5120, dKv:1024, ff:17408 },
+    gemma3_27b:  { name:"Gemma 3 27B",   paramsB:27.4, L:62, d:5376, dKv:2048, ff:21504 },
+    qwen3_32b:   { name:"Qwen3 32B",     paramsB:32.8, L:64, d:5120, dKv:1024, ff:25600 },
+    llama33_70b: { name:"Llama 3.3 70B", paramsB:70.6, L:80, d:8192, dKv:1024, ff:28672 }
+  };
+  const BASE_BPP = { nf4:0.56, fp8:1.05, bf16:2.02 };
+  const OPT_BYTES = { adam8:2, adam32:12, sgd:4 };
+  const RANKS = [4, 8, 16, 32, 64, 128, 256];
+  const $ = id => document.getElementById(id);
+
+  function loraParams(m, r, mods){
+    // Per layer trainable params = sum over linear layers of r * (in_dim + out_dim)
+    const q = r * (m.d + m.d);
+    const k = r * (m.d + m.dKv);
+    const v = r * (m.d + m.dKv);
+    const o = r * (m.d + m.d);
+    const mlp = 3 * r * (m.d + m.ff); // gate, up, down (SwiGLU)
+    let perLayer = q + v;
+    if (mods === 'qkvo') perLayer = q + k + v + o;
+    else if (mods === 'all') perLayer = q + k + v + o + mlp;
+    return perLayer * m.L;
+  }
+  function simRank(m, r, mods, baseBpp, optBytes, seqLen){
+    const trainable = loraParams(m, r, mods);
+    const pct = (trainable / (m.paramsB * 1e9)) * 100;
+    const ckptMB = (trainable * 2) / (1024 * 1024);
+    const baseGB = m.paramsB * baseBpp;
+    // Adapter weights (2B) + gradients (2B) + optimizer states (optBytes)
+    const adapterTrainGB = (trainable * (4 + optBytes)) / (1024 * 1024 * 1024);
+    // Gradient-checkpointed activation + CUDA overhead estimate
+    const actGB = Math.max(1.8, (m.L * m.d * seqLen * 2.5) / (1024 * 1024 * 1024) + 1.5);
+    const totalGB = baseGB + adapterTrainGB + actGB;
+    return { r, trainable, pct, ckptMB, baseGB, adapterTrainGB, actGB, totalGB };
+  }
+  function gpuFit(gb){
+    if (gb <= 15) return "1x RTX 4060 Ti 16GB";
+    if (gb <= 22.5) return "1x RTX 4090 / A10G (24GB)";
+    if (gb <= 30) return "1x RTX 5090 (32GB)";
+    if (gb <= 45) return "1x L40S / A6000 (48GB)";
+    if (gb <= 76) return "1x H100 / A100 (80GB)";
+    if (gb <= 134) return "1x H200 (141GB)";
+    if (gb <= 182) return "1x B200 (192GB)";
+    return Math.ceil(gb / 74) + "x 80GB GPUs (FSDP)";
+  }
+  function calc(){
+    const mk = $('model').value;
+    $('customRow').hidden = mk !== 'custom';
+    let m;
+    if (mk === 'custom') {
+      const d = Math.max(512, +$('cD').value||4096);
+      m = { name:"Custom", paramsB:Math.max(0.5,+$('cParamsB').value||8), L:Math.max(1,+$('cLayers').value||32), d, dKv:Math.round(d/4), ff:Math.max(1024,+$('cFf').value||14336) };
+    } else {
+      m = MODELS[mk];
+    }
+    const r = +$('rank').value;
+    const mods = $('modules').value;
+    const baseBpp = BASE_BPP[$('baseQuant').value];
+    const optBytes = OPT_BYTES[$('opt').value];
+    const seqLen = Math.max(512, +$('seqLen').value||4096);
+
+    const cur = simRank(m, r, mods, baseBpp, optBytes, seqLen);
+    const alpha = r * 2;
+
+    $('kpis').innerHTML = `
+      <div class="kpi kpi--ok"><div class="kpi__label">Trainable Parameters</div><div class="kpi__val">${(cur.trainable/1e6).toFixed(1)}M</div><div class="kpi__sub">${cur.pct.toFixed(2)}% of ${m.paramsB}B base model</div></div>
+      <div class="kpi"><div class="kpi__label">Adapter Checkpoint</div><div class="kpi__val">${cur.ckptMB.toFixed(0)} MB</div><div class="kpi__sub">BF16 safetensors (r=${r}, &alpha;=${alpha})</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Total Training VRAM</div><div class="kpi__val">${cur.totalGB.toFixed(1)} GB</div><div class="kpi__sub">Base ${cur.baseGB.toFixed(1)} + LoRA ${cur.adapterTrainGB.toFixed(2)} + Act ${cur.actGB.toFixed(1)} GB</div></div>
+      <div class="kpi"><div class="kpi__label">Minimum GPU Fit</div><div class="kpi__val" style="font-size:16px;padding-top:4px">${gpuFit(cur.totalGB)}</div><div class="kpi__sub">With grad checkpointing @ ${seqLen} seq</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Recommended setup:</strong> <code>r=${r}</code>, <code>lora_alpha=${alpha}</code>${r>=64?' (enable <code>use_rslora=True</code>)':''}, targeting <strong>${mods==='all'?'all 7 linear layers':(mods==='qkvo'?'q,k,v,o':'q,v')}</strong>. Fits cleanly on <strong>${gpuFit(cur.totalGB)}</strong> with an adapter size of only <strong>${cur.ckptMB.toFixed(0)} MB</strong>.`;
+
+    $('rows').innerHTML = RANKS.map(rk => {
+      const s = simRank(m, rk, mods, baseBpp, optBytes, seqLen);
+      return `<tr class="${rk===r?'tt':''}"><td>r = ${rk}${rk>=64?' (rsLoRA)':''}</td><td class="num">&alpha; = ${rk*2}</td><td class="num">${(s.trainable/1e6).toFixed(1)}M</td><td class="num">${s.pct.toFixed(2)}%</td><td class="num">${s.ckptMB.toFixed(0)} MB</td><td class="num">${s.totalGB.toFixed(1)} GB</td></tr>`;
+    }).join('');
+  }
+  ['model','rank','modules','baseQuant','opt','seqLen','cParamsB','cLayers','cD','cFf'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM API vs Self-Host Calculator (Monthly Break-Even &amp; ROI) | ml0x</title>
+<meta name="description" content="Compare hosted LLM API bills (Claude Sonnet 4, GPT-4o, DeepSeek-V3, Llama 3.3) against self-hosted H100/H200/B200 GPU clusters including prompt caching, utilization, and MLOps overhead.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LLM API vs Self-Host Calculator (Monthly Break-Even &amp; ROI)">
+<meta property="og:description" content="Compare hosted LLM API bills (Claude Sonnet 4, GPT-4o, DeepSeek-V3, Llama 3.3) against self-hosted H100/H200/B200 GPU clusters including prompt caching, utilization, and MLOps overhead.">
+<meta property="og:url" content="https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LLM API vs Self-Host Calculator (Monthly Break-Even &amp; ROI)">
+<meta name="twitter:description" content="Compare hosted LLM API bills (Claude Sonnet 4, GPT-4o, DeepSeek-V3, Llama 3.3) against self-hosted H100/H200/B200 GPU clusters including prompt caching, utilization, and MLOps overhead.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"LLM API vs self-host calculator","url":"https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html","description":"Compare hosted LLM API bills (Claude Sonnet 4, GPT-4o, DeepSeek-V3, Llama 3.3) against self-hosted H100/H200/B200 GPU clusters including prompt caching, utilization, and MLOps overhead.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"At what monthly token volume does self-hosting an LLM beat hosted APIs?","acceptedAnswer":{"@type":"Answer","text":"Against frontier APIs like Claude Sonnet 4 or GPT-4o ($3-$15/1M output), a 2x H100 cluster (~$4,000-$5,500/mo including ops) breaks even around 300M-600M blended tokens per month. Against cheap serverless open-weight APIs ($0.20-$0.80/1M), self-hosting usually requires 3B+ tokens/month or strict data-residency requirements."}},{"@type":"Question","name":"Why do teams underestimate the true cost of self-hosting GPUs?","acceptedAnswer":{"@type":"Answer","text":"Self-hosted GPUs bill 730 hours/month whether traffic is peaking or idle at 3 AM. You also need at least 2 replicas for zero-downtime deploys and failover, plus engineering time for vLLM/SGLang upgrades, autoscaling, and monitoring."}},{"@type":"Question","name":"How does prompt caching shift the API vs self-host break-even?","acceptedAnswer":{"@type":"Answer","text":"Anthropic and OpenAI discount cached input tokens by 50%-90%. For agentic or RAG workloads with 70%-90% cache hit rates, hosted API bills drop sharply, pushing the self-hosting break-even volume 2x-4x higher."}},{"@type":"Question","name":"When should you self-host even if an API is cheaper?","acceptedAnswer":{"@type":"Answer","text":"Self-hosting wins regardless of token volume when you need HIPAA/SOC2/air-gapped data residency, custom LoRA fine-tuned weights, guaranteed zero rate-limit throttling, or deterministic model weights that never silently change."}},{"@type":"Question","name":"How much do reserved GPU instances lower self-hosting cost?","acceptedAnswer":{"@type":"Answer","text":"1-year reserved or bare-metal H100/H200 contracts typically save 25%-45% off on-demand cloud rates, pulling the monthly break-even volume down proportionally."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"LLM API vs self-host calculator","item":"https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>LLM API vs self-host calculator</span></nav>
+  <h1>LLM API vs self-host calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-api_vs_selfhost" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_api_vs_selfhost" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Deciding between hosted APIs and dedicated GPUs?</strong> Grab the $9 ML Systems Cheatsheets for offline sizing math, the $29 Claude Code Workflow Pack to cut API waste with hard caps, or the $99 ml0x Pipeline.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_api_vs_selfhost" rel="nofollow noopener" data-cta="s10_buy_cs_api_vs_selfhost" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_api_vs_selfhost" rel="nofollow noopener" data-cta="s10_buy_cc_api_vs_selfhost" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_api_vs_selfhost" rel="nofollow noopener" data-cta="s10_buy_pl_api_vs_selfhost" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>Should you keep paying per-token API bills or spin up dedicated H100/H200/B200 GPUs? Enter your monthly token volume, prompt cache hit rate, API pricing, and self-hosted GPU cluster (including redundancy and MLOps overhead) to find your exact break-even volume.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="apiPreset">Hosted API baseline</label>
+          <select id="apiPreset">
+            <option value="sonnet4" selected>Claude Sonnet 4 ($3 in / $15 out)</option>
+            <option value="gpt4o">GPT-4o ($2.50 in / $10 out)</option>
+            <option value="llama70b_api">Llama 3.3 70B Serverless ($0.60 in / $0.80 out)</option>
+            <option value="dsv3_api">DeepSeek-V3 API ($0.27 in / $1.10 out)</option>
+            <option value="opus4">Claude Opus 4 ($15 in / $75 out)</option>
+            <option value="custom">Custom API rates</option>
+          </select>
+        </div>
+        <div class="field"><label for="inM">Monthly input tokens (millions)</label><input id="inM" type="number" min="1" max="100000" value="400"></div>
+        <div class="field"><label for="outM">Monthly output tokens (millions)</label><input id="outM" type="number" min="1" max="100000" value="100"></div>
+        <div class="field"><label for="cacheHit">API prompt cache hit rate (%)</label><input id="cacheHit" type="number" min="0" max="95" value="60"></div>
+        <div class="field"><label for="gpuPreset">Self-host GPU cluster</label>
+          <select id="gpuPreset">
+            <option value="1x_h100">1&times; H100 80GB ($2.80/hr)</option>
+            <option value="2x_h100" selected>2&times; H100 80GB ($5.60/hr, Llama 70B FP8)</option>
+            <option value="4x_h100">4&times; H100 80GB ($11.20/hr, HA / high batch)</option>
+            <option value="4x_h200">4&times; H200 141GB ($15.20/hr)</option>
+            <option value="8x_h200">8&times; H200 141GB ($30.40/hr, DeepSeek-V3)</option>
+            <option value="4x_b200">4&times; B200 192GB ($26.00/hr, FP4)</option>
+            <option value="1x_l40s">1&times; L40S 48GB ($1.15/hr, 8B-32B)</option>
+          </select>
+        </div>
+        <div class="field"><label for="discount">Reserved / committed discount (%)</label><input id="discount" type="number" min="0" max="60" value="20"></div>
+        <div class="field"><label for="opsCost">Monthly MLOps / infra overhead ($)</label><input id="opsCost" type="number" min="0" max="50000" step="250" value="1500"></div>
+        <div class="field"><label for="replicas">HA replicas (1 = single, 2 = zero-downtime)</label><input id="replicas" type="number" min="1" max="16" value="1"></div>
+      </div>
+      <div id="customRow" class="grid" style="margin-top:12px;" hidden>
+        <div class="field"><label for="cInRate">API input ($ / 1M tok)</label><input id="cInRate" type="number" min="0.01" max="100" step="0.05" value="2.50"></div>
+        <div class="field"><label for="cOutRate">API output ($ / 1M tok)</label><input id="cOutRate" type="number" min="0.01" max="200" step="0.1" value="10.00"></div>
+        <div class="field"><label for="cCacheDisc">Cache read discount (%)</label><input id="cCacheDisc" type="number" min="0" max="95" value="90"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Monthly Total Tokens</th><th class="num">Hosted API / mo</th><th class="num">Self-Host / mo</th><th class="num">Winner</th><th class="num">Monthly Delta</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="flex:1 1 280px;">
+        <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Cut hosted API spend before migrating to GPUs</p>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Enforce hard per-session budgets and task routing with the $29 Claude Code Workflow Pack or $99 ml0x Pipeline. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <a data-cta="postresult_cc_api_vs_selfhost" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_api_vs_selfhost" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+        <a data-cta="postresult_pipeline_api_vs_selfhost" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_api_vs_selfhost" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline &middot; $99</a>
+      </div>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>At what monthly token volume does self-hosting an LLM beat hosted APIs?</h3><p>Against frontier APIs like Claude Sonnet 4 or GPT-4o ($3&ndash;$15/1M output), a 2&times; H100 cluster (~$4,000&ndash;$5,500/mo including ops) breaks even around 300M&ndash;600M blended tokens per month. Against cheap serverless open-weight APIs ($0.20&ndash;$0.80/1M), self-hosting usually requires 3B+ tokens/month or strict data-residency requirements.</p></div>
+    <div class="faq-item"><h3>Why do teams underestimate the true cost of self-hosting GPUs?</h3><p>Self-hosted GPUs bill 730 hours/month whether traffic is peaking or idle at 3 AM. You also need at least 2 replicas for zero-downtime deploys and failover, plus engineering time for vLLM/SGLang upgrades, autoscaling, and monitoring.</p></div>
+    <div class="faq-item"><h3>How does prompt caching shift the API vs self-host break-even?</h3><p>Anthropic and OpenAI discount cached input tokens by 50%&ndash;90%. For agentic or RAG workloads with 70%&ndash;90% cache hit rates, hosted API bills drop sharply, pushing the self-hosting break-even volume 2x&ndash;4x higher.</p></div>
+    <div class="faq-item"><h3>When should you self-host even if an API is cheaper?</h3><p>Self-hosting wins regardless of token volume when you need HIPAA/SOC2/air-gapped data residency, custom LoRA fine-tuned weights, guaranteed zero rate-limit throttling, or deterministic model weights that never silently change.</p></div>
+    <div class="faq-item"><h3>How much do reserved GPU instances lower self-hosting cost?</h3><p>1-year reserved or bare-metal H100/H200 contracts typically save 25%&ndash;45% off on-demand cloud rates, pulling the monthly break-even volume down proportionally.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/llm-api-cost-calculator.html">LLM API price calculator</a> &mdash; Compare 73 first-party API models side by side.</li>
+      <li><a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 inference cost calculator</a> &mdash; Pick the cheapest GPU architecture once you self-host.</li>
+      <li><a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost calculator</a> &mdash; Model coding agent spend and Claude Max break-even.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. Self-hosted monthly costs assume 730 hours/month continuous availability; verify cluster peak throughput against your traffic burst ratio using the batch size calculator.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-api_vs_selfhost" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/fp8-vs-int4-memory-calculator.html">FP8 vs INT4 memory</a>
+    <a href="/calculators/llm-fine-tuning-cost-calculator.html">Fine-tuning cost</a>
+    <a href="/calculators/context-window-vram-calculator.html">Context window VRAM</a>
+    <a href="/calculators/llm-batch-size-throughput-calculator.html">Batch size throughput</a>
+    <a href="/calculators/lora-rank-sizing-calculator.html">LoRA rank sizing</a>
+    <a href="/calculators/llm-api-vs-self-host-calculator.html">API vs self-host</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const APIS = {
+    sonnet4:      { name:"Claude Sonnet 4", inR:3.00, outR:15.00, cacheDisc:0.90 },
+    gpt4o:        { name:"GPT-4o",          inR:2.50, outR:10.00, cacheDisc:0.50 },
+    llama70b_api: { name:"Llama 3.3 70B API", inR:0.60, outR:0.80, cacheDisc:0.00 },
+    dsv3_api:     { name:"DeepSeek-V3 API", inR:0.27, outR:1.10,  cacheDisc:0.75 },
+    opus4:        { name:"Claude Opus 4",   inR:15.00, outR:75.00, cacheDisc:0.90 }
+  };
+  const CLUSTERS = {
+    "1x_h100": { name:"1x H100", hr:2.80, capM:1200 },
+    "2x_h100": { name:"2x H100", hr:5.60, capM:2400 },
+    "4x_h100": { name:"4x H100", hr:11.20, capM:4800 },
+    "4x_h200": { name:"4x H200", hr:15.20, capM:6500 },
+    "8x_h200": { name:"8x H200", hr:30.40, capM:12000 },
+    "4x_b200": { name:"4x B200", hr:26.00, capM:18000 },
+    "1x_l40s": { name:"1x L40S", hr:1.15, capM:600 }
+  };
+  const SWEEP_M = [50, 150, 300, 500, 1000, 2500, 5000];
+  const $ = id => document.getElementById(id);
+
+  function calc(){
+    const ak = $('apiPreset').value;
+    $('customRow').hidden = ak !== 'custom';
+    const api = ak === 'custom'
+      ? { name:"Custom API", inR:Math.max(0.01,+$('cInRate').value||2.5), outR:Math.max(0.01,+$('cOutRate').value||10), cacheDisc:Math.min(0.95,Math.max(0,(+$('cCacheDisc').value||90)/100)) }
+      : APIS[ak];
+    const inM = Math.max(0.1, +$('inM').value||400);
+    const outM = Math.max(0.1, +$('outM').value||100);
+    const totM = inM + outM;
+    const inShare = inM / totM;
+    const outShare = outM / totM;
+    const cacheHit = Math.min(0.95, Math.max(0, (+$('cacheHit').value||0)/100));
+
+    const cl = CLUSTERS[$('gpuPreset').value];
+    const disc = Math.min(0.60, Math.max(0, (+$('discount').value||0)/100));
+    const opsCost = Math.max(0, +$('opsCost').value||0);
+    const replicas = Math.max(1, +$('replicas').value||1);
+
+    const effInRate = api.inR * (1 - cacheHit * api.cacheDisc);
+    const blendedApiPer1M = inShare * effInRate + outShare * api.outR;
+    const apiMonth = totM * blendedApiPer1M;
+
+    const gpuMonth = cl.hr * (1 - disc) * 730 * replicas;
+    const selfHostMonth = gpuMonth + opsCost;
+    const selfHostPer1M = selfHostMonth / totM;
+    const breakEvenM = blendedApiPer1M > 0 ? selfHostMonth / blendedApiPer1M : 0;
+
+    const winner = apiMonth <= selfHostMonth ? 'Hosted API' : 'Self-Host';
+    const savings = Math.abs(apiMonth - selfHostMonth);
+    const pctSave = (savings / Math.max(apiMonth, selfHostMonth)) * 100;
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${winner==='Hosted API'?'kpi--ok':''}"><div class="kpi__label">Hosted API / Month</div><div class="kpi__val">$${Math.round(apiMonth).toLocaleString()}</div><div class="kpi__sub">$${blendedApiPer1M.toFixed(2)} / 1M blended tokens</div></div>
+      <div class="kpi ${winner==='Self-Host'?'kpi--ok':''}"><div class="kpi__label">Self-Host / Month</div><div class="kpi__val">$${Math.round(selfHostMonth).toLocaleString()}</div><div class="kpi__sub">$${Math.round(gpuMonth).toLocaleString()} GPU + $${Math.round(opsCost).toLocaleString()} ops</div></div>
+      <div class="kpi"><div class="kpi__label">Break-Even Volume</div><div class="kpi__val">${Math.round(breakEvenM).toLocaleString()}M tok</div><div class="kpi__sub">Monthly tokens at current in/out ratio</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">${winner} Saves</div><div class="kpi__val">$${Math.round(savings).toLocaleString()}/mo</div><div class="kpi__sub">${pctSave.toFixed(1)}% lower ($${Math.round(savings*12).toLocaleString()}/yr)</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict: ${winner} wins by $${Math.round(savings).toLocaleString()}/month (${pctSave.toFixed(1)}%).</strong> At your ${(inShare*100).toFixed(0)}/${(outShare*100).toFixed(0)} input/output split and ${(cacheHit*100).toFixed(0)}% cache hit rate, self-hosting ${replicas}&times; ${cl.name} only becomes cheaper above <strong>${Math.round(breakEvenM).toLocaleString()}M total tokens/month</strong>.`;
+
+    $('rows').innerHTML = SWEEP_M.map(m => {
+      const a = m * blendedApiPer1M;
+      const sh = selfHostMonth;
+      const w = a <= sh ? 'Hosted API' : 'Self-Host';
+      const d = Math.abs(a - sh);
+      const near = Math.abs(m - totM) < 50;
+      return `<tr class="${near?'tt':''}"><td>${m.toLocaleString()}M tokens</td><td class="num">$${Math.round(a).toLocaleString()}</td><td class="num">$${Math.round(sh).toLocaleString()}</td><td class="num">${w}</td><td class="num">${w==='Self-Host'?'Save ':'Extra '}$${Math.round(d).toLocaleString()}</td></tr>`;
+    }).join('');
+  }
+  ['apiPreset','inM','outM','cacheHit','gpuPreset','discount','opsCost','replicas','cInRate','cOutRate','cCacheDisc'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

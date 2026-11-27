@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Batch Size &amp; Throughput Calculator (Roofline, TPOT &amp; $/1M) | ml0x</title>
+<meta name="description" content="Model continuous batching from batch 1 to 256 on H100, H200, B200, A100, and RTX 4090. Find the memory-to-compute roofline ridge point, per-user tok/s, OOM ceiling, and $/1M tokens.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LLM Batch Size &amp; Throughput Calculator (Roofline, TPOT &amp; $/1M)">
+<meta property="og:description" content="Model continuous batching from batch 1 to 256 on H100, H200, B200, A100, and RTX 4090. Find the memory-to-compute roofline ridge point, per-user tok/s, OOM ceiling, and $/1M tokens.">
+<meta property="og:url" content="https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LLM Batch Size &amp; Throughput Calculator (Roofline, TPOT &amp; $/1M)">
+<meta name="twitter:description" content="Model continuous batching from batch 1 to 256 on H100, H200, B200, A100, and RTX 4090. Find the memory-to-compute roofline ridge point, per-user tok/s, OOM ceiling, and $/1M tokens.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"LLM batch size and throughput calculator","url":"https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html","description":"Model continuous batching from batch 1 to 256 on H100, H200, B200, A100, and RTX 4090. Find the memory-to-compute roofline ridge point, per-user tok/s, OOM ceiling, and $/1M tokens.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does increasing batch size boost aggregate tokens/sec so dramatically?","acceptedAnswer":{"@type":"Answer","text":"At batch size 1, LLM decode reads the entire active model weights from HBM just to generate 1 token, leaving Tensor Cores over 95% idle. Batching N requests amortizes that weight read across N tokens in a single forward step until you hit either the GPU compute ridge point or the KV cache VRAM ceiling."}},{"@type":"Question","name":"What is the roofline ridge point for LLM decode?","acceptedAnswer":{"@type":"Answer","text":"The ridge point is the batch size where arithmetic intensity (FLOPs per byte read from HBM) equals the GPU's Tensor Core FLOPS divided by HBM bandwidth. Below the ridge point, decode is memory-bandwidth bound; above it, aggregate throughput plateaus and per-user speed drops roughly inversely with batch size."}},{"@type":"Question","name":"What per-user decode speed (TPOT) do interactive chat and coding agents need?","acceptedAnswer":{"@type":"Answer","text":"Human reading speed is ~5-8 tokens/sec, but interactive chat feels snappy at 25-40 tok/s (25-40 ms TPOT), and agentic coding loops benefit from 50-100+ tok/s. Offline batch jobs can push batch size all the way to the VRAM ceiling to minimize $/1M tokens."}},{"@type":"Question","name":"Why does KV cache limit maximum batch size before compute saturates?","acceptedAnswer":{"@type":"Answer","text":"At long context lengths (16K-128K), each concurrent sequence holds gigabytes of KV cache. Even when Tensor Cores have spare FLOPS, the serving engine (vLLM/SGLang) must queue requests once KV cache fills available HBM."}},{"@type":"Question","name":"How does tensor parallelism affect batch throughput?","acceptedAnswer":{"@type":"Answer","text":"Splitting a model across 2-8 GPUs multiplies both aggregate HBM bandwidth and Tensor Core FLOPS, minus NVLink all-reduce overhead (~6% at TP=2, ~11% at TP=4, ~18% at TP=8)."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"LLM batch size and throughput calculator","item":"https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>LLM batch size &amp; throughput calculator</span></nav>
+  <h1>LLM batch size &amp; throughput calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-batch_throughput" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_batch_throughput" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Tuning vLLM/SGLang batching or capping agent spend?</strong> Grab the $9 ML Systems Cheatsheets for offline roofline math, the $29 Claude Code Workflow Pack for hard cost guards, or the $99 ml0x Pipeline.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_batch_throughput" rel="nofollow noopener" data-cta="s10_buy_cs_batch_throughput" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_batch_throughput" rel="nofollow noopener" data-cta="s10_buy_cc_batch_throughput" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_batch_throughput" rel="nofollow noopener" data-cta="s10_buy_pl_batch_throughput" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, roofline &amp; quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>Continuous batching is the #1 lever for lowering self-hosted LLM inference cost. Sweep batch sizes from 1 to 256 below to see where your cluster transitions from <strong>memory-bandwidth bound</strong> to <strong>compute bound</strong>, where KV cache OOMs, and which batch size meets your per-user latency SLA at the lowest $/1M tokens.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="model">Model preset</label>
+          <select id="model">
+            <option value="llama33_70b" selected>Llama 3.3 70B Dense</option>
+            <option value="qwen3_32b">Qwen3-32B Dense</option>
+            <option value="llama31_8b">Llama 3.1 8B Dense</option>
+            <option value="ds_v3">DeepSeek-V3 (671B / 37B active MoE)</option>
+            <option value="qwen3_235b">Qwen3-235B-A22B MoE</option>
+            <option value="custom">Custom model</option>
+          </select>
+        </div>
+        <div class="field"><label for="cluster">GPU cluster</label>
+          <select id="cluster">
+            <option value="1x_h100">1&times; H100 80GB SXM</option>
+            <option value="2x_h100" selected>2&times; H100 80GB SXM</option>
+            <option value="4x_h100">4&times; H100 80GB SXM</option>
+            <option value="8x_h100">8&times; H100 80GB SXM</option>
+            <option value="1x_h200">1&times; H200 141GB SXM</option>
+            <option value="8x_h200">8&times; H200 141GB SXM</option>
+            <option value="4x_b200">4&times; B200 192GB SXM</option>
+            <option value="1x_a100">1&times; A100 80GB SXM</option>
+            <option value="1x_4090">1&times; RTX 4090 24GB</option>
+          </select>
+        </div>
+        <div class="field"><label for="prec">Serving precision</label>
+          <select id="prec">
+            <option value="fp8" selected>FP8 weights + FP8 KV cache</option>
+            <option value="int4">INT4 weights + FP8 KV cache</option>
+            <option value="bf16">BF16 weights + FP16 KV cache</option>
+            <option value="fp4">FP4 weights + FP8 KV (Blackwell)</option>
+          </select>
+        </div>
+        <div class="field"><label for="ctx">Average context length (tokens)</label><input id="ctx" type="number" min="512" max="500000" step="1024" value="8192"></div>
+        <div class="field"><label for="batch">Target batch size</label><input id="batch" type="number" min="1" max="512" value="32"></div>
+        <div class="field"><label for="slaTps">Latency SLA (min tok/s per user)</label><input id="slaTps" type="number" min="5" max="200" value="25"></div>
+        <div class="field"><label for="rate">Hourly rate ($ / GPU-hr)</label><input id="rate" type="number" min="0.1" max="50" step="0.1" value="2.80"></div>
+      </div>
+      <div id="customRow" class="grid" style="margin-top:12px;" hidden>
+        <div class="field"><label for="cTotalB">Total parameters (B)</label><input id="cTotalB" type="number" min="1" max="5000" value="70"></div>
+        <div class="field"><label for="cActiveB">Active parameters (B)</label><input id="cActiveB" type="number" min="1" max="5000" value="70"></div>
+        <div class="field"><label for="cKvKB">KV cache per token FP16 (KB)</label><input id="cKvKB" type="number" min="1" max="2000" value="320"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Batch Size</th><th class="num">Total VRAM</th><th class="num">Aggregate tok/s</th><th class="num">Per-User tok/s</th><th class="num">TPOT (ms)</th><th class="num">$/1M Tokens</th><th class="num">Regime</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+      <div style="flex:1 1 280px;">
+        <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Optimizing inference economics in production?</p>
+        <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Enforce hard per-session token caps with the $29 Claude Code Pack or full $99 ml0x Pipeline. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+        <a data-cta="postresult_cc_batch_throughput" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_batch_throughput" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+        <a data-cta="postresult_pipeline_batch_throughput" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_batch_throughput" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline &middot; $99</a>
+      </div>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Why does increasing batch size boost aggregate tokens/sec so dramatically?</h3><p>At batch size 1, LLM decode reads the entire active model weights from HBM just to generate 1 token, leaving Tensor Cores over 95% idle. Batching N requests amortizes that weight read across N tokens in a single forward step until you hit either the GPU compute ridge point or the KV cache VRAM ceiling.</p></div>
+    <div class="faq-item"><h3>What is the roofline ridge point for LLM decode?</h3><p>The ridge point is the batch size where arithmetic intensity (FLOPs per byte read from HBM) equals the GPU's Tensor Core FLOPS divided by HBM bandwidth. Below the ridge point, decode is memory-bandwidth bound; above it, aggregate throughput plateaus and per-user speed drops roughly inversely with batch size.</p></div>
+    <div class="faq-item"><h3>What per-user decode speed (TPOT) do interactive chat and coding agents need?</h3><p>Human reading speed is ~5&ndash;8 tokens/sec, but interactive chat feels snappy at 25&ndash;40 tok/s (25&ndash;40 ms TPOT), and agentic coding loops benefit from 50&ndash;100+ tok/s. Offline batch jobs can push batch size all the way to the VRAM ceiling to minimize $/1M tokens.</p></div>
+    <div class="faq-item"><h3>Why does KV cache limit maximum batch size before compute saturates?</h3><p>At long context lengths (16K&ndash;128K), each concurrent sequence holds gigabytes of KV cache. Even when Tensor Cores have spare FLOPS, the serving engine (vLLM/SGLang) must queue requests once KV cache fills available HBM.</p></div>
+    <div class="faq-item"><h3>How does tensor parallelism affect batch throughput?</h3><p>Splitting a model across 2&ndash;8 GPUs multiplies both aggregate HBM bandwidth and Tensor Core FLOPS, minus NVLink all-reduce overhead (~6% at TP=2, ~11% at TP=4, ~18% at TP=8).</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/vllm-vs-sglang-throughput-calculator.html">vLLM vs SGLang throughput calculator</a> &mdash; Compare RadixAttention vs PagedAttention on shared-prefix workloads.</li>
+      <li><a href="/calculators/context-window-vram-calculator.html">Context window VRAM calculator</a> &mdash; Deep dive into KV cache scaling across context lengths.</li>
+      <li><a href="/calculators/llm-api-vs-self-host-calculator.html">LLM API vs self-host calculator</a> &mdash; Convert your $/1M self-host rate into a monthly API break-even.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. Roofline estimates model decode steps with 72% HBM efficiency and 45% Tensor Core efficiency; prefill-heavy workloads will see lower decode concurrency without chunked prefill or disaggregated serving.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-batch_throughput" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/fp8-vs-int4-memory-calculator.html">FP8 vs INT4 memory</a>
+    <a href="/calculators/llm-fine-tuning-cost-calculator.html">Fine-tuning cost</a>
+    <a href="/calculators/context-window-vram-calculator.html">Context window VRAM</a>
+    <a href="/calculators/llm-batch-size-throughput-calculator.html">Batch size throughput</a>
+    <a href="/calculators/lora-rank-sizing-calculator.html">LoRA rank sizing</a>
+    <a href="/calculators/llm-api-vs-self-host-calculator.html">API vs self-host</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const MODELS = {
+    llama33_70b: { name:"Llama 3.3 70B", totalB:70.6, activeB:70.6, kvKB:327.7 },
+    qwen3_32b:   { name:"Qwen3-32B", totalB:32.8, activeB:32.8, kvKB:262.1 },
+    llama31_8b:  { name:"Llama 3.1 8B", totalB:8.03, activeB:8.03, kvKB:131.1 },
+    ds_v3:       { name:"DeepSeek-V3", totalB:671, activeB:37, kvKB:70.2 },
+    qwen3_235b:  { name:"Qwen3-235B-A22B", totalB:235, activeB:22, kvKB:192.5 }
+  };
+  const CLUSTERS = {
+    "1x_h100": { name:"1x H100", n:1, vram:80,  bw:3350, fp8:1979, bf16:989,  fp4:1979, tp:1.00, rate:2.80 },
+    "2x_h100": { name:"2x H100", n:2, vram:80,  bw:3350, fp8:1979, bf16:989,  fp4:1979, tp:0.94, rate:2.80 },
+    "4x_h100": { name:"4x H100", n:4, vram:80,  bw:3350, fp8:1979, bf16:989,  fp4:1979, tp:0.89, rate:2.80 },
+    "8x_h100": { name:"8x H100", n:8, vram:80,  bw:3350, fp8:1979, bf16:989,  fp4:1979, tp:0.82, rate:2.80 },
+    "1x_h200": { name:"1x H200", n:1, vram:141, bw:4800, fp8:1979, bf16:989,  fp4:1979, tp:1.00, rate:3.80 },
+    "8x_h200": { name:"8x H200", n:8, vram:141, bw:4800, fp8:1979, bf16:989,  fp4:1979, tp:0.82, rate:3.80 },
+    "4x_b200": { name:"4x B200", n:4, vram:192, bw:8000, fp8:4500, bf16:2250, fp4:9000, tp:0.92, rate:6.50 },
+    "1x_a100": { name:"1x A100", n:1, vram:80,  bw:2039, fp8:312,  bf16:312,  fp4:312,  tp:1.00, rate:1.65 },
+    "1x_4090": { name:"1x RTX 4090", n:1, vram:24, bw:1008, fp8:330, bf16:165, fp4:330, tp:1.00, rate:0.45 }
+  };
+  const PRECS = {
+    fp8:  { bpp:1.05, kvF:0.5, tKey:'fp8' },
+    int4: { bpp:0.56, kvF:0.5, tKey:'bf16' },
+    bf16: { bpp:2.02, kvF:1.0, tKey:'bf16' },
+    fp4:  { bpp:0.56, kvF:0.5, tKey:'fp4' }
+  };
+  const SWEEP = [1, 4, 8, 16, 32, 64, 128, 256];
+  const $ = id => document.getElementById(id);
+
+  function simBatch(m, cl, pr, ctx, B, rate){
+    const poolGB = cl.n * cl.vram;
+    const weightGB = m.totalB * pr.bpp;
+    const kvPerSeqGB = (m.kvKB / 1048576) * pr.kvF * ctx;
+    const kvGB = kvPerSeqGB * B;
+    const actGB = Math.max(2, poolGB * 0.06 + B * 0.08);
+    const totalGB = weightGB + kvGB + actGB;
+    const oom = totalGB > poolGB;
+
+    const bytesPerStepGB = m.activeB * pr.bpp + kvGB;
+    const memTps = ((cl.bw * cl.n * cl.tp * 0.72) / Math.max(0.05, bytesPerStepGB)) * B;
+    const tflops = cl[pr.tKey];
+    const compTps = (tflops * 1e12 * cl.n * cl.tp * 0.45) / (2 * m.activeB * 1e9);
+    const aggTps = Math.min(memTps, compTps);
+    const userTps = aggTps / B;
+    const tpotMs = userTps > 0 ? 1000 / userTps : 0;
+    const clusterHr = cl.n * rate;
+    const cost1M = aggTps > 0 ? (clusterHr / (aggTps * 3600)) * 1e6 : 0;
+    const regime = oom ? 'OOM' : (memTps < compTps ? 'Memory BW' : 'Compute');
+    return { B, totalGB, oom, aggTps, userTps, tpotMs, cost1M, regime, kvPerSeqGB, weightGB, poolGB };
+  }
+  function calc(){
+    const mk = $('model').value;
+    $('customRow').hidden = mk !== 'custom';
+    const m = mk === 'custom'
+      ? { name:"Custom", totalB:Math.max(1,+$('cTotalB').value||70), activeB:Math.max(1,+$('cActiveB').value||70), kvKB:Math.max(1,+$('cKvKB').value||320) }
+      : MODELS[mk];
+    const cl = CLUSTERS[$('cluster').value];
+    const pr = PRECS[$('prec').value];
+    const ctx = Math.max(512, +$('ctx').value||8192);
+    const targetB = Math.max(1, +$('batch').value||32);
+    const slaTps = Math.max(1, +$('slaTps').value||25);
+    const rate = Math.max(0.1, +$('rate').value||cl.rate);
+
+    const res = simBatch(m, cl, pr, ctx, targetB, rate);
+    const availKvGB = Math.max(0, res.poolGB * 0.94 - res.weightGB - 2);
+    const maxBatch = res.kvPerSeqGB > 0 ? Math.floor(availKvGB / (res.kvPerSeqGB + 0.08)) : 0;
+
+    // Best batch that meets SLA and does not OOM
+    let bestSla = null;
+    for (let b = 1; b <= Math.min(512, maxBatch); b++) {
+      const s = simBatch(m, cl, pr, ctx, b, rate);
+      if (!s.oom && s.userTps >= slaTps) bestSla = s;
+    }
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${res.oom?'kpi--bad':'kpi--ok'}"><div class="kpi__label">Aggregate Throughput</div><div class="kpi__val">${res.oom?'OOM':Math.round(res.aggTps).toLocaleString()+' tok/s'}</div><div class="kpi__sub">${res.regime} at batch ${targetB}</div></div>
+      <div class="kpi ${!res.oom && res.userTps>=slaTps?'kpi--ok':'kpi--warn'}"><div class="kpi__label">Per-User Speed</div><div class="kpi__val">${res.oom?'&mdash;':res.userTps.toFixed(1)+' tok/s'}</div><div class="kpi__sub">${res.oom?'Exceeds VRAM':res.tpotMs.toFixed(1)+' ms TPOT (SLA '+slaTps+')'}</div></div>
+      <div class="kpi"><div class="kpi__label">Max OOM-Safe Batch</div><div class="kpi__val">${maxBatch > 0 ? maxBatch : '0 (OOM)'}</div><div class="kpi__sub">On ${res.poolGB} GB (${res.weightGB.toFixed(1)} GB weights)</div></div>
+      <div class="kpi"><div class="kpi__label">Cost / 1M Output Tokens</div><div class="kpi__val">${res.oom?'&mdash;':'$'+res.cost1M.toFixed(3)}</div><div class="kpi__sub">$${(cl.n*rate).toFixed(2)}/hr cluster burn</div></div>
+    `;
+    if (maxBatch <= 0) {
+      $('verdict').innerHTML = `<strong>Model does not fit on ${cl.name} (${res.poolGB} GB).</strong> Weights require ${res.weightGB.toFixed(1)} GB. Switch to INT4/FP4 or add GPUs.`;
+    } else if (bestSla) {
+      $('verdict').innerHTML = `<strong>SLA sweet spot: Batch ${bestSla.B}</strong> delivers <strong>${Math.round(bestSla.aggTps).toLocaleString()} tok/s</strong> aggregate (${bestSla.userTps.toFixed(1)} tok/s per user, meeting your ${slaTps} tok/s SLA) at <strong>$${bestSla.cost1M.toFixed(3)} / 1M tokens</strong>.`;
+    } else {
+      $('verdict').innerHTML = `<strong>SLA (${slaTps} tok/s per user) cannot be met even at batch 1.</strong> Single-stream speed is ${simBatch(m,cl,pr,ctx,1,rate).userTps.toFixed(1)} tok/s; add tensor-parallel GPUs or lower precision.`;
+    }
+
+    $('rows').innerHTML = SWEEP.map(b => {
+      const s = simBatch(m, cl, pr, ctx, b, rate);
+      const isTarget = b === targetB;
+      return `<tr class="${isTarget?'tt':''}"><td>Batch ${b}</td><td class="num">${s.totalGB.toFixed(1)} GB</td><td class="num">${s.oom?'OOM':Math.round(s.aggTps).toLocaleString()}</td><td class="num">${s.oom?'&mdash;':s.userTps.toFixed(1)}</td><td class="num">${s.oom?'&mdash;':s.tpotMs.toFixed(1)+' ms'}</td><td class="num">${s.oom?'&mdash;':'$'+s.cost1M.toFixed(3)}</td><td class="num">${s.regime}</td></tr>`;
+    }).join('');
+  }
+  $('cluster').addEventListener('change', ()=>{
+    $('rate').value = CLUSTERS[$('cluster').value].rate.toFixed(2);
+    calc();
+  });
+  ['model','prec','ctx','batch','slaTps','rate','cTotalB','cActiveB','cKvKB'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

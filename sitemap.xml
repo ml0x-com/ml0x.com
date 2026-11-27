@@ -391,4 +391,34 @@
     <lastmod>2026-11-27</lastmod>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://ml0x.com/calculators/fp8-vs-int4-memory-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/llm-fine-tuning-cost-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/context-window-vram-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/llm-batch-size-throughput-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/lora-rank-sizing-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/llm-api-vs-self-host-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>
