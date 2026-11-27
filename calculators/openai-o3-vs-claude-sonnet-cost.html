@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenAI o3 vs Claude Sonnet 4 Cost Calculator (2026 API Pricing) | ml0x</title>
+<meta name="description" content="Compare OpenAI o3 ($2/$8) and o4-mini against Claude Sonnet 4 ($3/$15) across reasoning effort, prompt caching, and Batch API 50% discounts.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/openai-o3-vs-claude-sonnet-cost.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/openai-o3-vs-claude-sonnet-cost.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/openai-o3-vs-claude-sonnet-cost.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OpenAI o3 vs Claude Sonnet 4 Cost Calculator (2026 API Pricing)">
+<meta property="og:description" content="Compare OpenAI o3 ($2/$8) and o4-mini against Claude Sonnet 4 ($3/$15) across reasoning effort, prompt caching, and Batch API 50% discounts.">
+<meta property="og:url" content="https://ml0x.com/calculators/openai-o3-vs-claude-sonnet-cost.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="OpenAI o3 vs Claude Sonnet 4 Cost Calculator (2026 API Pricing)">
+<meta name="twitter:description" content="Compare OpenAI o3 ($2/$8) and o4-mini against Claude Sonnet 4 ($3/$15) across reasoning effort, prompt caching, and Batch API 50% discounts.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+/* Sprint 12 Single-Dominant-CTA Click-Gated Card */
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:340px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 20px;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"OpenAI o3 vs Claude Sonnet 4 Cost Calculator","url":"https://ml0x.com/calculators/openai-o3-vs-claude-sonnet-cost.html","description":"Compare OpenAI o3 ($2/$8) and o4-mini against Claude Sonnet 4 ($3/$15) across reasoning effort, prompt caching, and Batch API 50% discounts.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why can OpenAI o3 cost more than Claude Sonnet 4 even though o3's output price is lower?","acceptedAnswer":{"@type":"Answer","text":"OpenAI o3 generates hidden reasoning tokens billed at the $8/M output rate. On hard prompts with a 3x\u20134x reasoning multiplier, effective output cost reaches $24\u2013$32 per million visible tokens, exceeding standard Sonnet 4 ($15/M)."}},{"@type":"Question","name":"Which has better prompt caching: OpenAI or Anthropic?","acceptedAnswer":{"@type":"Answer","text":"Anthropic offers a 90% discount on cached input reads (0.10x) vs OpenAI's 75% discount (0.25x), though Anthropic charges a 1.25x write fee on cache creation."}},{"@type":"Question","name":"Do both OpenAI o3 and Claude Sonnet 4 support 50% Batch API discounts?","acceptedAnswer":{"@type":"Answer","text":"Yes. Both providers offer asynchronous 24-hour Batch APIs at 50% off standard token rates, ideal for evals, classification, and offline pipelines."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"OpenAI o3 vs Claude Sonnet 4 Cost Calculator","item":"https://ml0x.com/calculators/openai-o3-vs-claude-sonnet-cost.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>OpenAI o3 vs Claude Sonnet 4 Cost Calculator</span></nav>
+  <h1>OpenAI o3 vs Claude Sonnet 4 Cost Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-openai-o3-vs-claude-sonnet-cost" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>After OpenAI's price cuts, <strong>o3</strong> ($2/M input, $8/M output, 75% cached input discount) undercuts <strong>Claude Sonnet 4</strong> ($3/M input, $15/M output, 90% cached input discount) on nominal per-token rates — unless o3's hidden reasoning tokens inflate total output volume. Slide reasoning effort and cache hit rate below to see the real bill.</p>
+
+  <section id="calculator">
+    <h2>Interactive comparison calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="reqsDay">Requests / day <span class="val-pill" id="reqsDayVal">500</span></label><input id="reqsDay" type="range" min="25" max="10000" step="25" value="500"></div>
+        <div class="field"><label for="inTok">Input tokens / req <span class="val-pill" id="inTokVal">6,000</span></label><input id="inTok" type="range" min="500" max="64000" step="500" value="6000"></div>
+        <div class="field"><label for="outTok">Visible output tokens <span class="val-pill" id="outTokVal">900</span></label><input id="outTok" type="range" min="100" max="8000" step="100" value="900"></div>
+        <div class="field"><label for="o3Mult">o3 reasoning multiplier <span class="val-pill" id="o3MultVal">3.0x</span></label><input id="o3Mult" type="range" min="1" max="6" step="0.5" value="3.0"></div>
+        <div class="field"><label for="cacheHit">Prompt cache hit rate <span class="val-pill" id="cacheHitVal">70%</span></label><input id="cacheHit" type="range" min="0" max="95" step="5" value="70"></div>
+        <div class="field"><label for="batchMode">Async Batch API (50% off)?</label><select id="batchMode"><option value="1" selected>Standard Real-Time API</option><option value="0.5">Batch API (24h async, -50%)</option></select></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Model</th><th class='num'>Input $/Mo</th><th class='num'>Output $/Mo</th><th class='num'>Total / Mo</th><th class='num'>Annual</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_openai-o3-vs-claude-sonnet-cost" aria-label="Claude Code Workflow Pack">
+      <div class="s12-cro__tag">Most Popular · $29 Once</div>
+      <p class="s12-cro__lead"><strong>Comparing OpenAI o3 and Claude Sonnet 4 for coding agents?</strong> Enforce hard per-session dollar limits with <code>cost_guard.py</code> in the $29 Claude Code Workflow Pack.</p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s12_ml0x_openai-o3-vs-claude-sonnet-cost" data-cta="s12_buy_cc29_openai-o3-vs-claude-sonnet-cost">Get Claude Code Pack — $29</button>
+      <p class="s12-cro__alts">Also available: <a href="/cheatsheet-pack/">$9 ML Systems Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <details>
+        <summary>Preview what&rsquo;s inside the Claude Code Workflow Pack ($29)</summary>
+        <ul>
+        <li><strong>Hard Spend Protection (<code>cost_guard.py</code>):</strong> PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+        <li><strong>Safety &amp; Velocity Hooks:</strong> <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> — 64 passing unit tests included.</li>
+        <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands:</strong> Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Why can OpenAI o3 cost more than Claude Sonnet 4 even though o3's output price is lower?</h3><p>OpenAI o3 generates hidden reasoning tokens billed at the $8/M output rate. On hard prompts with a 3x–4x reasoning multiplier, effective output cost reaches $24–$32 per million visible tokens, exceeding standard Sonnet 4 ($15/M).</p></div>
+    <div class="faq-item"><h3>Which has better prompt caching: OpenAI or Anthropic?</h3><p>Anthropic offers a 90% discount on cached input reads (0.10x) vs OpenAI's 75% discount (0.25x), though Anthropic charges a 1.25x write fee on cache creation.</p></div>
+    <div class="faq-item"><h3>Do both OpenAI o3 and Claude Sonnet 4 support 50% Batch API discounts?</h3><p>Yes. Both providers offer asynchronous 24-hour Batch APIs at 50% off standard token rates, ideal for evals, classification, and offline pipelines.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Automate model cost guardrails in Claude Code</p>
+    <p class="s12-post__desc">5 CLAUDE.md templates, 5 guard hooks (64 tests), and 8 slash commands for $29 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s12_ml0x_openai-o3-vs-claude-sonnet-cost" data-cta="s12_post_cc29_openai-o3-vs-claude-sonnet-cost">Get Claude Code Pack — $29</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related 2026 AI &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4 cost</a> &mdash; Add DeepSeek-R1 to your reasoning cost comparison.</li>
+      <li><a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor cost</a> &mdash; Compare coding agent subscriptions vs API.</li>
+      <li><a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost estimator</a> &mdash; Model multi-step agent loop cost growth.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and hardware figures reflect published 2026 provider rate cards and hardware datasheets.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261127-s12-openai-o3-vs-claude-sonnet-cost" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4</a>
+    <a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 cost</a>
+    <a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor</a>
+    <a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM</a>
+    <a href="/calculators/vllm-vs-sglang-throughput.html">vLLM vs SGLang</a>
+    <a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100</a>
+    <a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const reqsDay = +$('reqsDay').value;
+    const inTok = +$('inTok').value;
+    const outTok = +$('outTok').value;
+    const o3Mult = +$('o3Mult').value;
+    const cache = +$('cacheHit').value / 100;
+    const bm = +$('batchMode').value;
+
+    $('reqsDayVal').textContent = reqsDay.toLocaleString();
+    $('inTokVal').textContent = inTok.toLocaleString();
+    $('outTokVal').textContent = outTok.toLocaleString();
+    $('o3MultVal').textContent = o3Mult.toFixed(1) + 'x';
+    $('cacheHitVal').textContent = Math.round(cache*100) + '%';
+
+    const mIn = (reqsDay * 30 * inTok) / 1e6;
+    const mOut = (reqsDay * 30 * outTok) / 1e6;
+
+    const list = [
+      { name:'OpenAI o3 (with reasoning)', inC: mIn * (cache*0.50 + (1-cache)*2.00) * bm, outC: mOut * o3Mult * 8.00 * bm },
+      { name:'OpenAI o4-mini (with reasoning)', inC: mIn * (cache*0.275 + (1-cache)*1.10) * bm, outC: mOut * o3Mult * 4.40 * bm },
+      { name:'Claude Sonnet 4 (standard)', inC: mIn * (cache*0.30 + (1-cache)*3.00) * bm, outC: mOut * 15.00 * bm },
+      { name:'Claude Sonnet 4 (extended thinking)', inC: mIn * (cache*0.30 + (1-cache)*3.00) * bm, outC: mOut * Math.max(1.5, o3Mult*0.7) * 15.00 * bm }
+    ];
+    list.forEach(x => x.tot = x.inC + x.outC);
+    const o3 = list[0], sonnet = list[2];
+    const winner = o3.tot <= sonnet.tot ? 'OpenAI o3' : 'Claude Sonnet 4';
+    const delta = Math.abs(o3.tot - sonnet.tot);
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${o3.tot<=sonnet.tot?'kpi--ok':''}"><div class="kpi__label">OpenAI o3 / Mo</div><div class="kpi__val">$${Math.round(o3.tot).toLocaleString()}</div><div class="kpi__sub">${o3Mult.toFixed(1)}x reasoning tokens</div></div>
+      <div class="kpi ${sonnet.tot<o3.tot?'kpi--ok':''}"><div class="kpi__label">Claude Sonnet 4 / Mo</div><div class="kpi__val">$${Math.round(sonnet.tot).toLocaleString()}</div><div class="kpi__sub">90% cached input reads</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">OpenAI o4-mini / Mo</div><div class="kpi__val">$${Math.round(list[1].tot).toLocaleString()}</div><div class="kpi__sub">Lowest-cost reasoning tier</div></div>
+      <div class="kpi"><div class="kpi__label">Head-to-Head Delta</div><div class="kpi__val">$${Math.round(delta).toLocaleString()}/mo</div><div class="kpi__sub">${winner} saves $${Math.round(delta*12).toLocaleString()}/yr</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> Comparing <strong>OpenAI o3</strong> (${o3Mult.toFixed(1)}x reasoning) vs standard <strong>Claude Sonnet 4</strong>, <strong>${winner}</strong> is cheaper by <strong>$${Math.round(delta).toLocaleString()}/month</strong>. Notice how high cache hit rates favor Sonnet 4 (90% off vs 75% off).`;
+    $('rows').innerHTML = list.map((x,i) => `<tr${i===0&&o3.tot<=sonnet.tot || i===2&&sonnet.tot<o3.tot ? ' class="tt"':''}><td>${x.name}</td><td class="num">$${Math.round(x.inC).toLocaleString()}</td><td class="num">$${Math.round(x.outC).toLocaleString()}</td><td class="num">$${Math.round(x.tot).toLocaleString()}</td><td class="num">$${Math.round(x.tot*12).toLocaleString()}</td></tr>`).join('');
+  }
+  ['reqsDay','inTok','outTok','o3Mult','cacheHit','batchMode'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+        
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'openai-o3-vs-claude-sonnet-cost'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

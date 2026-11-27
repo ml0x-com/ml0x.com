@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local LLM Hardware Guide & Cost Calculator (2026 RTX 5090 vs Mac Studio) | ml0x</title>
+<meta name="description" content="Interactive 2026 local AI hardware recommender: compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/local-llm-hardware-guide-2026.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/local-llm-hardware-guide-2026.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/local-llm-hardware-guide-2026.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Local LLM Hardware Guide & Cost Calculator (2026 RTX 5090 vs Mac Studio)">
+<meta property="og:description" content="Interactive 2026 local AI hardware recommender: compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.">
+<meta property="og:url" content="https://ml0x.com/calculators/local-llm-hardware-guide-2026.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Local LLM Hardware Guide & Cost Calculator (2026 RTX 5090 vs Mac Studio)">
+<meta name="twitter:description" content="Interactive 2026 local AI hardware recommender: compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+/* Sprint 12 Single-Dominant-CTA Click-Gated Card */
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:340px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 20px;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Local LLM Hardware Guide & Calculator (2026)","url":"https://ml0x.com/calculators/local-llm-hardware-guide-2026.html","description":"Interactive 2026 local AI hardware recommender: compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Should I buy an RTX 5090 PC or a Mac Studio M4 Ultra for local LLMs?","acceptedAnswer":{"@type":"Answer","text":"Buy an RTX 5090 (or 2x 5090) if you want 2x\u20133x faster decode speeds on 8B\u201370B models and CUDA fine-tuning. Buy a Mac Studio M4 Ultra (192GB or 512GB) if you want to load 109B\u2013671B MoE models quietly at <180W."}},{"@type":"Question","name":"How much electricity does a dual RTX 5090 rig use?","acceptedAnswer":{"@type":"Answer","text":"Under load, a 2x RTX 5090 workstation draws ~950\u20131,100W (~$25\u2013$40/month at 6 hrs/day and $0.16/kWh), compared to ~160W (~$5/month) on a Mac Studio."}},{"@type":"Question","name":"What is the sweet spot model size for 32 GB VRAM in 2026?","acceptedAnswer":{"@type":"Answer","text":"Qwen3-32B (Q4_K_M, ~19 GB) and Qwen3-30B-A3B MoE (~18 GB) are the top 32 GB local models, leaving ample headroom for 32K+ context windows."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Local LLM Hardware Guide & Calculator (2026)","item":"https://ml0x.com/calculators/local-llm-hardware-guide-2026.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Local LLM Hardware Guide & Calculator (2026)</span></nav>
+  <h1>Local LLM Hardware Guide & Calculator (2026)</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-local-llm-hardware-guide-2026" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Buying local AI hardware in 2026 comes down to one tradeoff: <strong>GPU bandwidth (tok/s)</strong> on NVIDIA cards vs <strong>massive unified memory (VRAM)</strong> on Apple Silicon Mac Studio. Set your budget, target model size, and monthly cloud spend below to find your exact hardware match and payback period.</p>
+
+  <section id="calculator">
+    <h2>Interactive comparison calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="budget">Hardware budget ($) <span class="val-pill" id="budgetVal">$4,500</span></label><input id="budget" type="range" min="1500" max="15000" step="250" value="4500"></div>
+        <div class="field"><label for="targetB">Target model size (B, Q4) <span class="val-pill" id="targetBVal">70B</span></label><input id="targetB" type="range" min="8" max="405" step="1" value="70"></div>
+        <div class="field"><label for="cloudMo">Current monthly cloud/API bill <span class="val-pill" id="cloudMoVal">$350</span></label><input id="cloudMo" type="range" min="50" max="2000" step="25" value="350"></div>
+        <div class="field"><label for="hrsDay">Daily usage hours <span class="val-pill" id="hrsDayVal">6 hrs</span></label><input id="hrsDay" type="range" min="1" max="24" step="1" value="6"></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>2026 Local Build</th><th class='num'>VRAM</th><th class='num'>Est. Cost</th><th class='num'>Tok/s (Target)</th><th class='num'>Payback</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_local-llm-hardware-guide-2026" aria-label="ML Systems Cheatsheet Pack">
+      <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <p class="s12-cro__lead"><strong>Building a 2026 local LLM rig?</strong> Keep VRAM budgets, GGUF file sizes, and bandwidth decode formulas right next to your build list with the $9 ML Systems Cheatsheet Pack.</p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_local-llm-hardware-guide-2026" data-cta="s12_buy_cs9_local-llm-hardware-guide-2026">Get ML Systems Cheatsheets — $9</button>
+      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <details>
+        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <ul>
+        <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
+        <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
+        <li><strong>ML Engineering Core Sheets:</strong> ROC/PR &amp; MCC metrics, scikit-learn pipelines, training triage checklist, and print-ready PDF + HTML + Markdown files.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Should I buy an RTX 5090 PC or a Mac Studio M4 Ultra for local LLMs?</h3><p>Buy an RTX 5090 (or 2x 5090) if you want 2x–3x faster decode speeds on 8B–70B models and CUDA fine-tuning. Buy a Mac Studio M4 Ultra (192GB or 512GB) if you want to load 109B–671B MoE models quietly at <180W.</p></div>
+    <div class="faq-item"><h3>How much electricity does a dual RTX 5090 rig use?</h3><p>Under load, a 2x RTX 5090 workstation draws ~950–1,100W (~$25–$40/month at 6 hrs/day and $0.16/kWh), compared to ~160W (~$5/month) on a Mac Studio.</p></div>
+    <div class="faq-item"><h3>What is the sweet spot model size for 32 GB VRAM in 2026?</h3><p>Qwen3-32B (Q4_K_M, ~19 GB) and Qwen3-30B-A3B MoE (~18 GB) are the top 32 GB local models, leaving ample headroom for 32K+ context windows.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Don't overbuy or under-spec your local LLM rig</p>
+    <p class="s12-post__desc">12 print-ready ML Systems sheets covering VRAM math, GGUF quantizations, and GPU sizing for $9 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_local-llm-hardware-guide-2026" data-cta="s12_post_cs9_local-llm-hardware-guide-2026">Get ML Systems Cheatsheets — $9</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related 2026 AI &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100 LLM</a> &mdash; Compare RTX 5090 directly against cloud A100 80GB.</li>
+      <li><a href="/calculators/qwen3-vram-calculator.html">Qwen3 VRAM calculator</a> &mdash; Check exact VRAM fit for every Qwen3 checkpoint.</li>
+      <li><a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM requirements</a> &mdash; Size Llama 4 Scout and Maverick locally.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and hardware figures reflect published 2026 provider rate cards and hardware datasheets.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261127-s12-local-llm-hardware-guide-2026" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4</a>
+    <a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 cost</a>
+    <a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor</a>
+    <a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM</a>
+    <a href="/calculators/vllm-vs-sglang-throughput.html">vLLM vs SGLang</a>
+    <a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100</a>
+    <a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  
+  const $ = id => document.getElementById(id);
+  const RIGS = [
+    { name:'Single RTX 5090 PC (32 GB)', vram:32, cost:3400, bw:1792, watts:550 },
+    { name:'2&times; RTX 4090 Workstation (48 GB)', vram:48, cost:4600, bw:1700, watts:850 },
+    { name:'2&times; RTX 5090 Workstation (64 GB)', vram:64, cost:6200, bw:3000, watts:1050 },
+    { name:'Mac Studio M4 Ultra (192 GB)', vram:170, cost:5600, bw:819, watts:160 },
+    { name:'Mac Studio M4 Ultra (512 GB)', vram:460, cost:9500, bw:819, watts:180 },
+    { name:'2&times; RTX 6000 Ada (96 GB)', vram:96, cost:14500, bw:1700, watts:680 }
+  ];
+  function calc(){
+    const budget = +$('budget').value;
+    const targetB = +$('targetB').value;
+    const cloudMo = +$('cloudMo').value;
+    const hrsDay = +$('hrsDay').value;
+
+    $('budgetVal').textContent = '$' + budget.toLocaleString();
+    $('targetBVal').textContent = targetB + 'B';
+    $('cloudMoVal').textContent = '$' + cloudMo.toLocaleString();
+    $('hrsDayVal').textContent = hrsDay + ' hrs';
+
+    const vramNeed = targetB * 0.58 + 4;
+    const evaluated = RIGS.map(r => {
+      const fits = r.vram >= vramNeed;
+      const tps = fits ? Math.round((r.bw * 0.78) / (targetB * 0.58)) : 0;
+      const elecMo = (r.watts / 1000) * hrsDay * 30 * 0.16;
+      const netSave = cloudMo - elecMo;
+      const payback = netSave > 0 ? r.cost / netSave : 999;
+      return { ...r, fits, tps, elecMo, payback, inBudget: r.cost <= budget };
+    });
+    const ideal = evaluated.find(r => r.fits && r.inBudget) || evaluated.find(r => r.fits) || evaluated[evaluated.length-1];
+
+    $('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi__label">VRAM Needed (${targetB}B Q4)</div><div class="kpi__val">${vramNeed.toFixed(1)} GB</div><div class="kpi__sub">Weights + 16K–32K KV cache</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Recommended Build</div><div class="kpi__val">${ideal.name.split(' (')[0]}</div><div class="kpi__sub">$${ideal.cost.toLocaleString()} &middot; ${ideal.vram} GB usable</div></div>
+      <div class="kpi"><div class="kpi__label">Expected Speed</div><div class="kpi__val">${ideal.fits ? ideal.tps + ' tok/s' : 'Too large'}</div><div class="kpi__sub">Bandwidth ceiling at Q4_K_M</div></div>
+      <div class="kpi ${ideal.payback<=18?'kpi--ok':'kpi--warn'}"><div class="kpi__label">Break-Even Payback</div><div class="kpi__val">${ideal.payback<99?ideal.payback.toFixed(1)+' mo':'N/A'}</div><div class="kpi__sub">vs $${cloudMo}/mo cloud bill</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> To run a ${targetB}B Q4 model (~${vramNeed.toFixed(1)} GB VRAM), <strong>${ideal.name}</strong> ($${ideal.cost.toLocaleString()}) is your best match${ideal.inBudget?' within budget':' (above your $'+budget.toLocaleString()+' budget — consider a smaller model or Mac Studio)'} at <strong>~${ideal.tps} tok/s</strong> and <strong>${ideal.payback<99?ideal.payback.toFixed(1)+' months':'long'} payback</strong>.`;
+    $('rows').innerHTML = evaluated.map(r => `<tr${r.name===ideal.name?' class="tt"':''}><td>${r.name}</td><td class="num">${r.vram} GB</td><td class="num">$${r.cost.toLocaleString()}</td><td class="num">${r.fits ? r.tps + ' tok/s' : 'OOM'}</td><td class="num">${r.payback<99?r.payback.toFixed(1)+' mo':'—'}</td></tr>`).join('');
+  }
+  ['budget','targetB','cloudMo','hrsDay'].forEach(id => $(id).addEventListener('input', calc));
+  calc();
+        
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'local-llm-hardware-guide-2026'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

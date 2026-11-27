@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Llama 4 VRAM Requirements Calculator (Scout 109B, Maverick 400B, Behemoth) | ml0x</title>
+<meta name="description" content="Calculate exact GPU VRAM requirements for Meta Llama 4 Scout (109B/17B), Maverick (400B/17B), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/llama-4-vram-requirements.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/llama-4-vram-requirements.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/llama-4-vram-requirements.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Llama 4 VRAM Requirements Calculator (Scout 109B, Maverick 400B, Behemoth)">
+<meta property="og:description" content="Calculate exact GPU VRAM requirements for Meta Llama 4 Scout (109B/17B), Maverick (400B/17B), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.">
+<meta property="og:url" content="https://ml0x.com/calculators/llama-4-vram-requirements.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Llama 4 VRAM Requirements Calculator (Scout 109B, Maverick 400B, Behemoth)">
+<meta name="twitter:description" content="Calculate exact GPU VRAM requirements for Meta Llama 4 Scout (109B/17B), Maverick (400B/17B), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+/* Sprint 12 Single-Dominant-CTA Click-Gated Card */
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:340px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 20px;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Llama 4 VRAM Requirements Calculator","url":"https://ml0x.com/calculators/llama-4-vram-requirements.html","description":"Calculate exact GPU VRAM requirements for Meta Llama 4 Scout (109B/17B), Maverick (400B/17B), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can Llama 4 Scout run on a single H100 80GB GPU?","acceptedAnswer":{"@type":"Answer","text":"Yes in INT4 (~61 GB weights), leaving ~15 GB for KV cache and activations. In FP8 (~114 GB weights), Scout requires either 1x H200 (141 GB) or 2x H100 (160 GB)."}},{"@type":"Question","name":"Why do MoE models like Llama 4 Maverick still need VRAM for all 400B parameters?","acceptedAnswer":{"@type":"Answer","text":"Even though only 17B parameters activate per token, the router can dispatch tokens to any expert at any layer, so all 128 experts must stay resident in HBM unless you accept severe PCIe offload latency."}},{"@type":"Question","name":"How much does FP8 KV cache save on long Llama 4 contexts?","acceptedAnswer":{"@type":"Answer","text":"Switching KV cache from BF16 to FP8 cuts KV cache memory exactly in half, doubling your supported context length or concurrent batch size on the same GPU pool."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Llama 4 VRAM Requirements Calculator","item":"https://ml0x.com/calculators/llama-4-vram-requirements.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Llama 4 VRAM Requirements Calculator</span></nav>
+  <h1>Llama 4 VRAM Requirements Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-llama-4-vram-requirements" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Meta's <strong>Llama 4</strong> family uses Mixture-of-Experts (MoE): only 17B parameters are active per token, but <strong>all total parameters</strong> (109B for Scout, 400B for Maverick, 2T for Behemoth) must fit in GPU VRAM. Slide context length, batch size, and quantization below to see exact GPU counts.</p>
+
+  <section id="calculator">
+    <h2>Interactive comparison calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="variant">Llama 4 variant</label><select id="variant"><option value="scout" selected>Llama 4 Scout (109B total / 17B active)</option><option value="maverick">Llama 4 Maverick (400B total / 17B active)</option><option value="behemoth">Llama 4 Behemoth (2000B total / 288B active)</option></select></div>
+        <div class="field"><label for="quant">Weight quantization</label><select id="quant"><option value="int4" selected>INT4 / AWQ / Q4_K_M (~0.56 B/param)</option><option value="fp8">FP8 E4M3 (~1.05 B/param)</option><option value="bf16">BF16 (~2.02 B/param)</option></select></div>
+        <div class="field"><label for="ctxK">Context window (K tokens) <span class="val-pill" id="ctxKVal">128K</span></label><input id="ctxK" type="range" min="4" max="1024" step="4" value="128"></div>
+        <div class="field"><label for="batch">Concurrent users (batch) <span class="val-pill" id="batchVal">4</span></label><input id="batch" type="range" min="1" max="64" step="1" value="4"></div>
+        <div class="field"><label for="kvQuant">KV cache dtype</label><select id="kvQuant"><option value="1">FP8 KV cache (1 byte)</option><option value="2" selected>BF16 KV cache (2 bytes)</option></select></div>
+        <div class="field"><label for="gpuType">Target GPU</label><select id="gpuType"><option value="80">H100 / A100 (80 GB)</option><option value="141" selected>H200 (141 GB)</option><option value="192">B200 (192 GB)</option><option value="32">RTX 5090 (32 GB)</option></select></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>GPU Option</th><th class='num'>VRAM / GPU</th><th class='num'>Min GPUs</th><th class='num'>Total Pool</th><th class='num'>Headroom</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_llama-4-vram-requirements" aria-label="ML Systems Cheatsheet Pack">
+      <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <p class="s12-cro__lead"><strong>Deploying Llama 4 MoE on your own GPUs?</strong> Grab the 4-term LLM VRAM budget, GQA KV-cache formulas, and quantization ladder in the $9 ML Systems Cheatsheet Pack.</p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_llama-4-vram-requirements" data-cta="s12_buy_cs9_llama-4-vram-requirements">Get ML Systems Cheatsheets — $9</button>
+      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <details>
+        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <ul>
+        <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
+        <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
+        <li><strong>ML Engineering Core Sheets:</strong> ROC/PR &amp; MCC metrics, scikit-learn pipelines, training triage checklist, and print-ready PDF + HTML + Markdown files.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Can Llama 4 Scout run on a single H100 80GB GPU?</h3><p>Yes in INT4 (~61 GB weights), leaving ~15 GB for KV cache and activations. In FP8 (~114 GB weights), Scout requires either 1x H200 (141 GB) or 2x H100 (160 GB).</p></div>
+    <div class="faq-item"><h3>Why do MoE models like Llama 4 Maverick still need VRAM for all 400B parameters?</h3><p>Even though only 17B parameters activate per token, the router can dispatch tokens to any expert at any layer, so all 128 experts must stay resident in HBM unless you accept severe PCIe offload latency.</p></div>
+    <div class="faq-item"><h3>How much does FP8 KV cache save on long Llama 4 contexts?</h3><p>Switching KV cache from BF16 to FP8 cuts KV cache memory exactly in half, doubling your supported context length or concurrent batch size on the same GPU pool.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Never mis-size an MoE GPU cluster again</p>
+    <p class="s12-post__desc">All 12 print-ready ML Systems reference sheets (VRAM, KV cache, quantization, GPU sizing) for $9 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_llama-4-vram-requirements" data-cta="s12_post_cs9_llama-4-vram-requirements">Get ML Systems Cheatsheets — $9</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related 2026 AI &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/qwen3-vram-calculator.html">Qwen3 VRAM calculator</a> &mdash; Size Qwen3 dense and MoE models across GGUF, FP8, and BF16.</li>
+      <li><a href="/calculators/fp8-vs-bf16-inference-memory.html">FP8 vs BF16 inference memory</a> &mdash; Compare weight and KV memory between FP8 and BF16.</li>
+      <li><a href="/calculators/local-llm-hardware-guide-2026.html">Local LLM hardware guide 2026</a> &mdash; Match your VRAM target to RTX 5090 or Mac Studio rigs.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and hardware figures reflect published 2026 provider rate cards and hardware datasheets.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261127-s12-llama-4-vram-requirements" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4</a>
+    <a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 cost</a>
+    <a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor</a>
+    <a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM</a>
+    <a href="/calculators/vllm-vs-sglang-throughput.html">vLLM vs SGLang</a>
+    <a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100</a>
+    <a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  
+  const $ = id => document.getElementById(id);
+  const VARIANTS = {
+    scout:    { name:'Llama 4 Scout', totalB:109, layers:48, kvHeads:8, headDim:128 },
+    maverick: { name:'Llama 4 Maverick', totalB:400, layers:48, kvHeads:8, headDim:128 },
+    behemoth: { name:'Llama 4 Behemoth', totalB:2000, layers:128, kvHeads:8, headDim:128 }
+  };
+  const QBYTES = { int4: 0.56, fp8: 1.05, bf16: 2.02 };
+  function calc(){
+    const v = VARIANTS[$('variant').value];
+    const qb = QBYTES[$('quant').value];
+    const ctxK = +$('ctxK').value;
+    const batch = +$('batch').value;
+    const kvB = +$('kvQuant').value;
+    const gpuGb = +$('gpuType').value;
+
+    $('ctxKVal').textContent = ctxK >= 1024 ? '1M' : ctxK + 'K';
+    $('batchVal').textContent = batch;
+
+    const weightsGb = v.totalB * qb;
+    const kvBytesPerTok = 2 * v.layers * v.kvHeads * v.headDim * kvB;
+    const kvGb = (kvBytesPerTok * ctxK * 1000 * batch) / 1e9;
+    const overheadGb = Math.max(4, weightsGb * 0.06);
+    const totalGb = weightsGb + kvGb + overheadGb;
+
+    const minGpus = Math.ceil(totalGb / (gpuGb * 0.92));
+    const gpus = [
+      { name: 'RTX 5090', gb: 32 },
+      { name: 'H100 / A100 SXM', gb: 80 },
+      { name: 'H200 SXM', gb: 141 },
+      { name: 'Blackwell B200', gb: 192 }
+    ];
+
+    $('kpis').innerHTML = `
+      <div class="kpi kpi--ok"><div class="kpi__label">Total VRAM Needed</div><div class="kpi__val">${totalGb.toFixed(1)} GB</div><div class="kpi__sub">${v.name} (${$('quant').value.toUpperCase()})</div></div>
+      <div class="kpi"><div class="kpi__label">Model Weights</div><div class="kpi__val">${weightsGb.toFixed(1)} GB</div><div class="kpi__sub">${v.totalB}B total MoE params</div></div>
+      <div class="kpi ${kvGb>weightsGb?'kpi--warn':''}"><div class="kpi__label">KV Cache (${batch}&times;${ctxK}K)</div><div class="kpi__val">${kvGb.toFixed(1)} GB</div><div class="kpi__sub">${(kvBytesPerTok/1024).toFixed(0)} KB / token</div></div>
+      <div class="kpi"><div class="kpi__label">Min Target GPUs</div><div class="kpi__val">${minGpus}&times; ${gpuGb}GB</div><div class="kpi__sub">${(minGpus*gpuGb).toLocaleString()} GB total pool</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> <strong>${v.name}</strong> at ${$('quant').value.toUpperCase()} with ${batch} concurrent ${ctxK}K-context streams needs <strong>${totalGb.toFixed(1)} GB VRAM</strong> (${weightsGb.toFixed(1)} GB weights + ${kvGb.toFixed(1)} GB KV cache + ${overheadGb.toFixed(1)} GB runtime). Minimum <strong>${minGpus}&times; ${gpuGb}GB GPUs</strong>.`;
+    $('rows').innerHTML = gpus.map(g => {
+      const n = Math.ceil(totalGb / (g.gb * 0.92));
+      const pool = n * g.gb;
+      const head = pool - totalGb;
+      return `<tr${g.gb===gpuGb?' class="tt"':''}><td>${g.name}</td><td class="num">${g.gb} GB</td><td class="num">${n}</td><td class="num">${pool.toLocaleString()} GB</td><td class="num">+${head.toFixed(1)} GB</td></tr>`;
+    }).join('');
+  }
+  ['variant','quant','ctxK','batch','kvQuant','gpuType'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+        
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'llama-4-vram-requirements'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

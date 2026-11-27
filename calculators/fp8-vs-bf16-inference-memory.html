@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FP8 vs BF16 Inference Memory Calculator (2026 VRAM & Decode Speed) | ml0x</title>
+<meta name="description" content="Compare FP8 (E4M3) vs BF16 weights VRAM, KV cache footprint, minimum GPUs, and memory-bandwidth decode speedup on H100, H200, B200, and RTX 5090.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/fp8-vs-bf16-inference-memory.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/fp8-vs-bf16-inference-memory.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/fp8-vs-bf16-inference-memory.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="FP8 vs BF16 Inference Memory Calculator (2026 VRAM & Decode Speed)">
+<meta property="og:description" content="Compare FP8 (E4M3) vs BF16 weights VRAM, KV cache footprint, minimum GPUs, and memory-bandwidth decode speedup on H100, H200, B200, and RTX 5090.">
+<meta property="og:url" content="https://ml0x.com/calculators/fp8-vs-bf16-inference-memory.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FP8 vs BF16 Inference Memory Calculator (2026 VRAM & Decode Speed)">
+<meta name="twitter:description" content="Compare FP8 (E4M3) vs BF16 weights VRAM, KV cache footprint, minimum GPUs, and memory-bandwidth decode speedup on H100, H200, B200, and RTX 5090.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+/* Sprint 12 Single-Dominant-CTA Click-Gated Card */
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:340px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 20px;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"FP8 vs BF16 Inference Memory Calculator","url":"https://ml0x.com/calculators/fp8-vs-bf16-inference-memory.html","description":"Compare FP8 (E4M3) vs BF16 weights VRAM, KV cache footprint, minimum GPUs, and memory-bandwidth decode speedup on H100, H200, B200, and RTX 5090.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does FP8 inference hurt LLM accuracy compared to BF16?","acceptedAnswer":{"@type":"Answer","text":"Across MMLU, GSM8K, and HumanEval benchmarks, dynamic per-tensor/blockwise FP8 (E4M3) preserves >99.5% of BF16 accuracy on 8B\u2013671B models."}},{"@type":"Question","name":"Which GPUs support native hardware FP8?","acceptedAnswer":{"@type":"Answer","text":"NVIDIA Hopper (H100, H200), Blackwell (B200, RTX 5090), and Ada Lovelace (L40S, RTX 4090) all include native FP8 Tensor Cores. Older Ampere A100 GPUs lack native FP8 compute and must dequantize."}},{"@type":"Question","name":"Can I use FP8 weights with BF16 KV cache?","acceptedAnswer":{"@type":"Answer","text":"Yes \u2014 vLLM and SGLang allow mixing FP8 weights with either BF16 or FP8 KV cache, though FP8 KV cache doubles your max batch size on long contexts."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"FP8 vs BF16 Inference Memory Calculator","item":"https://ml0x.com/calculators/fp8-vs-bf16-inference-memory.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>FP8 vs BF16 Inference Memory Calculator</span></nav>
+  <h1>FP8 vs BF16 Inference Memory Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-fp8-vs-bf16-inference-memory" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Moving LLM serving from <strong>BF16</strong> (2 bytes/param) to <strong>FP8 E4M3</strong> (1 byte/param) cuts weight memory in half, halves KV cache when FP8-KV is enabled, and nearly doubles memory-bandwidth-bound decode speed on Hopper/Blackwell/Ada GPUs with <0.5% perplexity loss. Slide your model and context below.</p>
+
+  <section id="calculator">
+    <h2>Interactive comparison calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="paramsB">Model parameters (B) <span class="val-pill" id="paramsBVal">70B</span></label><input id="paramsB" type="range" min="7" max="405" step="1" value="70"></div>
+        <div class="field"><label for="ctxK">Context length (K) <span class="val-pill" id="ctxKVal">32K</span></label><input id="ctxK" type="range" min="4" max="256" step="4" value="32"></div>
+        <div class="field"><label for="batch">Concurrent batch <span class="val-pill" id="batchVal">8</span></label><input id="batch" type="range" min="1" max="64" step="1" value="8"></div>
+        <div class="field"><label for="gpu">GPU model</label><select id="gpu"><option value="h100" selected>H100 80GB (3.35 TB/s)</option><option value="h200">H200 141GB (4.8 TB/s)</option><option value="b200">B200 192GB (8.0 TB/s)</option><option value="rtx5090">RTX 5090 32GB (1.79 TB/s)</option></select></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Precision</th><th class='num'>Weights GB</th><th class='num'>KV Cache GB</th><th class='num'>Total VRAM</th><th class='num'>Min GPUs</th><th class='num'>Decode Tok/s</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_fp8-vs-bf16-inference-memory" aria-label="ML Systems Cheatsheet Pack">
+      <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <p class="s12-cro__lead"><strong>Switching your inference stack from BF16 to FP8?</strong> Keep the full quantization ladder, KV-cache math, and GPU rooflines on hand with the $9 ML Systems Cheatsheet Pack.</p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_fp8-vs-bf16-inference-memory" data-cta="s12_buy_cs9_fp8-vs-bf16-inference-memory">Get ML Systems Cheatsheets — $9</button>
+      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <details>
+        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <ul>
+        <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
+        <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
+        <li><strong>ML Engineering Core Sheets:</strong> ROC/PR &amp; MCC metrics, scikit-learn pipelines, training triage checklist, and print-ready PDF + HTML + Markdown files.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Does FP8 inference hurt LLM accuracy compared to BF16?</h3><p>Across MMLU, GSM8K, and HumanEval benchmarks, dynamic per-tensor/blockwise FP8 (E4M3) preserves >99.5% of BF16 accuracy on 8B–671B models.</p></div>
+    <div class="faq-item"><h3>Which GPUs support native hardware FP8?</h3><p>NVIDIA Hopper (H100, H200), Blackwell (B200, RTX 5090), and Ada Lovelace (L40S, RTX 4090) all include native FP8 Tensor Cores. Older Ampere A100 GPUs lack native FP8 compute and must dequantize.</p></div>
+    <div class="faq-item"><h3>Can I use FP8 weights with BF16 KV cache?</h3><p>Yes — vLLM and SGLang allow mixing FP8 weights with either BF16 or FP8 KV cache, though FP8 KV cache doubles your max batch size on long contexts.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Get the 12-sheet ML Systems Cheatsheet Pack ($9)</p>
+    <p class="s12-post__desc">BF16/FP8/INT4 memory multipliers, KV cache formulas, and GPU sizing tables in PDF, HTML & Markdown.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_fp8-vs-bf16-inference-memory" data-cta="s12_post_cs9_fp8-vs-bf16-inference-memory">Get ML Systems Cheatsheets — $9</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related 2026 AI &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM requirements</a> &mdash; Size Llama 4 MoE models in FP8 vs INT4.</li>
+      <li><a href="/calculators/qwen3-vram-calculator.html">Qwen3 VRAM calculator</a> &mdash; Calculate Qwen3 memory across quantizations.</li>
+      <li><a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 inference cost</a> &mdash; Compare FP8 on H200 vs FP4 on B200.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and hardware figures reflect published 2026 provider rate cards and hardware datasheets.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261127-s12-fp8-vs-bf16-inference-memory" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4</a>
+    <a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 cost</a>
+    <a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor</a>
+    <a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM</a>
+    <a href="/calculators/vllm-vs-sglang-throughput.html">vLLM vs SGLang</a>
+    <a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100</a>
+    <a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  
+  const $ = id => document.getElementById(id);
+  const GPUS = {
+    h100:    { name:'H100 80GB', gb:80, bw:3350 },
+    h200:    { name:'H200 141GB', gb:141, bw:4800 },
+    b200:    { name:'B200 192GB', gb:192, bw:8000 },
+    rtx5090: { name:'RTX 5090 32GB', gb:32, bw:1792 }
+  };
+  function calc(){
+    const pB = +$('paramsB').value;
+    const ctxK = +$('ctxK').value;
+    const batch = +$('batch').value;
+    const g = GPUS[$('gpu').value];
+
+    $('paramsBVal').textContent = pB + 'B';
+    $('ctxKVal').textContent = ctxK + 'K';
+    $('batchVal').textContent = batch;
+
+    const layers = Math.round(24 + pB * 0.72);
+    const kvBaseTok = 2 * layers * 8 * 128; // GQA 8 kv heads
+    const bf16W = pB * 2.02;
+    const fp8W = pB * 1.05;
+    const bf16Kv = (kvBaseTok * 2 * ctxK * 1000 * batch) / 1e9;
+    const fp8Kv = bf16Kv * 0.5;
+
+    const bf16Tot = bf16W + bf16Kv + Math.max(3, bf16W * 0.05);
+    const fp8Tot = fp8W + fp8Kv + Math.max(2, fp8W * 0.05);
+    const bf16G = Math.ceil(bf16Tot / (g.gb * 0.92));
+    const fp8G = Math.ceil(fp8Tot / (g.gb * 0.92));
+
+    const bf16Tps = (g.bw * bf16G * 0.76) / bf16W;
+    const fp8Tps = (g.bw * fp8G * 0.76) / fp8W;
+    const savedGb = bf16Tot - fp8Tot;
+
+    $('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi__label">BF16 Total VRAM</div><div class="kpi__val">${bf16Tot.toFixed(1)} GB</div><div class="kpi__sub">${bf16G}&times; ${g.name}</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">FP8 Total VRAM</div><div class="kpi__val">${fp8Tot.toFixed(1)} GB</div><div class="kpi__sub">${fp8G}&times; ${g.name}</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">VRAM Saved</div><div class="kpi__val">${savedGb.toFixed(1)} GB</div><div class="kpi__sub">${Math.round((savedGb/bf16Tot)*100)}% reduction (${bf16G - fp8G} fewer GPUs)</div></div>
+      <div class="kpi"><div class="kpi__label">Per-GPU Decode Gain</div><div class="kpi__val">~1.92x</div><div class="kpi__sub">Half the weight bytes per token</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> Switching a ${pB}B model from BF16 to <strong>FP8 (weights + KV)</strong> saves <strong>${savedGb.toFixed(1)} GB VRAM</strong> (${Math.round((savedGb/bf16Tot)*100)}% smaller) and drops your minimum hardware from <strong>${bf16G}&times; to ${fp8G}&times; ${g.name}</strong>.`;
+    $('rows').innerHTML = `
+      <tr><td>BF16 (Weights + BF16 KV)</td><td class="num">${bf16W.toFixed(1)}</td><td class="num">${bf16Kv.toFixed(1)}</td><td class="num">${bf16Tot.toFixed(1)} GB</td><td class="num">${bf16G}</td><td class="num">${Math.round(bf16Tps)} tok/s</td></tr>
+      <tr class="tt"><td>FP8 E4M3 (Weights + FP8 KV)</td><td class="num">${fp8W.toFixed(1)}</td><td class="num">${fp8Kv.toFixed(1)}</td><td class="num">${fp8Tot.toFixed(1)} GB</td><td class="num">${fp8G}</td><td class="num">${Math.round(fp8Tps)} tok/s</td></tr>
+    `;
+  }
+  ['paramsB','ctxK','batch','gpu'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+        
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'fp8-vs-bf16-inference-memory'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwen3 VRAM Calculator (0.6B–32B Dense & 30B-A3B / 235B-A22B MoE) | ml0x</title>
+<meta name="description" content="Calculate exact VRAM, GGUF/FP8/BF16 weight size, KV cache, and single-stream tok/s for every Qwen3 dense and MoE model on RTX 5090, 4090, Mac Studio, and H100/H200.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/qwen3-vram-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/qwen3-vram-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/qwen3-vram-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Qwen3 VRAM Calculator (0.6B–32B Dense & 30B-A3B / 235B-A22B MoE)">
+<meta property="og:description" content="Calculate exact VRAM, GGUF/FP8/BF16 weight size, KV cache, and single-stream tok/s for every Qwen3 dense and MoE model on RTX 5090, 4090, Mac Studio, and H100/H200.">
+<meta property="og:url" content="https://ml0x.com/calculators/qwen3-vram-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qwen3 VRAM Calculator (0.6B–32B Dense & 30B-A3B / 235B-A22B MoE)">
+<meta name="twitter:description" content="Calculate exact VRAM, GGUF/FP8/BF16 weight size, KV cache, and single-stream tok/s for every Qwen3 dense and MoE model on RTX 5090, 4090, Mac Studio, and H100/H200.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+/* Sprint 12 Single-Dominant-CTA Click-Gated Card */
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:340px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 20px;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Qwen3 VRAM Calculator","url":"https://ml0x.com/calculators/qwen3-vram-calculator.html","description":"Calculate exact VRAM, GGUF/FP8/BF16 weight size, KV cache, and single-stream tok/s for every Qwen3 dense and MoE model on RTX 5090, 4090, Mac Studio, and H100/H200.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does Qwen3-32B fit on an RTX 5090 (32 GB)?","acceptedAnswer":{"@type":"Answer","text":"Yes! At Q4_K_M (~19 GB weights), Qwen3-32B fits comfortably on a single RTX 5090 with room for 32K\u201364K context at ~70+ tok/s."}},{"@type":"Question","name":"Why is Qwen3-30B-A3B so fast compared to Qwen3-32B?","acceptedAnswer":{"@type":"Answer","text":"Qwen3-30B-A3B only activates 3.3B parameters per token instead of 32.8B, reading 10x less weight data from VRAM per decode step and hitting 200\u2013400+ tok/s on consumer GPUs."}},{"@type":"Question","name":"How much VRAM does Qwen3-235B-A22B need?","acceptedAnswer":{"@type":"Answer","text":"At INT4/Q4_K_M, weights take ~136 GB plus KV cache, fitting on a Mac Studio M4 Ultra 192GB, 1x B200 (192 GB), or 2x H100/H200."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Qwen3 VRAM Calculator","item":"https://ml0x.com/calculators/qwen3-vram-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Qwen3 VRAM Calculator</span></nav>
+  <h1>Qwen3 VRAM Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-qwen3-vram-calculator" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Alibaba's <strong>Qwen3</strong> lineup spans dense models (0.6B to 32B) and sparse MoE models (<strong>30B-A3B</strong> and <strong>235B-A22B</strong>). Pick any Qwen3 checkpoint, quantization format, and context length below to see exact VRAM, GPU fit, and expected decode speed.</p>
+
+  <section id="calculator">
+    <h2>Interactive comparison calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="qModel">Qwen3 model</label><select id="qModel"><option value="8b">Qwen3-8B (Dense)</option><option value="14b">Qwen3-14B (Dense)</option><option value="32b" selected>Qwen3-32B (Dense)</option><option value="30a3">Qwen3-30B-A3B (MoE, 3B active)</option><option value="235a22">Qwen3-235B-A22B (MoE, 22B active)</option></select></div>
+        <div class="field"><label for="qQuant">Quantization</label><select id="qQuant"><option value="0.58" selected>GGUF Q4_K_M / AWQ INT4</option><option value="0.72">GGUF Q5_K_M</option><option value="1.05">FP8 / GGUF Q8_0</option><option value="2.02">BF16 (Full precision)</option></select></div>
+        <div class="field"><label for="ctxK">Context length <span class="val-pill" id="ctxKVal">32K</span></label><input id="ctxK" type="range" min="4" max="128" step="4" value="32"></div>
+        <div class="field"><label for="kvBytes">KV cache precision</label><select id="kvBytes"><option value="1">FP8 / Q8_0 KV (1 B)</option><option value="2" selected>FP16 / BF16 KV (2 B)</option></select></div>
+        <div class="field"><label for="batch">Concurrent streams <span class="val-pill" id="batchVal">1</span></label><input id="batch" type="range" min="1" max="32" step="1" value="1"></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Hardware</th><th class='num'>VRAM</th><th class='num'>Fits?</th><th class='num'>Est. Decode Tok/s</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_qwen3-vram-calculator" aria-label="ML Systems Cheatsheet Pack">
+      <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <p class="s12-cro__lead"><strong>Running Qwen3 locally or on cloud GPUs?</strong> Keep the exact VRAM, GQA KV-cache, and GGUF quantization reference sheets at your desk with the $9 ML Systems Cheatsheet Pack.</p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_qwen3-vram-calculator" data-cta="s12_buy_cs9_qwen3-vram-calculator">Get ML Systems Cheatsheets — $9</button>
+      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <details>
+        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <ul>
+        <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
+        <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
+        <li><strong>ML Engineering Core Sheets:</strong> ROC/PR &amp; MCC metrics, scikit-learn pipelines, training triage checklist, and print-ready PDF + HTML + Markdown files.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Does Qwen3-32B fit on an RTX 5090 (32 GB)?</h3><p>Yes! At Q4_K_M (~19 GB weights), Qwen3-32B fits comfortably on a single RTX 5090 with room for 32K–64K context at ~70+ tok/s.</p></div>
+    <div class="faq-item"><h3>Why is Qwen3-30B-A3B so fast compared to Qwen3-32B?</h3><p>Qwen3-30B-A3B only activates 3.3B parameters per token instead of 32.8B, reading 10x less weight data from VRAM per decode step and hitting 200–400+ tok/s on consumer GPUs.</p></div>
+    <div class="faq-item"><h3>How much VRAM does Qwen3-235B-A22B need?</h3><p>At INT4/Q4_K_M, weights take ~136 GB plus KV cache, fitting on a Mac Studio M4 Ultra 192GB, 1x B200 (192 GB), or 2x H100/H200.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Download all 12 LLM VRAM & quantization cheatsheets</p>
+    <p class="s12-post__desc">Print-ready Letter-size PDF, HTML, and Markdown reference sheets for $9 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_qwen3-vram-calculator" data-cta="s12_post_cs9_qwen3-vram-calculator">Get ML Systems Cheatsheets — $9</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related 2026 AI &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM requirements</a> &mdash; Size Scout 109B and Maverick 400B MoE models.</li>
+      <li><a href="/calculators/local-llm-hardware-guide-2026.html">Local LLM hardware guide 2026</a> &mdash; Pick the best local GPU or Mac Studio rig.</li>
+      <li><a href="/calculators/fp8-vs-bf16-inference-memory.html">FP8 vs BF16 inference memory</a> &mdash; Compare FP8 and BF16 memory footprints.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and hardware figures reflect published 2026 provider rate cards and hardware datasheets.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261127-s12-qwen3-vram-calculator" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4</a>
+    <a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 cost</a>
+    <a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor</a>
+    <a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM</a>
+    <a href="/calculators/vllm-vs-sglang-throughput.html">vLLM vs SGLang</a>
+    <a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100</a>
+    <a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  
+  const $ = id => document.getElementById(id);
+  const Q3 = {
+    '8b':     { name:'Qwen3-8B', total:8.2, active:8.2, layers:36, kvh:8, hd:128 },
+    '14b':    { name:'Qwen3-14B', total:14.8, active:14.8, layers:40, kvh:8, hd:128 },
+    '32b':    { name:'Qwen3-32B', total:32.8, active:32.8, layers:64, kvh:8, hd:128 },
+    '30a3':   { name:'Qwen3-30B-A3B', total:30.5, active:3.3, layers:48, kvh:4, hd:128 },
+    '235a22': { name:'Qwen3-235B-A22B', total:235, active:22, layers:94, kvh:4, hd:128 }
+  };
+  const HW = [
+    { name:'RTX 4090 (24 GB)', gb:24, bw:1008 },
+    { name:'RTX 5090 (32 GB)', gb:32, bw:1792 },
+    { name:'2&times; RTX 5090 (64 GB)', gb:64, bw:2900 },
+    { name:'Mac Studio M4 Ultra (192 GB)', gb:170, bw:819 },
+    { name:'H100 80GB SXM', gb:80, bw:3350 },
+    { name:'H200 141GB SXM', gb:141, bw:4800 },
+    { name:'2&times; H200 (282 GB)', gb:282, bw:8400 }
+  ];
+  function calc(){
+    const m = Q3[$('qModel').value];
+    const qb = +$('qQuant').value;
+    const ctxK = +$('ctxK').value;
+    const kvB = +$('kvBytes').value;
+    const batch = +$('batch').value;
+
+    $('ctxKVal').textContent = ctxK + 'K';
+    $('batchVal').textContent = batch;
+
+    const wGb = m.total * qb;
+    const kvPerTok = 2 * m.layers * m.kvh * m.hd * kvB;
+    const kvGb = (kvPerTok * ctxK * 1000 * batch) / 1e9;
+    const ovGb = Math.max(1.5, wGb * 0.05);
+    const totGb = wGb + kvGb + ovGb;
+    const activeBytes = m.active * qb;
+
+    const firstFit = HW.find(h => h.gb >= totGb);
+    $('kpis').innerHTML = `
+      <div class="kpi kpi--ok"><div class="kpi__label">Total VRAM</div><div class="kpi__val">${totGb.toFixed(1)} GB</div><div class="kpi__sub">${m.name}</div></div>
+      <div class="kpi"><div class="kpi__label">Weights Size</div><div class="kpi__val">${wGb.toFixed(1)} GB</div><div class="kpi__sub">${m.active}B active / tok</div></div>
+      <div class="kpi"><div class="kpi__label">KV Cache (${ctxK}K)</div><div class="kpi__val">${kvGb.toFixed(1)} GB</div><div class="kpi__sub">${Math.round(kvPerTok/1024)} KB / tok</div></div>
+      <div class="kpi ${firstFit?'kpi--ok':'kpi--bad'}"><div class="kpi__label">Smallest Fit</div><div class="kpi__val">${firstFit ? firstFit.name.split(' (')[0] : 'Multi-Node'}</div><div class="kpi__sub">${firstFit ? Math.round((firstFit.bw*0.78)/activeBytes)+' tok/s ceiling' : 'Needs >282 GB'}</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> <strong>${m.name}</strong> needs <strong>${totGb.toFixed(1)} GB VRAM</strong> (${wGb.toFixed(1)} GB weights + ${kvGb.toFixed(1)} GB KV cache). ${firstFit ? 'Fits cleanly on <strong>' + firstFit.name + '</strong> at ~' + Math.round((firstFit.bw*0.78)/activeBytes) + ' tok/s.' : 'Requires a 4&times; H100/H200 or 2&times; B200 node.'}`;
+    $('rows').innerHTML = HW.map(h => {
+      const fits = h.gb >= totGb;
+      const tps = fits ? Math.round((h.bw * 0.78) / activeBytes) + ' tok/s' : 'OOM';
+      return `<tr${firstFit && h.name===firstFit.name?' class="tt"':''}><td>${h.name}</td><td class="num">${h.gb} GB</td><td class="num">${fits?'Yes (+'+(h.gb-totGb).toFixed(1)+' GB)':'No'}</td><td class="num">${tps}</td></tr>`;
+    }).join('');
+  }
+  ['qModel','qQuant','ctxK','kvBytes','batch'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+        
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'qwen3-vram-calculator'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

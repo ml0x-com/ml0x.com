@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fine-Tuning vs RAG Cost Calculator (2026 Break-Even & Monthly TCO) | ml0x</title>
+<meta name="description" content="Compare QLoRA/LoRA fine-tuning (training + dedicated hosting) against RAG (embeddings + vector DB + prompt context tokens) over 12 months.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fine-Tuning vs RAG Cost Calculator (2026 Break-Even & Monthly TCO)">
+<meta property="og:description" content="Compare QLoRA/LoRA fine-tuning (training + dedicated hosting) against RAG (embeddings + vector DB + prompt context tokens) over 12 months.">
+<meta property="og:url" content="https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fine-Tuning vs RAG Cost Calculator (2026 Break-Even & Monthly TCO)">
+<meta name="twitter:description" content="Compare QLoRA/LoRA fine-tuning (training + dedicated hosting) against RAG (embeddings + vector DB + prompt context tokens) over 12 months.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+/* Sprint 12 Single-Dominant-CTA Click-Gated Card */
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:340px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 20px;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Fine-Tuning vs RAG Cost Calculator","url":"https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html","description":"Compare QLoRA/LoRA fine-tuning (training + dedicated hosting) against RAG (embeddings + vector DB + prompt context tokens) over 12 months.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"When is RAG cheaper than fine-tuning?","acceptedAnswer":{"@type":"Answer","text":"RAG is cheaper below ~200K\u2013500K queries/month or whenever your knowledge base changes daily, because you avoid dedicated GPU hosting and repeated retraining cycles."}},{"@type":"Question","name":"When does fine-tuning beat RAG on cost?","acceptedAnswer":{"@type":"Answer","text":"At high query volume (>1M queries/month) with long retrieved contexts (>4,000 tokens/query), fine-tuning a smaller 8B\u201332B model eliminates the recurring input-token tax."}},{"@type":"Question","name":"Should I combine RAG and fine-tuning?","acceptedAnswer":{"@type":"Answer","text":"Yes \u2014 in production, RAG supplies up-to-date factual grounding while a lightweight LoRA adapter enforces strict JSON schemas, domain tone, and citation behavior."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Fine-Tuning vs RAG Cost Calculator","item":"https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Fine-Tuning vs RAG Cost Calculator</span></nav>
+  <h1>Fine-Tuning vs RAG Cost Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-fine-tuning-vs-rag-cost" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p><strong>RAG</strong> has near-zero upfront cost and instant data freshness, but pays a recurring input-token tax for retrieved chunks on every query. <strong>Fine-tuning (QLoRA/LoRA)</strong> pays upfront GPU training plus hosting, but uses tiny prompts. Slide your monthly queries and knowledge-base churn below to find the 12-month winner.</p>
+
+  <section id="calculator">
+    <h2>Interactive comparison calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="queriesMo">Queries / month (K) <span class="val-pill" id="queriesMoVal">250K</span></label><input id="queriesMo" type="range" min="10" max="5000" step="10" value="250"></div>
+        <div class="field"><label for="ragTok">RAG context tokens / query <span class="val-pill" id="ragTokVal">3,500</span></label><input id="ragTok" type="range" min="500" max="16000" step="250" value="3500"></div>
+        <div class="field"><label for="docMb">Knowledge base size (MB) <span class="val-pill" id="docMbVal">500 MB</span></label><input id="docMb" type="range" min="10" max="5000" step="10" value="500"></div>
+        <div class="field"><label for="retrains">Fine-tune retrains / year <span class="val-pill" id="retrainsVal">4</span></label><input id="retrains" type="range" min="1" max="24" step="1" value="4"></div>
+        <div class="field"><label for="apiInRate">Base LLM input rate ($/1M) <span class="val-pill" id="apiInRateVal">$2.50</span></label><input id="apiInRate" type="range" min="0.2" max="10.0" step="0.1" value="2.5"></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Approach</th><th class='num'>Setup / Train</th><th class='num'>Monthly Run</th><th class='num'>12-Mo TCO</th><th class='num'>Data Freshness</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_fine-tuning-vs-rag-cost" aria-label="ml0x Agent Pipeline">
+      <div class="s12-cro__tag">Full Production System · $99 Once</div>
+      <p class="s12-cro__lead"><strong>Architecting a production RAG or fine-tuning pipeline?</strong> Get deterministic evals, hard token budget caps, and 13 research docs in the $99 ml0x Agent Pipeline.</p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s12_ml0x_fine-tuning-vs-rag-cost" data-cta="s12_buy_pl99_fine-tuning-vs-rag-cost">Get ml0x Pipeline — $99</button>
+      <p class="s12-cro__alts">Also available: <a href="/cheatsheet-pack/">$9 ML Systems Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a></p>
+      <details>
+        <summary>Preview what&rsquo;s inside the ml0x Agent Pipeline ($99)</summary>
+        <ul>
+        <li><strong>4-Stage Automated Pipeline &amp; 1,160-line 100x CLI:</strong> Structured analyze &rarr; implement &rarr; test &rarr; review loop with deterministic rollback and audit logs.</li>
+        <li><strong>Hard Gateway Token Budget Caps:</strong> Enforce per-run and monthly token/dollar ceilings across multi-agent and parallel execution lanes.</li>
+        <li><strong>NASA Power of 10 Quality Gates + 13 Research Docs:</strong> Production configs, 8 research presets, parallel runner, and full operator runbook.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>When is RAG cheaper than fine-tuning?</h3><p>RAG is cheaper below ~200K–500K queries/month or whenever your knowledge base changes daily, because you avoid dedicated GPU hosting and repeated retraining cycles.</p></div>
+    <div class="faq-item"><h3>When does fine-tuning beat RAG on cost?</h3><p>At high query volume (>1M queries/month) with long retrieved contexts (>4,000 tokens/query), fine-tuning a smaller 8B–32B model eliminates the recurring input-token tax.</p></div>
+    <div class="faq-item"><h3>Should I combine RAG and fine-tuning?</h3><p>Yes — in production, RAG supplies up-to-date factual grounding while a lightweight LoRA adapter enforces strict JSON schemas, domain tone, and citation behavior.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Ship production AI pipelines with built-in budget caps</p>
+    <p class="s12-post__desc">4-stage pipeline, pinned 100x CLI, NASA P10 quality gates, and operator runbook for $99 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s12_ml0x_fine-tuning-vs-rag-cost" data-cta="s12_post_pl99_fine-tuning-vs-rag-cost">Get ml0x Pipeline — $99</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related 2026 AI &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/rag-chunk-size-embedding-cost-calculator.html">RAG chunk & embedding cost</a> &mdash; Optimize chunk size and vector DB RAM.</li>
+      <li><a href="/calculators/llm-fine-tuning-cost-calculator.html">LLM fine-tuning cost calculator</a> &mdash; Detailed QLoRA vs full fine-tuning GPU hours.</li>
+      <li><a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost estimator</a> &mdash; Model multi-step agent token budgets.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and hardware figures reflect published 2026 provider rate cards and hardware datasheets.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261127-s12-fine-tuning-vs-rag-cost" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4</a>
+    <a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 cost</a>
+    <a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor</a>
+    <a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM</a>
+    <a href="/calculators/vllm-vs-sglang-throughput.html">vLLM vs SGLang</a>
+    <a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100</a>
+    <a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const qK = +$('queriesMo').value;
+    const ragTok = +$('ragTok').value;
+    const docMb = +$('docMb').value;
+    const retrains = +$('retrains').value;
+    const apiIn = +$('apiInRate').value;
+
+    $('queriesMoVal').textContent = qK >= 1000 ? (qK/1000).toFixed(1)+'M' : qK+'K';
+    $('ragTokVal').textContent = ragTok.toLocaleString();
+    $('docMbVal').textContent = docMb + ' MB';
+    $('retrainsVal').textContent = retrains;
+    $('apiInRateVal').textContent = '$' + apiIn.toFixed(2);
+
+    const qMo = qK * 1000;
+    const embedSetup = (docMb * 250000 / 1e6) * 0.13; // ~250K tok/MB @ $0.13/1M
+    const vecDbMo = Math.max(25, docMb * 0.12);
+    const ragPromptMo = (qMo * ragTok / 1e6) * apiIn * 0.65; // 35% cache benefit
+    const ragMo = vecDbMo + ragPromptMo + embedSetup * 0.1;
+    const rag12 = embedSetup + ragMo * 12;
+
+    const ftTrainPerRun = Math.max(45, docMb * 0.35 + 80); // QLoRA GPU hrs + eval
+    const ftHostMo = qK > 1000 ? 1800 : (qK > 200 ? 750 : 280); // dedicated/LoRA endpoint
+    const ftPromptMo = (qMo * 350 / 1e6) * (apiIn * 0.4); // short prompt
+    const ftMo = ftHostMo + ftPromptMo;
+    const ft12 = ftTrainPerRun * retrains + ftMo * 12;
+
+    const hybridMo = vecDbMo + (qMo * ragTok * 0.35 / 1e6) * apiIn * 0.65 + 220;
+    const hybrid12 = embedSetup + ftTrainPerRun * Math.min(2, retrains) + hybridMo * 12;
+
+    const best12 = Math.min(rag12, ft12, hybrid12);
+    const winner = best12 === rag12 ? 'RAG' : (best12 === ft12 ? 'Fine-Tuning (QLoRA)' : 'Hybrid (LoRA + Lean RAG)');
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${winner==='RAG'?'kpi--ok':''}"><div class="kpi__label">RAG 12-Mo TCO</div><div class="kpi__val">$${Math.round(rag12).toLocaleString()}</div><div class="kpi__sub">$${Math.round(ragMo).toLocaleString()}/mo &middot; instant updates</div></div>
+      <div class="kpi ${winner.includes('Fine')?'kpi--ok':''}"><div class="kpi__label">Fine-Tune 12-Mo TCO</div><div class="kpi__val">$${Math.round(ft12).toLocaleString()}</div><div class="kpi__sub">$${Math.round(ftMo).toLocaleString()}/mo + ${retrains} retrains</div></div>
+      <div class="kpi ${winner.includes('Hybrid')?'kpi--ok':''}"><div class="kpi__label">Hybrid 12-Mo TCO</div><div class="kpi__val">$${Math.round(hybrid12).toLocaleString()}</div><div class="kpi__sub">Compact RAG + style LoRA</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">12-Mo Winner</div><div class="kpi__val">${winner.split(' (')[0]}</div><div class="kpi__sub">Lowest total cost at ${qK}K q/mo</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> At ${qK.toLocaleString()}K queries/mo and ${ragTok.toLocaleString()} RAG context tokens, <strong>${winner}</strong> wins on 12-month TCO at <strong>$${Math.round(best12).toLocaleString()}</strong>. Use RAG for fast-changing facts and fine-tuning for output format, domain style, and lower per-query latency.`;
+    $('rows').innerHTML = `
+      <tr${winner==='RAG'?' class="tt"':''}><td>RAG (Embeddings + Vector DB)</td><td class="num">$${Math.round(embedSetup)}</td><td class="num">$${Math.round(ragMo).toLocaleString()}</td><td class="num">$${Math.round(rag12).toLocaleString()}</td><td class="num">Real-time</td></tr>
+      <tr${winner.includes('Fine')?' class="tt"':''}><td>Fine-Tuning (QLoRA + Dedicated)</td><td class="num">$${Math.round(ftTrainPerRun*retrains).toLocaleString()}</td><td class="num">$${Math.round(ftMo).toLocaleString()}</td><td class="num">$${Math.round(ft12).toLocaleString()}</td><td class="num">Per retrain (${retrains}/yr)</td></tr>
+      <tr${winner.includes('Hybrid')?' class="tt"':''}><td>Hybrid (Lean RAG + LoRA)</td><td class="num">$${Math.round(embedSetup + ftTrainPerRun*Math.min(2,retrains)).toLocaleString()}</td><td class="num">$${Math.round(hybridMo).toLocaleString()}</td><td class="num">$${Math.round(hybrid12).toLocaleString()}</td><td class="num">Real-time + style</td></tr>
+    `;
+  }
+  ['queriesMo','ragTok','docMb','retrains','apiInRate'].forEach(id => $(id).addEventListener('input', calc));
+  calc();
+        
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'fine-tuning-vs-rag-cost'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

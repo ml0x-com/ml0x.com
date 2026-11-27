@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vLLM vs SGLang Throughput Calculator (2026 RadixAttention vs PagedAttention) | ml0x</title>
+<meta name="description" content="Compare SGLang RadixAttention against vLLM PagedAttention on prefix cache reuse, TTFT, aggregate tokens/sec, and $/1M output tokens.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/vllm-vs-sglang-throughput.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/vllm-vs-sglang-throughput.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/vllm-vs-sglang-throughput.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="vLLM vs SGLang Throughput Calculator (2026 RadixAttention vs PagedAttention)">
+<meta property="og:description" content="Compare SGLang RadixAttention against vLLM PagedAttention on prefix cache reuse, TTFT, aggregate tokens/sec, and $/1M output tokens.">
+<meta property="og:url" content="https://ml0x.com/calculators/vllm-vs-sglang-throughput.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vLLM vs SGLang Throughput Calculator (2026 RadixAttention vs PagedAttention)">
+<meta name="twitter:description" content="Compare SGLang RadixAttention against vLLM PagedAttention on prefix cache reuse, TTFT, aggregate tokens/sec, and $/1M output tokens.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+/* Sprint 12 Single-Dominant-CTA Click-Gated Card */
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;width:100%;max-width:340px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 20px;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"vLLM vs SGLang Throughput Calculator","url":"https://ml0x.com/calculators/vllm-vs-sglang-throughput.html","description":"Compare SGLang RadixAttention against vLLM PagedAttention on prefix cache reuse, TTFT, aggregate tokens/sec, and $/1M output tokens.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is SGLang faster than vLLM on agent and JSON workloads?","acceptedAnswer":{"@type":"Answer","text":"SGLang's RadixAttention keeps a persistent radix tree of KV-cache prefixes across requests, and its compressed finite-state machine (XGrammar) eliminates token-masking overhead during structured JSON generation."}},{"@type":"Question","name":"When should I choose vLLM over SGLang?","acceptedAnswer":{"@type":"Answer","text":"vLLM has broader day-one model architecture coverage, mature LoRA multi-adapter serving, and deeper Kubernetes/Ray ecosystem integrations."}},{"@type":"Question","name":"Does prefix caching help if every user prompt is unique?","acceptedAnswer":{"@type":"Answer","text":"No. When prefix reuse is near 0% and outputs are unconstrained prose, vLLM and SGLang perform within ~5% of each other."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"vLLM vs SGLang Throughput Calculator","item":"https://ml0x.com/calculators/vllm-vs-sglang-throughput.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>vLLM vs SGLang Throughput Calculator</span></nav>
+  <h1>vLLM vs SGLang Throughput Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-vllm-vs-sglang-throughput" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p><strong>vLLM</strong> (PagedAttention + Automatic Prefix Caching) and <strong>SGLang</strong> (RadixAttention + zero-overhead scheduler) both serve high-throughput LLMs, but SGLang typically pulls ahead on multi-turn agents, shared system prompts, and structured JSON output. Slide your workload parameters below to estimate throughput and $/1M tokens.</p>
+
+  <section id="calculator">
+    <h2>Interactive comparison calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="workload">Workload pattern</label><select id="workload"><option value="agent" selected>Multi-turn Agent / Shared Prefix</option><option value="rag">RAG (Long shared docs)</option><option value="json">Structured JSON / Constrained Decoding</option><option value="chat">Independent Chat (Low prefix reuse)</option></select></div>
+        <div class="field"><label for="prefixShare">Shared prefix reuse <span class="val-pill" id="prefixShareVal">70%</span></label><input id="prefixShare" type="range" min="0" max="95" step="5" value="70"></div>
+        <div class="field"><label for="conc">Concurrent requests <span class="val-pill" id="concVal">64</span></label><input id="conc" type="range" min="4" max="256" step="4" value="64"></div>
+        <div class="field"><label for="inLen">Input length (tokens) <span class="val-pill" id="inLenVal">4,000</span></label><input id="inLen" type="range" min="500" max="32000" step="500" value="4000"></div>
+        <div class="field"><label for="gpuHr">Cluster cost ($/hr) <span class="val-pill" id="gpuHrVal">$12.00</span></label><input id="gpuHr" type="range" min="1" max="60" step="0.5" value="12"></div>
+        <div class="field"><label for="baseTps">Base vLLM decode ceiling (tok/s) <span class="val-pill" id="baseTpsVal">3,200</span></label><input id="baseTps" type="range" min="500" max="15000" step="100" value="3200"></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Serving Engine</th><th class='num'>Est. TTFT (ms)</th><th class='num'>Agg. Tok/s</th><th class='num'>$ / 1M Out Tok</th><th class='num'>Speedup</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_vllm-vs-sglang-throughput" aria-label="ML Systems Cheatsheet Pack">
+      <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <p class="s12-cro__lead"><strong>Tuning vLLM or SGLang in production?</strong> Keep KV-cache math, continuous batching ridge points, and quantization rules handy with the $9 ML Systems Cheatsheet Pack.</p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_vllm-vs-sglang-throughput" data-cta="s12_buy_cs9_vllm-vs-sglang-throughput">Get ML Systems Cheatsheets — $9</button>
+      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <details>
+        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <ul>
+        <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
+        <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
+        <li><strong>ML Engineering Core Sheets:</strong> ROC/PR &amp; MCC metrics, scikit-learn pipelines, training triage checklist, and print-ready PDF + HTML + Markdown files.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Why is SGLang faster than vLLM on agent and JSON workloads?</h3><p>SGLang's RadixAttention keeps a persistent radix tree of KV-cache prefixes across requests, and its compressed finite-state machine (XGrammar) eliminates token-masking overhead during structured JSON generation.</p></div>
+    <div class="faq-item"><h3>When should I choose vLLM over SGLang?</h3><p>vLLM has broader day-one model architecture coverage, mature LoRA multi-adapter serving, and deeper Kubernetes/Ray ecosystem integrations.</p></div>
+    <div class="faq-item"><h3>Does prefix caching help if every user prompt is unique?</h3><p>No. When prefix reuse is near 0% and outputs are unconstrained prose, vLLM and SGLang perform within ~5% of each other.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Master LLM inference sizing with 12 desk-ready sheets</p>
+    <p class="s12-post__desc">KV cache equations, roofline formulas, and GPU sizing checklists in PDF, HTML & Markdown for $9 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_vllm-vs-sglang-throughput" data-cta="s12_post_cs9_vllm-vs-sglang-throughput">Get ML Systems Cheatsheets — $9</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related 2026 AI &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/ollama-vs-vllm-production.html">Ollama vs vLLM production</a> &mdash; When to migrate from Ollama to vLLM/SGLang.</li>
+      <li><a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 inference cost</a> &mdash; Compare Hopper and Blackwell GPU serving economics.</li>
+      <li><a href="/calculators/fp8-vs-bf16-inference-memory.html">FP8 vs BF16 inference memory</a> &mdash; Double your KV cache headroom with FP8.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and hardware figures reflect published 2026 provider rate cards and hardware datasheets.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261127-s12-vllm-vs-sglang-throughput" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/deepseek-r1-vs-claude-4-cost.html">DeepSeek R1 vs Claude 4</a>
+    <a href="/calculators/h200-vs-b200-inference-cost.html">H200 vs B200 cost</a>
+    <a href="/calculators/claude-code-vs-cursor-cost.html">Claude Code vs Cursor</a>
+    <a href="/calculators/llama-4-vram-requirements.html">Llama 4 VRAM</a>
+    <a href="/calculators/vllm-vs-sglang-throughput.html">vLLM vs SGLang</a>
+    <a href="/calculators/rtx-5090-vs-a100-llm.html">RTX 5090 vs A100</a>
+    <a href="/calculators/ai-agent-token-cost-estimator.html">AI agent token cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const wl = $('workload').value;
+    const prefix = +$('prefixShare').value / 100;
+    const conc = +$('conc').value;
+    const inLen = +$('inLen').value;
+    const gpuHr = +$('gpuHr').value;
+    const baseTps = +$('baseTps').value;
+
+    $('prefixShareVal').textContent = Math.round(prefix*100) + '%';
+    $('concVal').textContent = conc;
+    $('inLenVal').textContent = inLen.toLocaleString();
+    $('gpuHrVal').textContent = '$' + gpuHr.toFixed(2);
+    $('baseTpsVal').textContent = baseTps.toLocaleString();
+
+    const wlBonus = wl === 'json' ? 1.38 : (wl === 'agent' ? 1.24 : (wl === 'rag' ? 1.18 : 1.05));
+    const prefixBonus = 1 + prefix * 0.22;
+    const vllmTps = baseTps * (0.75 + 0.25 * Math.min(1, conc / 64));
+    const sgTps = vllmTps * wlBonus * (0.9 + 0.1 * prefixBonus);
+
+    const vllmTtft = Math.max(35, (inLen * (1 - prefix * 0.65) / 14) * (1 + conc / 160));
+    const sgTtft = Math.max(25, (inLen * (1 - prefix * 0.88) / 17) * (1 + conc / 200));
+
+    const vllmCost = gpuHr / ((vllmTps * 3600) / 1e6);
+    const sgCost = gpuHr / ((sgTps * 3600) / 1e6);
+    const speedup = sgTps / vllmTps;
+
+    $('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi__label">vLLM Throughput</div><div class="kpi__val">${Math.round(vllmTps).toLocaleString()} tok/s</div><div class="kpi__sub">TTFT ~${Math.round(vllmTtft)}ms &middot; $${vllmCost.toFixed(3)}/1M</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">SGLang Throughput</div><div class="kpi__val">${Math.round(sgTps).toLocaleString()} tok/s</div><div class="kpi__sub">TTFT ~${Math.round(sgTtft)}ms &middot; $${sgCost.toFixed(3)}/1M</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">SGLang Gain</div><div class="kpi__val">${speedup.toFixed(2)}x</div><div class="kpi__sub">${Math.round((1 - sgCost/vllmCost)*100)}% lower $/1M tokens</div></div>
+      <div class="kpi"><div class="kpi__label">TTFT Reduction</div><div class="kpi__val">-${Math.round((1 - sgTtft/vllmTtft)*100)}%</div><div class="kpi__sub">RadixAttention tree cache</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict:</strong> On your <strong>${wl}</strong> workload with ${Math.round(prefix*100)}% prefix reuse, <strong>SGLang</strong> projects <strong>${speedup.toFixed(2)}x higher throughput</strong> and <strong>$${(vllmCost-sgCost).toFixed(3)}/1M</strong> cheaper serving than vLLM.`;
+    $('rows').innerHTML = `
+      <tr><td>vLLM (PagedAttention + APC)</td><td class="num">${Math.round(vllmTtft)} ms</td><td class="num">${Math.round(vllmTps).toLocaleString()}</td><td class="num">$${vllmCost.toFixed(3)}</td><td class="num">1.00x</td></tr>
+      <tr class="tt"><td>SGLang (RadixAttention + XGrammar)</td><td class="num">${Math.round(sgTtft)} ms</td><td class="num">${Math.round(sgTps).toLocaleString()}</td><td class="num">$${sgCost.toFixed(3)}</td><td class="num">${speedup.toFixed(2)}x</td></tr>
+    `;
+  }
+  ['workload','prefixShare','conc','inLen','gpuHr','baseTps'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+        
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'vllm-vs-sglang-throughput'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

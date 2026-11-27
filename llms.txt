@@ -10,9 +10,26 @@
 - [Training Run Triage ($99)](https://ml0x.com/triage/): Diagnostic runbook and toolkit for failing LLM/ML training runs, loss spikes, OOM debugging, and checkpoint recovery. $99 once, 60-day refund.
 - [All 5 Production Pipelines](https://ml0x.com/x/): Index of all 5 pipelines built and run on 33 production sites (ml0x Pipeline, Training Run Triage, handsofflinks, toolsthatrank, aiwebsitepipeline).
 
-## Interactive AI Engineering, LLM & GPU Calculators (31 Free Browser Tools)
+## Interactive AI Engineering, LLM & GPU Calculators (46 Free Browser Tools)
 
 - [All Calculators Directory](https://ml0x.com/calculators/): Complete index of all interactive client-side ML, LLM, and GPU calculators.
+
+### 2026 AI Model, GPU & Agent Comparison Calculators (Sprint 12)
+- [DeepSeek R1 vs Claude 4 Cost Calculator](https://ml0x.com/calculators/deepseek-r1-vs-claude-4-cost.html): Compare DeepSeek-R1 (with context cache hits & off-peak discounts) against Claude Sonnet 4 and Claude Opus 4 including reasoning/thinking token multipliers.
+- [H200 vs B200 Inference Cost Calculator](https://ml0x.com/calculators/h200-vs-b200-inference-cost.html): Compare NVIDIA H200 (141GB HBM3e, 4.8 TB/s, FP8) vs Blackwell B200 (192GB HBM3e, 8.0 TB/s, FP4) on GPU count, tok/s throughput, and $/1M output tokens.
+- [Claude Code vs Cursor Cost Calculator](https://ml0x.com/calculators/claude-code-vs-cursor-cost.html): Slide daily coding turns, team headcount, and Anthropic prompt cache hit rate to compare Claude Code (API & Max $100/$200) against Cursor Pro, Pro+, Ultra, and Teams.
+- [Llama 4 VRAM Requirements Calculator](https://ml0x.com/calculators/llama-4-vram-requirements.html): Calculate exact GPU VRAM requirements for Meta Llama 4 Scout (109B/17B), Maverick (400B/17B), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.
+- [vLLM vs SGLang Throughput Calculator](https://ml0x.com/calculators/vllm-vs-sglang-throughput.html): Compare SGLang RadixAttention against vLLM PagedAttention on prefix cache reuse, TTFT, aggregate tokens/sec, and $/1M output tokens.
+- [RTX 5090 vs A100 80GB LLM Calculator](https://ml0x.com/calculators/rtx-5090-vs-a100-llm.html): Compare NVIDIA RTX 5090 (32GB GDDR7, 1,792 GB/s, FP4) vs A100 80GB (2,039 GB/s HBM2e) on single-stream decode tok/s, model fit, and 24-month buy vs rent cost.
+- [Ollama vs vLLM Production Calculator](https://ml0x.com/calculators/ollama-vs-vllm-production.html): Calculate when to migrate from Ollama to vLLM in production: model concurrency scaling, P95 latency, required GPUs, and monthly cloud cost.
+- [OpenAI o3 vs Claude Sonnet 4 Cost Calculator](https://ml0x.com/calculators/openai-o3-vs-claude-sonnet-cost.html): Compare OpenAI o3 ($2/$8) and o4-mini against Claude Sonnet 4 ($3/$15) across reasoning effort, prompt caching, and Batch API 50% discounts.
+- [Qwen3 VRAM Calculator](https://ml0x.com/calculators/qwen3-vram-calculator.html): Calculate exact VRAM, GGUF/FP8/BF16 weight size, KV cache, and single-stream tok/s for every Qwen3 dense and MoE model on RTX 5090, 4090, Mac Studio, and H100/H200.
+- [RunPod vs Modal vs Lambda GPU Cost Calculator](https://ml0x.com/calculators/runpod-vs-modal-vs-lambda-gpu.html): Compare RunPod, Modal (per-second serverless), and Lambda Cloud hourly and monthly GPU bills across H100, H200, A100, and L40S with idle-time duty cycle.
+- [Fine-Tuning vs RAG Cost Calculator](https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html): Compare QLoRA/LoRA fine-tuning (training + dedicated hosting) against RAG (embeddings + vector DB + prompt context tokens) over 12 months.
+- [FP8 vs BF16 Inference Memory Calculator](https://ml0x.com/calculators/fp8-vs-bf16-inference-memory.html): Compare FP8 (E4M3) vs BF16 weights VRAM, KV cache footprint, minimum GPUs, and memory-bandwidth decode speedup on H100, H200, B200, and RTX 5090.
+- [Cursor vs Windsurf vs Claude Code Cost Calculator](https://ml0x.com/calculators/cursor-vs-windsurf-vs-claude-code.html): Compare Cursor ($20/$40/$200), Windsurf ($15/$30), and Claude Code (API + Claude Max $100/$200) across team headcount, daily agent turns, and prompt cache hits.
+- [Local LLM Hardware Guide & Calculator (2026)](https://ml0x.com/calculators/local-llm-hardware-guide-2026.html): Interactive 2026 local AI hardware recommender: compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.
+- [AI Agent Token Cost Estimator](https://ml0x.com/calculators/ai-agent-token-cost-estimator.html): Estimate multi-step autonomous AI agent token burn with quadratic context growth, tool-call outputs, retry multipliers, prompt caching, and hard gateway caps.
 
 ### 2026 AI Engineering Cost & Benchmark Calculators
 - [Cursor vs Claude Code Cost Calculator](https://ml0x.com/calculators/cursor-vs-claude-code-cost-calculator.html): Compare Cursor Pro/Ultra ($20/$200) and Team seats against Claude Code API (with 90% prompt caching) and Claude Max ($100/$200) across daily coding turns, context size, and team headcount.
