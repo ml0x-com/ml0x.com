@@ -77,6 +77,12 @@
 .s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
 .s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
 @media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
+/* Sprint 14 1-Click Free Sample Download */
+.s14-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s14-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s14-sample-btn:hover{background:#F5F5F3}
+.s14-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+@media(max-width:767px){.s14-sample-btn{width:100%}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Llama 4 VRAM Requirements Calculator","url":"https://ml0x.com/calculators/llama-4-vram-requirements.html","description":"Calculate exact GPU VRAM requirements for Meta Llama 4 Scout (109B/17B), Maverick (400B/17B), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can Llama 4 Scout run on a single H100 80GB GPU?","acceptedAnswer":{"@type":"Answer","text":"Yes in INT4 (~61 GB weights), leaving ~15 GB for KV cache and activations. In FP8 (~114 GB weights), Scout requires either 1x H200 (141 GB) or 2x H100 (160 GB)."}},{"@type":"Question","name":"Why do MoE models like Llama 4 Maverick still need VRAM for all 400B parameters?","acceptedAnswer":{"@type":"Answer","text":"Even though only 17B parameters activate per token, the router can dispatch tokens to any expert at any layer, so all 128 experts must stay resident in HBM unless you accept severe PCIe offload latency."}},{"@type":"Question","name":"How much does FP8 KV cache save on long Llama 4 contexts?","acceptedAnswer":{"@type":"Answer","text":"Switching KV cache from BF16 to FP8 cuts KV cache memory exactly in half, doubling your supported context length or concurrent batch size on the same GPU pool."}}]}</script>
@@ -108,7 +114,7 @@
   <h1>Llama 4 VRAM Requirements Calculator</h1>
   <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s12-llama-4-vram-requirements" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
 
-  <p>Meta's <strong>Llama 4</strong> family uses Mixture-of-Experts (MoE): only 17B parameters are active per token, but <strong>all total parameters</strong> (109B for Scout, 400B for Maverick, 2T for Behemoth) must fit in GPU VRAM. Slide context length, batch size, and quantization below to see exact GPU counts.</p>
+  <p>Meta's <strong>Llama 4</strong> family uses Mixture-of-Experts (MoE) &mdash; only 17B parameters are active per token, but <strong>all total parameters</strong> (109B for Scout, 400B for Maverick, 2T for Behemoth) must fit in GPU VRAM. Slide context length, batch size, and quantization below to see exact GPU counts.</p>
 
   <section id="calculator">
     <h2>Interactive comparison calculator</h2>
@@ -131,17 +137,21 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_llama-4-vram-requirements" aria-label="ML Systems Cheatsheet Pack">
+    <aside class="s12-cro" data-cro="sprint14-ml0x-primary" data-mr-placement="s14_calc_llama-4-vram-requirements" aria-label="ML Systems Cheatsheet Pack">
       <div class="s12-cro__tag">Reference Pack · $9 Once</div>
       <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Deploying Llama 4 MoE on your own GPUs?</strong> Grab the 4-term LLM VRAM budget, GQA KV-cache formulas, and quantization ladder in the $9 ML Systems Cheatsheet Pack.</p>
-      <p class="s13-who"><strong>Best for:</strong> ML & infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas & serving flags.</p>
-      <p class="s13-files"><strong>Instant 10s download:</strong> <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code></p>
+      <p class="s13-who"><strong>Built for</strong> ML &amp; infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas &amp; serving flags.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code></p>
       <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_llama-4-vram-requirements" data-cta="s13_buy_cs9_llama-4-vram-requirements">Download Exact Config &amp; Cost Pack &mdash; $9 &rarr;</button>
+      <div class="s14-sample-wrap" data-cro="sprint14-sample-bar">
+        <button type="button" class="s14-sample-btn" id="s14SampleBtn" data-sample-download="ml0x-2026-gpu-cost-sample.csv">&#8595; Download Free VRAM &amp; GPU Sizing CSV with Your Numbers (.csv, instant)</button>
+        <div class="s14-proof-banner" id="s14ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full 46-model production kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s14_ml0x_llama-4-vram-requirements" data-cta="s14_buy_cs9_llama-4-vram-requirements">Download Exact Config &amp; Cost Pack &mdash; $9 &rarr;</button>
       <p class="s12-cro__alts">Need agent guard hooks or a full 4-stage pipeline? <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
-        <summary>Preview exact files & sample lines inside the $9 Cheatsheet Pack</summary>
+        <summary>Preview exact files &amp; sample lines inside the $9 Cheatsheet Pack</summary>
         <pre class="s13-preview"><code># vllm-fp8-sizing.sh (included in Quantization &amp; Serving Sheet)
 vllm serve meta-llama/Llama-3.3-70B-Instruct \
   --tensor-parallel-size 2 --quantization fp8 --kv-cache-dtype fp8 \
@@ -153,9 +163,9 @@ H200_SXM,141,4.8,1979,48,3.40
 B200_SXM,192,8.0,4500,64,5.80
 RTX_5090,32,1.79,419,16,0.65</code></pre>
         <ul>
-        <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
-        <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
-        <li><strong>ML Engineering Core Sheets:</strong> ROC/PR &amp; MCC metrics, scikit-learn pipelines, training triage checklist, and print-ready PDF + HTML + Markdown files.</li>
+        <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets</strong> &mdash; Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
+        <li><strong>Quantization &amp; GPU Roofline Ladder</strong> &mdash; BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
+        <li><strong>ML Engineering Core Sheets</strong> &mdash; ROC/PR &amp; MCC metrics, scikit-learn pipelines, training triage checklist, and print-ready PDF + HTML + Markdown files.</li>
         </ul>
       </details>
     </aside>
@@ -168,11 +178,11 @@ RTX_5090,32,1.79,419,16,0.65</code></pre>
     <div class="faq-item"><h3>How much does FP8 KV cache save on long Llama 4 contexts?</h3><p>Switching KV cache from BF16 to FP8 cuts KV cache memory exactly in half, doubling your supported context length or concurrent batch size on the same GPU pool.</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint14-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Never mis-size an MoE GPU cluster again</p>
     <p class="s12-post__desc">All 12 print-ready ML Systems reference sheets (VRAM, KV cache, quantization, GPU sizing) for $9 once.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_llama-4-vram-requirements" data-cta="s13_post_cs9_llama-4-vram-requirements">Get ML Systems Cheatsheets — $9</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s14_ml0x_llama-4-vram-requirements" data-cta="s14_post_cs9_llama-4-vram-requirements">Get ML Systems Cheatsheets — $9</button>
   </aside>
 
   <section id="related">
@@ -262,7 +272,7 @@ RTX_5090,32,1.79,419,16,0.65</code></pre>
       <div class="kpi ${kvGb>weightsGb?'kpi--warn':''}"><div class="kpi__label">KV Cache (${batch}&times;${ctxK}K)</div><div class="kpi__val">${kvGb.toFixed(1)} GB</div><div class="kpi__sub">${(kvBytesPerTok/1024).toFixed(0)} KB / token</div></div>
       <div class="kpi"><div class="kpi__label">Min Target GPUs</div><div class="kpi__val">${minGpus}&times; ${gpuGb}GB</div><div class="kpi__sub">${(minGpus*gpuGb).toLocaleString()} GB total pool</div></div>
     `;
-    $('verdict').innerHTML = `<strong>Verdict:</strong> <strong>${v.name}</strong> at ${$('quant').value.toUpperCase()} with ${batch} concurrent ${ctxK}K-context streams needs <strong>${totalGb.toFixed(1)} GB VRAM</strong> (${weightsGb.toFixed(1)} GB weights + ${kvGb.toFixed(1)} GB KV cache + ${overheadGb.toFixed(1)} GB runtime). Minimum <strong>${minGpus}&times; ${gpuGb}GB GPUs</strong>.`;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; <strong>${v.name}</strong> at ${$('quant').value.toUpperCase()} with ${batch} concurrent ${ctxK}K-context streams needs <strong>${totalGb.toFixed(1)} GB VRAM</strong> (${weightsGb.toFixed(1)} GB weights + ${kvGb.toFixed(1)} GB KV cache + ${overheadGb.toFixed(1)} GB runtime). Minimum <strong>${minGpus}&times; ${gpuGb}GB GPUs</strong>.`;
     $('rows').innerHTML = gpus.map(g => {
       const n = Math.ceil(totalGb / (g.gb * 0.92));
       const pool = n * g.gb;
@@ -281,7 +291,7 @@ RTX_5090,32,1.79,419,16,0.65</code></pre>
     var badge = document.getElementById('s13EchoBadge');
     var pBtn = document.getElementById('s13PrimaryBtn');
     var postBtn = document.getElementById('s13PostBtn');
-    if (badge) badge.textContent = `Your setup: ${k[0]} VRAM (${k[1]} weights + ${k[2]} KV · ${k[3]})`;
+    if (badge) badge.textContent = `Your setup \u2014 ${k[0]} VRAM (${k[1]} weights + ${k[2]} KV · ${k[3]})`;
     if (pBtn) pBtn.textContent = `Download Exact Config Sheet for Your ${k[0]} Setup — $9 →`;
     if (postBtn) postBtn.textContent = `Download Exact Config Sheet for Your ${k[0]} Setup — $9 →`;
   }
@@ -292,6 +302,55 @@ RTX_5090,32,1.79,419,16,0.65</code></pre>
       el.addEventListener('change', updateS13Echo);
     });
     updateS13Echo();
+  }
+
+  var sampleBtn = document.getElementById('s14SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var trs = Array.from(document.querySelectorAll('#rows tr'));
+      var kpis = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+      var csvLines = [
+        'model_variant,quantization,context_k,batch_size,kv_dtype_bytes,total_vram_gb,weights_gb,kv_cache_gb,gpu_option,gpu_vram_gb,min_gpus,total_pool_gb,headroom_gb,source'
+      ];
+      trs.forEach(function(tr){
+        var tds = Array.from(tr.querySelectorAll('td')).map(function(td){ return td.textContent.trim().replace(/,/g, ''); });
+        if (tds.length >= 5) {
+          csvLines.push([
+            $('variant').value,
+            $('quant').value,
+            $('ctxK').value + 'K',
+            $('batch').value,
+            $('kvQuant').value,
+            (kpis[0] || '').replace(/[^0-9.]/g, ''),
+            (kpis[1] || '').replace(/[^0-9.]/g, ''),
+            (kpis[2] || '').replace(/[^0-9.]/g, ''),
+            '"' + tds[0] + '"',
+            tds[1].replace(/[^0-9.]/g, ''),
+            tds[2],
+            tds[3].replace(/[^0-9.]/g, ''),
+            tds[4].replace(/[^0-9.+]/g, ''),
+            'ml0x.com/calculators/llama-4-vram-requirements.html'
+          ].join(','));
+        }
+      });
+      var blob = new Blob([csvLines.join('\n') + '\n'], { type: 'text/csv;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-2026-gpu-cost-sample.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s14ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-2026-gpu-cost-sample.csv \u2014 unlock the full 46-model production kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'llama-4-vram-requirements', file: 'ml0x-2026-gpu-cost-sample.csv' });
+      }
+    });
   }
 
   document.querySelectorAll('[data-checkout]').forEach(function(btn){

@@ -77,6 +77,12 @@
 .s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
 .s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
 @media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
+/* Sprint 14 1-Click Free Sample Download */
+.s14-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s14-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s14-sample-btn:hover{background:#F5F5F3}
+.s14-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+@media(max-width:767px){.s14-sample-btn{width:100%}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"DeepSeek R1 vs Claude 4 Cost Calculator","url":"https://ml0x.com/calculators/deepseek-r1-vs-claude-4-cost.html","description":"Compare DeepSeek-R1 (with context cache hits & off-peak discounts) against Claude Sonnet 4 and Claude Opus 4 including reasoning/thinking token multipliers.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much cheaper is DeepSeek-R1 than Claude Sonnet 4 in 2026?","acceptedAnswer":{"@type":"Answer","text":"At standard peak rates, DeepSeek-R1 ($0.55/M input, $2.19/M output) is roughly 6x to 7x cheaper than Claude Sonnet 4 ($3/M input, $15/M output), and up to 20x cheaper during DeepSeek's 75%-off UTC off-peak window."}},{"@type":"Question","name":"Do reasoning tokens count as output tokens on both models?","acceptedAnswer":{"@type":"Answer","text":"Yes. Both DeepSeek-R1's chain-of-thought tokens and Claude 4's extended thinking tokens are billed at the full output token rate, which is why the reasoning multiplier dominates total spend."}},{"@type":"Question","name":"When is Claude Sonnet 4 worth the extra cost over DeepSeek-R1?","acceptedAnswer":{"@type":"Answer","text":"Claude Sonnet 4 leads on agentic tool-calling reliability, multi-file codebase edits, and low-latency streaming. Many teams route 80% of batch reasoning to DeepSeek-R1 and reserve Claude 4 for production coding agents."}}]}</script>
@@ -119,7 +125,7 @@
         <div class="field"><label for="outTok">Visible output tokens / req <span class="val-pill" id="outTokVal">800</span></label><input id="outTok" type="range" min="100" max="8000" step="100" value="800"></div>
         <div class="field"><label for="thinkMult">Reasoning token multiplier <span class="val-pill" id="thinkMultVal">2.5x</span></label><input id="thinkMult" type="range" min="1" max="6" step="0.5" value="2.5"></div>
         <div class="field"><label for="cacheHit">Prompt cache hit rate <span class="val-pill" id="cacheHitVal">60%</span></label><input id="cacheHit" type="range" min="0" max="95" step="5" value="60"></div>
-        <div class="field"><label for="offPeak">DeepSeek off-peak share (UTC 16:30–00:30) <span class="val-pill" id="offPeakVal">25%</span></label><input id="offPeak" type="range" min="0" max="100" step="5" value="25"></div>
+        <div class="field"><label for="offPeak">DeepSeek off-peak share (UTC 1630–0030) <span class="val-pill" id="offPeakVal">25%</span></label><input id="offPeak" type="range" min="0" max="100" step="5" value="25"></div>
         </div>
       <div class="kpi-grid" id="kpis"></div>
       <div class="verdict" id="verdict"></div>
@@ -131,31 +137,33 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_deepseek-r1-vs-claude-4-cost" aria-label="Claude Code Workflow Pack">
+    <aside class="s12-cro" data-cro="sprint14-ml0x-primary" data-mr-placement="s14_calc_deepseek-r1-vs-claude-4-cost" aria-label="Claude Code Workflow Pack">
       <div class="s12-cro__tag">Most Popular · $29 Once</div>
       <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Routing between DeepSeek R1 and Claude 4?</strong> Cap runaway reasoning-token bills automatically with <code>cost_guard.py</code> and hybrid routing templates.</p>
-      <p class="s13-who"><strong>Best for:</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps & safety hooks.</p>
-      <p class="s13-files"><strong>Instant 10s download:</strong> <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s13-who"><strong>Built for</strong> developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
       <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_deepseek-r1-vs-claude-4-cost" data-cta="s13_buy_cc29_deepseek-r1-vs-claude-4-cost">Download Exact Config &amp; Cost Pack &mdash; $29 &rarr;</button>
+      <div class="s14-sample-wrap" data-cro="sprint14-sample-bar">
+        <button type="button" class="s14-sample-btn" id="s14SampleBtn" data-sample-download="ml0x-claude-code-sample-rules.md">&#8595; Download Free Sample Rules with Your Numbers (.md, instant)</button>
+        <div class="s14-proof-banner" id="s14ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full 46-model production kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s14_ml0x_deepseek-r1-vs-claude-4-cost" data-cta="s14_buy_cc29_deepseek-r1-vs-claude-4-cost">Download Exact Config &amp; Cost Pack &mdash; $29 &rarr;</button>
       <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
-        <summary>Preview exact files & sample lines inside the $29 Claude Code Pack</summary>
+        <summary>Preview exact files &amp; sample lines inside the $29 Claude Code Pack</summary>
         <pre class="s13-preview"><code># .claude/hooks/cost_guard.py (PreToolUse / PostToolUse excerpt)
-MAX_SESSION_USD = float(os.getenv("CLAUDE_MAX_USD", "5.00"))
-if session_spend_usd &gt;= MAX_SESSION_USD:
-    print(json.dumps({"decision": "block", "reason": f"Cap ${MAX_SESSION_USD:.2f} hit"}))
-    sys.exit(2)
+export CLAUDE_MAX_USD=5.00
+python3 .claude/hooks/cost_guard.py --check-spend # exits 2 to block runaway agent loops
 
 # CLAUDE.md (Routing &amp; Prompt-Cache Discipline excerpt)
-- Default model: sonnet-4; escalate to opus-4 only on /plan or multi-file refactors
+- Default model is sonnet-4; escalate to opus-4 only on /plan or multi-file refactors
 - Keep system prefix static for &gt;=85% Anthropic prompt-cache hits
 - Run /test-fix before /commit; never bypass guard_bash.py</code></pre>
         <ul>
-        <li><strong>Hard Spend Protection (<code>cost_guard.py</code>):</strong> PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
-        <li><strong>Safety &amp; Velocity Hooks:</strong> <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> — 64 passing unit tests included.</li>
-        <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands:</strong> Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+        <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> — 64 passing unit tests included.</li>
+        <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
         </ul>
       </details>
     </aside>
@@ -168,11 +176,11 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
     <div class="faq-item"><h3>When is Claude Sonnet 4 worth the extra cost over DeepSeek-R1?</h3><p>Claude Sonnet 4 leads on agentic tool-calling reliability, multi-file codebase edits, and low-latency streaming. Many teams route 80% of batch reasoning to DeepSeek-R1 and reserve Claude 4 for production coding agents.</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint14-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Stop reasoning tokens from blowing your monthly API budget</p>
     <p class="s12-post__desc">Install cost_guard.py and hybrid model routing hooks in 5 minutes with the $29 Claude Code Workflow Pack.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_deepseek-r1-vs-claude-4-cost" data-cta="s13_post_cc29_deepseek-r1-vs-claude-4-cost">Get Claude Code Pack — $29</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s14_ml0x_deepseek-r1-vs-claude-4-cost" data-cta="s14_post_cc29_deepseek-r1-vs-claude-4-cost">Get Claude Code Pack — $29</button>
   </aside>
 
   <section id="related">
@@ -278,7 +286,7 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
       <div class="kpi"><div class="kpi__label">Claude Opus 4 / Mo</div><div class="kpi__val">$${Math.round(models[2].total).toLocaleString()}</div><div class="kpi__sub">Frontier coding &amp; complex synthesis</div></div>
       <div class="kpi kpi--ok"><div class="kpi__label">80/20 Hybrid / Mo</div><div class="kpi__val">$${Math.round(models[3].total).toLocaleString()}</div><div class="kpi__sub">Saves $${Math.round(sonnetTotal - models[3].total).toLocaleString()}/mo vs all-Sonnet</div></div>
     `;
-    $('verdict').innerHTML = `<strong>Verdict:</strong> At ${reqsDay.toLocaleString()} reqs/day with a ${thinkMult.toFixed(1)}x reasoning multiplier, <strong>DeepSeek-R1</strong> saves <strong>$${Math.round(sonnetTotal - dsTotal).toLocaleString()}/month</strong> (${Math.round((1 - dsTotal/sonnetTotal)*100)}% cheaper) vs Claude Sonnet 4. An 80/20 hybrid keeps Claude 4 quality on hard tasks while saving $${Math.round(sonnetTotal - models[3].total).toLocaleString()}/mo.`;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; At ${reqsDay.toLocaleString()} reqs/day with a ${thinkMult.toFixed(1)}x reasoning multiplier, <strong>DeepSeek-R1</strong> saves <strong>$${Math.round(sonnetTotal - dsTotal).toLocaleString()}/month</strong> (${Math.round((1 - dsTotal/sonnetTotal)*100)}% cheaper) vs Claude Sonnet 4. An 80/20 hybrid keeps Claude 4 quality on hard tasks while saving $${Math.round(sonnetTotal - models[3].total).toLocaleString()}/mo.`;
     $('rows').innerHTML = models.map((m, i) => {
       const diff = m.total - sonnetTotal;
       const pct = sonnetTotal > 0 ? Math.round((diff / sonnetTotal) * 100) : 0;
@@ -297,7 +305,7 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
     var badge = document.getElementById('s13EchoBadge');
     var pBtn = document.getElementById('s13PrimaryBtn');
     var postBtn = document.getElementById('s13PostBtn');
-    if (badge) badge.textContent = `Your setup: DeepSeek-R1 ${k[0]}/mo vs Sonnet 4 ${k[1]}/mo (80/20 Hybrid: ${k[3]}/mo)`;
+    if (badge) badge.textContent = `Your setup \u2014 DeepSeek-R1 ${k[0]}/mo vs Sonnet 4 ${k[1]}/mo (80/20 Hybrid ${k[3]}/mo)`;
     if (pBtn) pBtn.textContent = `Cap Your ${k[1]}/mo Bill with cost_guard.py — $29 →`;
     if (postBtn) postBtn.textContent = `Cap Your ${k[1]}/mo Bill with cost_guard.py — $29 →`;
   }
@@ -308,6 +316,57 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
       el.addEventListener('change', updateS13Echo);
     });
     updateS13Echo();
+  }
+
+  var sampleBtn = document.getElementById('s14SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+      var dailyCap = Math.max(1, Math.round((parseInt((vals[3] || '$100').replace(/[^0-9]/g, ''), 10) || 100) / 30));
+      var md = [
+        '# ml0x Claude Code + DeepSeek-R1 Routing Sample Rules',
+        '# Generated from https://ml0x.com/calculators/deepseek-r1-vs-claude-4-cost.html',
+        '',
+        '## Your Live Calculator Snapshot',
+        '- Requests per day: ' + $('reqsDay').value,
+        '- Input tokens per req: ' + $('inTok').value,
+        '- Visible output tokens per req: ' + $('outTok').value,
+        '- Reasoning token multiplier: ' + $('thinkMult').value + 'x',
+        '- Prompt cache hit rate: ' + $('cacheHit').value + '%',
+        '- DeepSeek off-peak share: ' + $('offPeak').value + '%',
+        '- Projected DeepSeek-R1 monthly spend: ' + (vals[0] || '$0'),
+        '- Projected Claude Sonnet 4 monthly spend: ' + (vals[1] || '$0'),
+        '- Projected Claude Opus 4 monthly spend: ' + (vals[2] || '$0'),
+        '- Projected 80/20 Hybrid monthly spend: ' + (vals[3] || '$0'),
+        '',
+        '## Starter CLAUDE.md Routing & Budget Rules',
+        '- Route 80% of batch reasoning / analysis tasks to DeepSeek-R1 during UTC 16:30-00:30.',
+        '- Reserve Claude Sonnet 4 for multi-file edits and tool-calling loops.',
+        '- Keep system prompt prefix static to sustain >= ' + $('cacheHit').value + '% prompt cache hits.',
+        '- Set recommended daily guard cap: export CLAUDE_MAX_USD=' + dailyCap + '.00',
+        '',
+        '## Full Production Kit ($29 once at https://ml0x.com/claude-code-workflow-pack/)',
+        '- cost_guard.py, guard_bash.py, protect_files.py, format_on_edit.py, notify.py (64 tests)',
+        '- 5 CLAUDE.md templates + 8 slash commands (/plan, /review, /test-fix, /commit, /pr)'
+      ].join('\n');
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-claude-code-sample-rules.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s14ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-claude-code-sample-rules.md \u2014 unlock the full 46-model production kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'deepseek-r1-vs-claude-4-cost', file: 'ml0x-claude-code-sample-rules.md' });
+      }
+    });
   }
 
   document.querySelectorAll('[data-checkout]').forEach(function(btn){
