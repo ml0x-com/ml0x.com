@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Token Cost Calculator (API vs Max $100/$200 & Prompt Cache) | ml0x</title>
+<meta name="description" content="Estimate your real Claude Code API bill per turn, session, and month across Opus 4, Sonnet 4, Haiku 3.5, and hybrid routing. Includes Anthropic 90% prompt caching and Claude Max $100/$200 break-even.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/claude-code-token-cost-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/claude-code-token-cost-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/claude-code-token-cost-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude Code Token Cost Calculator (API vs Max $100/$200 & Prompt Cache)">
+<meta property="og:description" content="Estimate your real Claude Code API bill per turn, session, and month across Opus 4, Sonnet 4, Haiku 3.5, and hybrid routing. Includes Anthropic 90% prompt caching and Claude Max $100/$200 break-even.">
+<meta property="og:url" content="https://ml0x.com/calculators/claude-code-token-cost-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Claude Code Token Cost Calculator (API vs Max $100/$200 & Prompt Cache)">
+<meta name="twitter:description" content="Estimate your real Claude Code API bill per turn, session, and month across Opus 4, Sonnet 4, Haiku 3.5, and hybrid routing. Includes Anthropic 90% prompt caching and Claude Max $100/$200 break-even.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Claude Code token cost calculator","url":"https://ml0x.com/calculators/claude-code-token-cost-calculator.html","description":"Estimate your real Claude Code API bill per turn, session, and month across Opus 4, Sonnet 4, Haiku 3.5, and hybrid routing. Includes Anthropic 90% prompt caching and Claude Max $100/$200 break-even.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much does a typical Claude Code session cost on the API?","acceptedAnswer":{"@type":"Answer","text":"A 35-turn Sonnet 4 session averaging 48K context with an 85% prompt cache hit rate costs roughly $1.60-$2.10. Running that exact same session on Opus 4 costs ~$8-$10.50."}},{"@type":"Question","name":"When is Claude Max ($100 or $200/mo) cheaper than paying per token?","acceptedAnswer":{"@type":"Answer","text":"If you run more than ~50-60 Sonnet sessions per month (about 2-3 sessions per working day), your API spend crosses $100/mo. Heavy daily Opus users cross the $200/mo Max break-even in under 25 sessions."}},{"@type":"Question","name":"Why do long Claude Code sessions get exponentially more expensive?","acceptedAnswer":{"@type":"Answer","text":"Every turn re-reads the entire conversation history. Even at the 0.10x cache-read rate, letting context grow from 40K to 160K tokens quadruples your input read cost per turn. Running /compact or starting a fresh session with a handoff file cuts cost by 50-70%."}},{"@type":"Question","name":"How much does hybrid model routing save?","acceptedAnswer":{"@type":"Answer","text":"Using Opus only for architecture/review (15% of turns), Sonnet for implementation (65%), and Haiku for linting/tests/summaries (20%) cuts monthly API spend by 55-70% compared to pure Opus while keeping architectural quality intact."}},{"@type":"Question","name":"How can I enforce a hard dollar cap on Claude Code?","acceptedAnswer":{"@type":"Answer","text":"Claude Code hooks (PreToolUse / PostToolUse) can read the session transcript token ledger and block further tool calls once spend hits your cap. Our $29 Claude Code Workflow Pack includes a ready-to-drop cost_guard.py hook with 64 passing tests."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Claude Code token cost calculator","item":"https://ml0x.com/calculators/claude-code-token-cost-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Claude Code token cost calculator</span></nav>
+  <h1>Claude Code token cost calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-claude_code_token_cost" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_claude_code_token_cost" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Want to cut your Claude Code token bill automatically?</strong> Grab the $29 Claude Code Workflow Pack (includes cost_guard.py + 5 CLAUDE.md templates + 8 slash commands) or the $99 ml0x Pipeline with hard budget caps.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_claude_code_token_cost" rel="nofollow noopener" data-cta="s10_buy_cs_claude_code_token_cost" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_claude_code_token_cost" rel="nofollow noopener" data-cta="s10_buy_cc_claude_code_token_cost" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_claude_code_token_cost" rel="nofollow noopener" data-cta="s10_buy_pl_claude_code_token_cost" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, GGUF quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>Claude Code re-sends your repo context, tool definitions, and conversation history on every turn. Without prompt caching or per-task model routing, a heavy Opus session can burn $5&ndash;$15 in minutes. Model your real turn count, context size, cache hit rate, and routing mix below to compare direct API billing against <strong>Claude Max ($100/mo and $200/mo)</strong>.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      
+<div class="grid">
+  <div class="field"><label for="strategy">Model / Routing strategy</label>
+    <select id="strategy">
+      <option value="sonnet4" selected>Claude Sonnet 4 ($3 in / $15 out per 1M)</option>
+      <option value="opus4">Claude Opus 4 ($15 in / $75 out per 1M)</option>
+      <option value="hybrid">ml0x Hybrid Routing (15% Opus / 65% Sonnet / 20% Haiku)</option>
+      <option value="haiku35">Claude Haiku 3.5 ($0.80 in / $4 out per 1M)</option>
+    </select>
+  </div>
+  <div class="field"><label for="turns">Turns per session</label><input id="turns" type="number" min="1" max="500" value="35"></div>
+  <div class="field"><label for="ctx">Avg context tokens per turn</label><input id="ctx" type="number" min="2000" max="200000" step="1000" value="48000"></div>
+  <div class="field"><label for="outTok">Avg output tokens per turn</label><input id="outTok" type="number" min="100" max="32000" step="100" value="1200"></div>
+  <div class="field"><label for="cacheHit">Prompt cache hit rate (%)</label><input id="cacheHit" type="number" min="0" max="98" value="85"></div>
+  <div class="field"><label for="sessDay">Sessions per working day</label><input id="sessDay" type="number" min="1" max="50" value="4"></div>
+  <div class="field"><label for="daysMo">Working days per month</label><input id="daysMo" type="number" min="1" max="31" value="22"></div>
+</div>
+<div class="kpi-grid" id="kpis"></div>
+<div class="verdict" id="verdict"></div>
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Strategy Comparison</th><th class="num">Per Session</th><th class="num">Per Day</th><th class="num">Monthly API</th><th class="num">vs Max $200</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+  <div style="flex:1 1 280px;">
+    <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Stop runaway Claude Code sessions before they hit $50+</p>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Drop cost_guard.py and guard_bash.py straight into .claude/hooks with the $29 Claude Code Workflow Pack, or run the full $99 ml0x 4-stage pipeline. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+    <a data-cta="postresult_cc_claude_code_token_cost" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_claude_code_token_cost" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+    <a data-cta="postresult_pipeline_claude_code_token_cost" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_claude_code_token_cost" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline &middot; $99</a>
+  </div>
+</aside>
+  </section>
+
+  
+<section>
+  <h2>How Anthropic prompt caching shapes your Claude Code bill</h2>
+  <p>On every Claude Code turn, Anthropic bills uncached input tokens at <code>1.0&times;</code>, cache-write tokens (5-minute TTL) at <code>1.25&times;</code>, and cache-read tokens at <code>0.10&times;</code> (a 90% discount). Because a typical coding loop keeps 80%&ndash;92% of the prefix warm across turns, prompt caching is the single biggest lever on cost &mdash; right alongside compacting sessions before context crosses 100K tokens and routing lint/test/format turns away from Opus.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Model</th><th class="num">Input ($/1M)</th><th class="num">Cache Write (1.25x)</th><th class="num">Cache Read (0.10x)</th><th class="num">Output ($/1M)</th></tr></thead>
+      <tbody>
+        <tr><td>Claude Opus 4</td><td class="num">$15.00</td><td class="num">$18.75</td><td class="num">$1.50</td><td class="num">$75.00</td></tr>
+        <tr><td>Claude Sonnet 4</td><td class="num">$3.00</td><td class="num">$3.75</td><td class="num">$0.30</td><td class="num">$15.00</td></tr>
+        <tr><td>Claude Haiku 3.5</td><td class="num">$0.80</td><td class="num">$1.00</td><td class="num">$0.08</td><td class="num">$4.00</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>How much does a typical Claude Code session cost on the API?</h3><p>A 35-turn Sonnet 4 session averaging 48K context with an 85% prompt cache hit rate costs roughly $1.60-$2.10. Running that exact same session on Opus 4 costs ~$8-$10.50.</p></div>
+<div class="faq-item"><h3>When is Claude Max ($100 or $200/mo) cheaper than paying per token?</h3><p>If you run more than ~50-60 Sonnet sessions per month (about 2-3 sessions per working day), your API spend crosses $100/mo. Heavy daily Opus users cross the $200/mo Max break-even in under 25 sessions.</p></div>
+<div class="faq-item"><h3>Why do long Claude Code sessions get exponentially more expensive?</h3><p>Every turn re-reads the entire conversation history. Even at the 0.10x cache-read rate, letting context grow from 40K to 160K tokens quadruples your input read cost per turn. Running /compact or starting a fresh session with a handoff file cuts cost by 50-70%.</p></div>
+<div class="faq-item"><h3>How much does hybrid model routing save?</h3><p>Using Opus only for architecture/review (15% of turns), Sonnet for implementation (65%), and Haiku for linting/tests/summaries (20%) cuts monthly API spend by 55-70% compared to pure Opus while keeping architectural quality intact.</p></div>
+<div class="faq-item"><h3>How can I enforce a hard dollar cap on Claude Code?</h3><p>Claude Code hooks (PreToolUse / PostToolUse) can read the session transcript token ledger and block further tool calls once spend hits your cap. Our $29 Claude Code Workflow Pack includes a ready-to-drop cost_guard.py hook with 64 passing tests.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/llm-api-cost-calculator.html">LLM API price calculator</a> &mdash; Compare 73 first-party API models side by side.</li>
+<li><a href="/claude-code-workflow-pack/">Claude Code Workflow Pack ($29)</a> &mdash; 5 CLAUDE.md templates, 5 guard hooks including cost_guard.py, and 8 slash commands.</li>
+<li><a href="/pipeline/">ml0x Agent Pipeline ($99)</a> &mdash; Full 4-stage pipeline around Claude Code with hard budget caps.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. Published hardware specs, model architectures, and API rates are planning baselines; verify against live profiling and current provider rate cards before committing cluster spend.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-claude_code_token_cost" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/calculators/llama-4-vram-calculator.html">Llama 4 VRAM</a>
+    <a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost</a>
+    <a href="/calculators/vllm-vs-sglang-throughput-calculator.html">vLLM vs SGLang throughput</a>
+    <a href="/calculators/qwen-3-quantization-calculator.html">Qwen3 quantization</a>
+    <a href="/calculators/llm-memory-calculator.html">LLM memory</a>
+    <a href="/calculators/kv-cache-size-calculator.html">KV cache</a>
+    <a href="/calculators/llm-api-cost-calculator.html">LLM API cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+
+(function(){
+  const RATES = {
+    opus4:   { name:"Claude Opus 4",   inp:15.0, out:75.0 },
+    sonnet4: { name:"Claude Sonnet 4", inp:3.0,  out:15.0 },
+    haiku35: { name:"Claude Haiku 3.5",inp:0.8,  out:4.0  },
+    hybrid:  { name:"ml0x Hybrid (15/65/20)", inp:15*0.15 + 3*0.65 + 0.8*0.20, out:75*0.15 + 15*0.65 + 4*0.20 }
+  };
+  const $ = id => document.getElementById(id);
+  function sessionCost(rate, turns, ctx, outTok, cacheHitPct){
+    const hit = cacheHitPct / 100;
+    const miss = 1 - hit;
+    // Turn 1 writes initial cache; subsequent turns read hit% from cache and write miss% new tokens
+    const totalInTokens = turns * ctx;
+    const cachedReadTok = (turns - 1) * ctx * hit;
+    const cacheWriteTok = ctx + (turns - 1) * ctx * miss;
+    const totalOutTok = turns * outTok;
+    const costCachedRead = (cachedReadTok / 1e6) * (rate.inp * 0.10);
+    const costCacheWrite = (cacheWriteTok / 1e6) * (rate.inp * 1.25);
+    const costOut = (totalOutTok / 1e6) * rate.out;
+    const noCacheCost = (totalInTokens / 1e6) * rate.inp + costOut;
+    const total = costCachedRead + costCacheWrite + costOut;
+    return { total, noCacheCost, cacheSavings: Math.max(0, noCacheCost - total) };
+  }
+  function calc(){
+    const strat = $('strategy').value;
+    const turns = Math.max(1, +$('turns').value||35);
+    const ctx = Math.max(1000, +$('ctx').value||48000);
+    const outTok = Math.max(50, +$('outTok').value||1200);
+    const cacheHit = Math.min(98, Math.max(0, +$('cacheHit').value||85));
+    const sessDay = Math.max(1, +$('sessDay').value||4);
+    const daysMo = Math.max(1, +$('daysMo').value||22);
+    const sessMo = sessDay * daysMo;
+
+    const r = RATES[strat];
+    const s = sessionCost(r, turns, ctx, outTok, cacheHit);
+    const dayCost = s.total * sessDay;
+    const moCost = s.total * sessMo;
+    const moCacheSaved = s.cacheSavings * sessMo;
+    const max100BreakEven = Math.ceil(100 / Math.max(0.01, s.total));
+    const max200BreakEven = Math.ceil(200 / Math.max(0.01, s.total));
+
+    $('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi__label">Cost / Session</div><div class="kpi__val">$${s.total.toFixed(2)}</div><div class="kpi__sub">$${(s.total/turns).toFixed(3)} per turn</div></div>
+      <div class="kpi ${moCost>200?'kpi--warn':'kpi--ok'}"><div class="kpi__label">Monthly API Spend</div><div class="kpi__val">$${Math.round(moCost).toLocaleString()}</div><div class="kpi__sub">${sessMo} sessions/mo (${sessDay}/day)</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Prompt Cache Saved</div><div class="kpi__val">$${Math.round(moCacheSaved).toLocaleString()}/mo</div><div class="kpi__sub">At ${cacheHit}% cache hit rate</div></div>
+      <div class="kpi"><div class="kpi__label">Max $200 Break-Even</div><div class="kpi__val">${max200BreakEven} sess/mo</div><div class="kpi__sub">Max $100: ${max100BreakEven} sess/mo</div></div>
+    `;
+    const planNote = moCost > 200
+      ? `Claude Max $200/mo saves roughly <strong>$${Math.round(moCost - 200).toLocaleString()}/mo</strong> vs raw API (subject to 5-hour rolling rate limits).`
+      : (moCost > 100
+        ? `Claude Max $100/mo saves roughly <strong>$${Math.round(moCost - 100).toLocaleString()}/mo</strong> vs raw API.`
+        : `Direct API billing (<strong>$${Math.round(moCost)}/mo</strong>) is cheaper than Claude Max $100/mo at this volume.`);
+    $('verdict').innerHTML = `<strong>Verdict (${r.name}):</strong> ${planNote}`;
+
+    const keys = ['opus4','sonnet4','hybrid','haiku35'];
+    $('rows').innerHTML = keys.map(k => {
+      const rr = RATES[k];
+      const sc = sessionCost(rr, turns, ctx, outTok, cacheHit);
+      const mc = sc.total * sessMo;
+      const diff = mc - 200;
+      const cls = k === strat ? ' class="tt"' : '';
+      return `<tr${cls}><td>${rr.name}</td><td class="num">$${sc.total.toFixed(2)}</td><td class="num">$${(sc.total*sessDay).toFixed(2)}</td><td class="num">$${Math.round(mc).toLocaleString()}</td><td class="num">${diff>=0 ? '+$'+Math.round(diff).toLocaleString()+' over' : '-$'+Math.round(Math.abs(diff)).toLocaleString()+' under'}</td></tr>`;
+    }).join('');
+  }
+  ['strategy','turns','ctx','outTok','cacheHit','sessDay','daysMo'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

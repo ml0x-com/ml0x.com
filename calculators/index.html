@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/assets/ml0x.css">
 <style>
 </style>
-<script src="/site-analytics.js?v=1119s" defer></script>
+<script src="/site-analytics.js?v=1126m" defer></script>
 <link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
 <script src="/assets/support-v3.js?v=3"></script>
 </head>
@@ -43,6 +43,30 @@
   </div>
 
   <div class="grid-2">
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html" class="link-card">
+      <div class="link-card__title">B200 vs H200 inference cost calculator</div>
+      <p class="link-card__desc">Compare NVIDIA Blackwell B200 (192GB HBM3e, 8 TB/s, FP4) against H200 (141GB, 4.8 TB/s, FP8) on required GPUs, cluster throughput, $/1M tokens, and break-even hourly rates.</p>
+    </a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html" class="link-card">
+      <div class="link-card__title">DeepSeek-V3 VRAM calculator</div>
+      <p class="link-card__desc">Exact 671B total / 37B active MoE memory sizing with Multi-head Latent Attention (MLA) KV cache compression, FP8/INT4/GGUF weights, and minimum H100/H200/B200 GPU counts.</p>
+    </a>
+    <a href="/calculators/llama-4-vram-calculator.html" class="link-card">
+      <div class="link-card__title">Llama 4 VRAM calculator</div>
+      <p class="link-card__desc">Size Meta Llama 4 Scout (109B/17B, 10M context), Maverick (400B/17B, 1M context), and Behemoth across INT4, FP8, and BF16 with GQA KV cache scaling.</p>
+    </a>
+    <a href="/calculators/claude-code-token-cost-calculator.html" class="link-card">
+      <div class="link-card__title">Claude Code token cost calculator</div>
+      <p class="link-card__desc">Model real Claude Code session spend across Opus 4, Sonnet 4, Haiku 3.5, and hybrid routing with 90% Anthropic prompt caching and Claude Max $100/$200 break-even.</p>
+    </a>
+    <a href="/calculators/vllm-vs-sglang-throughput-calculator.html" class="link-card">
+      <div class="link-card__title">vLLM vs SGLang throughput calculator</div>
+      <p class="link-card__desc">Compare SGLang RadixAttention against vLLM PagedAttention on TTFT, inter-token latency, aggregate tokens/sec, and $/1M output tokens across agent, RAG, and JSON workloads.</p>
+    </a>
+    <a href="/calculators/qwen-3-quantization-calculator.html" class="link-card">
+      <div class="link-card__title">Qwen 3 quantization calculator</div>
+      <p class="link-card__desc">File size, VRAM, KV cache, GPU fit, and decode ceiling for all Qwen3 dense (0.6B&ndash;32B) and MoE (30B-A3B, 235B-A22B) models from BF16 and FP8 down to GGUF Q2_K.</p>
+    </a>
     <a href="/calculators/llm-api-cost-calculator.html" class="link-card">
       <div class="link-card__title">LLM API price calculator</div>
       <p class="link-card__desc">Price your own token shape per request, per day and per month with the cache hit rate included, find the break even between any two models, and see which published prices disagree. 73 first party models, every price read from two independent records.</p>

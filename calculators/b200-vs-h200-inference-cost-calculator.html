@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B200 vs H200 Inference Cost Calculator ($/1M Tokens & Break-Even) | ml0x</title>
+<meta name="description" content="Compare NVIDIA B200 (192GB HBM3e, 8 TB/s, FP4) against H200 (141GB HBM3e, 4.8 TB/s, FP8) for LLM serving. Compute required GPUs, tokens/sec, $/1M tokens, and break-even hourly rates.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="B200 vs H200 Inference Cost Calculator ($/1M Tokens & Break-Even)">
+<meta property="og:description" content="Compare NVIDIA B200 (192GB HBM3e, 8 TB/s, FP4) against H200 (141GB HBM3e, 4.8 TB/s, FP8) for LLM serving. Compute required GPUs, tokens/sec, $/1M tokens, and break-even hourly rates.">
+<meta property="og:url" content="https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="B200 vs H200 Inference Cost Calculator ($/1M Tokens & Break-Even)">
+<meta name="twitter:description" content="Compare NVIDIA B200 (192GB HBM3e, 8 TB/s, FP4) against H200 (141GB HBM3e, 4.8 TB/s, FP8) for LLM serving. Compute required GPUs, tokens/sec, $/1M tokens, and break-even hourly rates.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"B200 vs H200 inference cost calculator","url":"https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html","description":"Compare NVIDIA B200 (192GB HBM3e, 8 TB/s, FP4) against H200 (141GB HBM3e, 4.8 TB/s, FP8) for LLM serving. Compute required GPUs, tokens/sec, $/1M tokens, and break-even hourly rates.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"When is B200 cheaper per million tokens than H200?","acceptedAnswer":{"@type":"Answer","text":"B200 wins on $/1M tokens whenever its hourly rental premium over H200 is smaller than its throughput-per-dollar advantage. At equal FP8 precision, B200 offers 1.67x the HBM bandwidth and 2.27x the dense FP8 FLOPS of H200; when using native FP4 on B200, B200 can stay cheaper even at 2.2x-2.8x the hourly H200 price."}},{"@type":"Question","name":"Why does B200 reduce the number of GPUs required for DeepSeek-V3 or Llama 4 Maverick?","acceptedAnswer":{"@type":"Answer","text":"B200 packs 192 GB of HBM3e per GPU versus 141 GB on H200. Combined with native FP4 weights (~0.55 bytes/param including scales), a 671B model takes ~370 GB of weights and fits cleanly on 4x B200 (768 GB total), whereas FP8 on H200 requires 8x H200 (1,128 GB total)."}},{"@type":"Question","name":"How does batch size affect the B200 vs H200 comparison?","acceptedAnswer":{"@type":"Answer","text":"At batch size 1-8, inference is strictly memory-bandwidth bound, so B200's advantage tracks its 8.0 vs 4.8 TB/s (1.67x) bandwidth ratio. Above batch 32-64, attention and FFN GEMMs become compute-bound, where B200's 2.27x FP8 and 4.5x FP4 Tensor Core advantage kicks in."}},{"@type":"Question","name":"Does this calculator account for NVLink tensor-parallel overhead?","acceptedAnswer":{"@type":"Answer","text":"Yes. Multi-GPU tensor parallelism applies an efficiency factor (0.94 at TP=2, 0.89 at TP=4, 0.82 at TP=8 on H200; slightly higher on B200 due to 1,800 GB/s NVLink5) so cluster throughput reflects real-world all-reduce communication overhead."}},{"@type":"Question","name":"Should I rent B200s or use hosted LLM APIs?","acceptedAnswer":{"@type":"Answer","text":"Dedicated GPU nodes only beat hosted APIs when your sustained utilization exceeds ~40-60% across the month. For bursty or sub-200M token/month workloads, compare your $/1M result here against our LLM API cost calculator."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"B200 vs H200 inference cost calculator","item":"https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>B200 vs H200 inference cost calculator</span></nav>
+  <h1>B200 vs H200 inference cost calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-b200_vs_h200" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_b200_vs_h200" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Sizing GPU clusters or shipping AI agents on a budget?</strong> Grab the $9 ML Systems Cheatsheets for offline GPU/VRAM math, the $29 Claude Code Workflow Pack for hard cost guards, or the $99 ml0x Pipeline.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_b200_vs_h200" rel="nofollow noopener" data-cta="s10_buy_cs_b200_vs_h200" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_b200_vs_h200" rel="nofollow noopener" data-cta="s10_buy_cc_b200_vs_h200" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_b200_vs_h200" rel="nofollow noopener" data-cta="s10_buy_pl_b200_vs_h200" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, GGUF quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>NVIDIA Blackwell B200 delivers 192 GB of HBM3e at 8.0 TB/s and native FP4 Tensor Cores (9,000 dense-equivalent FP4 TFLOPS), while Hopper H200 provides 141 GB of HBM3e at 4.8 TB/s and 3,958 FP8 TFLOPS. Enter your model, precision, concurrency, and cloud hourly rates below to see which GPU wins on $/1M output tokens and where the hourly price break-even lands.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      
+<div class="grid">
+  <div class="field"><label for="model">Model preset</label>
+    <select id="model">
+      <option value="ds_v3" selected>DeepSeek-V3 / R1 (671B total / 37B active MoE)</option>
+      <option value="llama4_mav">Llama 4 Maverick (400B total / 17B active MoE)</option>
+      <option value="qwen3_235b">Qwen3-235B-A22B (235B total / 22B active MoE)</option>
+      <option value="llama33_70b">Llama 3.3 70B Dense</option>
+      <option value="qwen3_32b">Qwen3-32B Dense</option>
+      <option value="custom">Custom model</option>
+    </select>
+  </div>
+  <div class="field"><label for="prec">Serving precision</label>
+    <select id="prec">
+      <option value="fp4" selected>FP4 on B200 vs FP8 on H200 (native best)</option>
+      <option value="fp8">FP8 on both B200 &amp; H200</option>
+      <option value="bf16">BF16 on both B200 &amp; H200</option>
+    </select>
+  </div>
+  <div class="field"><label for="batch">Concurrent requests (batch size)</label><input id="batch" type="number" min="1" max="512" value="32"></div>
+  <div class="field"><label for="ctx">Average context length (tokens)</label><input id="ctx" type="number" min="512" max="1000000" step="1024" value="8192"></div>
+  <div class="field"><label for="b200Rate">B200 cloud rate ($ / GPU-hr)</label><input id="b200Rate" type="number" min="0.5" max="50" step="0.1" value="6.50"></div>
+  <div class="field"><label for="h200Rate">H200 cloud rate ($ / GPU-hr)</label><input id="h200Rate" type="number" min="0.5" max="50" step="0.1" value="3.80"></div>
+  <div class="field"><label for="volM">Monthly output volume (million tokens)</label><input id="volM" type="number" min="1" max="100000" value="500"></div>
+  <div class="field"><label for="util">Effective cluster utilization (%)</label><input id="util" type="number" min="10" max="95" value="65"></div>
+</div>
+<div id="customRow" class="grid" style="margin-top:12px;" hidden>
+  <div class="field"><label for="cTotalB">Total parameters (B)</label><input id="cTotalB" type="number" min="1" max="5000" value="70"></div>
+  <div class="field"><label for="cActiveB">Active parameters per token (B)</label><input id="cActiveB" type="number" min="1" max="5000" value="70"></div>
+  <div class="field"><label for="cKvKB">KV cache per token (KB in FP16)</label><input id="cKvKB" type="number" min="1" max="2000" value="320"></div>
+</div>
+<div class="kpi-grid" id="kpis"></div>
+<div class="verdict" id="verdict"></div>
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Metric</th><th class="num">NVIDIA B200 SXM</th><th class="num">NVIDIA H200 SXM</th><th class="num">B200 vs H200</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+  <div style="flex:1 1 280px;">
+    <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Controlling real inference spend in production?</p>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Enforce hard per-session token caps and automated routing with the $29 Claude Code Pack or full $99 ml0x Pipeline. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+    <a data-cta="postresult_cc_b200_vs_h200" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_b200_vs_h200" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+    <a data-cta="postresult_pipeline_b200_vs_h200" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_b200_vs_h200" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline &middot; $99</a>
+  </div>
+</aside>
+  </section>
+
+  
+<section>
+  <h2>Hardware specs used in this model</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Spec</th><th class="num">B200 SXM (Blackwell)</th><th class="num">H200 SXM (Hopper)</th><th class="num">H100 SXM (Baseline)</th></tr></thead>
+      <tbody>
+        <tr><td>HBM3e / HBM3 Capacity</td><td class="num">192 GB</td><td class="num">141 GB</td><td class="num">80 GB</td></tr>
+        <tr><td>Memory Bandwidth</td><td class="num">8.0 TB/s</td><td class="num">4.8 TB/s</td><td class="num">3.35 TB/s</td></tr>
+        <tr><td>Dense FP8 Tensor TFLOPS</td><td class="num">4,500 TFLOPS</td><td class="num">1,979 TFLOPS</td><td class="num">1,979 TFLOPS</td></tr>
+        <tr><td>Dense FP4 Tensor TFLOPS</td><td class="num">9,000 TFLOPS</td><td class="num">N/A (emulated)</td><td class="num">N/A</td></tr>
+        <tr><td>NVLink Interconnect</td><td class="num">1,800 GB/s</td><td class="num">900 GB/s</td><td class="num">900 GB/s</td></tr>
+        <tr><td>Max TDP</td><td class="num">1,000 W</td><td class="num">700 W</td><td class="num">700 W</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Decode throughput scales with HBM bandwidth at small batches (memory-bound regime) and transitions toward Tensor Core FLOPS at large batches (compute-bound regime). On 671B-class MoE models like DeepSeek-V3, B200's 192 GB HBM3e and native FP4 let you fit the entire model on <strong>4× B200</strong> instead of <strong>8× H200</strong>, cutting both node count and NVLink all-reduce latency.</p>
+</section>
+
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>When is B200 cheaper per million tokens than H200?</h3><p>B200 wins on $/1M tokens whenever its hourly rental premium over H200 is smaller than its throughput-per-dollar advantage. At equal FP8 precision, B200 offers 1.67x the HBM bandwidth and 2.27x the dense FP8 FLOPS of H200; when using native FP4 on B200, B200 can stay cheaper even at 2.2x-2.8x the hourly H200 price.</p></div>
+<div class="faq-item"><h3>Why does B200 reduce the number of GPUs required for DeepSeek-V3 or Llama 4 Maverick?</h3><p>B200 packs 192 GB of HBM3e per GPU versus 141 GB on H200. Combined with native FP4 weights (~0.55 bytes/param including scales), a 671B model takes ~370 GB of weights and fits cleanly on 4x B200 (768 GB total), whereas FP8 on H200 requires 8x H200 (1,128 GB total).</p></div>
+<div class="faq-item"><h3>How does batch size affect the B200 vs H200 comparison?</h3><p>At batch size 1-8, inference is strictly memory-bandwidth bound, so B200's advantage tracks its 8.0 vs 4.8 TB/s (1.67x) bandwidth ratio. Above batch 32-64, attention and FFN GEMMs become compute-bound, where B200's 2.27x FP8 and 4.5x FP4 Tensor Core advantage kicks in.</p></div>
+<div class="faq-item"><h3>Does this calculator account for NVLink tensor-parallel overhead?</h3><p>Yes. Multi-GPU tensor parallelism applies an efficiency factor (0.94 at TP=2, 0.89 at TP=4, 0.82 at TP=8 on H200; slightly higher on B200 due to 1,800 GB/s NVLink5) so cluster throughput reflects real-world all-reduce communication overhead.</p></div>
+<div class="faq-item"><h3>Should I rent B200s or use hosted LLM APIs?</h3><p>Dedicated GPU nodes only beat hosted APIs when your sustained utilization exceeds ~40-60% across the month. For bursty or sub-200M token/month workloads, compare your $/1M result here against our LLM API cost calculator.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM calculator</a> &mdash; Exact 671B MoE weights + MLA KV cache sizing.</li>
+<li><a href="/calculators/vllm-vs-sglang-throughput-calculator.html">vLLM vs SGLang throughput calculator</a> &mdash; Compare RadixAttention vs PagedAttention on H200/B200.</li>
+<li><a href="/calculators/llm-api-cost-calculator.html">LLM API cost calculator</a> &mdash; Compare self-hosted GPU $/1M tokens against hosted APIs.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. Published hardware specs, model architectures, and API rates are planning baselines; verify against live profiling and current provider rate cards before committing cluster spend.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-b200_vs_h200" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/calculators/llama-4-vram-calculator.html">Llama 4 VRAM</a>
+    <a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost</a>
+    <a href="/calculators/vllm-vs-sglang-throughput-calculator.html">vLLM vs SGLang throughput</a>
+    <a href="/calculators/qwen-3-quantization-calculator.html">Qwen3 quantization</a>
+    <a href="/calculators/llm-memory-calculator.html">LLM memory</a>
+    <a href="/calculators/kv-cache-size-calculator.html">KV cache</a>
+    <a href="/calculators/llm-api-cost-calculator.html">LLM API cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+
+(function(){
+  const MODELS = {
+    ds_v3:      { name:"DeepSeek-V3 (671B/37B)", totalB:671, activeB:37, kvKB:70.2 },
+    llama4_mav: { name:"Llama 4 Maverick (400B/17B)", totalB:400, activeB:17, kvKB:196.6 },
+    qwen3_235b: { name:"Qwen3-235B-A22B", totalB:235, activeB:22, kvKB:192.5 },
+    llama33_70b:{ name:"Llama 3.3 70B Dense", totalB:70.6, activeB:70.6, kvKB:327.7 },
+    qwen3_32b:  { name:"Qwen3-32B Dense", totalB:32.8, activeB:32.8, kvKB:262.1 }
+  };
+  const GPU = {
+    b200: { vram:192, bw:8000, fp8Tflops:4500, fp4Tflops:9000, bf16Tflops:2250, tdp:1000, tpEff:{1:1,2:0.96,4:0.92,8:0.87,16:0.82} },
+    h200: { vram:141, bw:4800, fp8Tflops:1979, fp4Tflops:1979, bf16Tflops:989,  tdp:700,  tpEff:{1:1,2:0.94,4:0.89,8:0.82,16:0.75} }
+  };
+  const $ = id => document.getElementById(id);
+  function minGpus(totalGB, vramPerGpu){
+    const valid = [1,2,4,8,16,32];
+    const needed = totalGB / (vramPerGpu * 0.88);
+    for (const g of valid) if (g >= needed) return g;
+    return Math.ceil(needed / 8) * 8;
+  }
+  function sim(gpuKey, m, bpp, kvBytesFactor, batch, ctx, hourlyRate, util){
+    const g = GPU[gpuKey];
+    const weightGB = m.totalB * bpp;
+    const kvGB = (m.kvKB / 1048576) * kvBytesFactor * ctx * batch;
+    const actGB = Math.max(2, weightGB * 0.06 + batch * 0.15);
+    const totalGB = weightGB + kvGB + actGB;
+    const nGpu = minGpus(totalGB, g.vram);
+    const tpEff = g.tpEff[nGpu] || 0.78;
+    // Memory-bound decode ceiling (reading active weights + KV cache)
+    const activeWeightGB = m.activeB * bpp;
+    const bytesPerStepGB = activeWeightGB + kvGB;
+    const memTps = ((g.bw * nGpu * tpEff * 0.72) / Math.max(0.1, bytesPerStepGB)) * batch;
+    // Compute-bound ceiling (2 * activeParams FLOPs per token)
+    const tflops = bpp <= 0.6 ? g.fp4Tflops : (bpp <= 1.1 ? g.fp8Tflops : g.bf16Tflops);
+    const compTps = ((tflops * 1e12 * nGpu * tpEff * 0.45) / (2 * m.activeB * 1e9));
+    const tps = Math.min(memTps, compTps);
+    const effTps = tps * (util / 100);
+    const clusterHr = hourlyRate * nGpu;
+    const costPer1M = effTps > 0 ? (clusterHr / (effTps * 3600)) * 1e6 : 0;
+    return { nGpu, totalGB, weightGB, kvGB, tps, effTps, clusterHr, costPer1M, bottleneck: memTps < compTps ? "Memory BW" : "Compute" };
+  }
+  function calc(){
+    const mk = $('model').value;
+    $('customRow').hidden = mk !== 'custom';
+    const m = mk === 'custom'
+      ? { totalB: Math.max(1, +$('cTotalB').value||70), activeB: Math.max(1, +$('cActiveB').value||70), kvKB: Math.max(1, +$('cKvKB').value||320) }
+      : MODELS[mk];
+    const prec = $('prec').value;
+    const b200Bpp = prec === 'fp4' ? 0.56 : (prec === 'fp8' ? 1.05 : 2.0);
+    const h200Bpp = prec === 'bf16' ? 2.0 : 1.05;
+    const b200KvF = prec === 'bf16' ? 1.0 : 0.5;
+    const h200KvF = prec === 'bf16' ? 1.0 : 0.5;
+    const batch = Math.max(1, +$('batch').value||32);
+    const ctx = Math.max(512, +$('ctx').value||8192);
+    const bRate = Math.max(0.1, +$('b200Rate').value||6.5);
+    const hRate = Math.max(0.1, +$('h200Rate').value||3.8);
+    const volM = Math.max(1, +$('volM').value||500);
+    const util = Math.min(95, Math.max(10, +$('util').value||65));
+
+    const B = sim('b200', m, b200Bpp, b200KvF, batch, ctx, bRate, util);
+    const H = sim('h200', m, h200Bpp, h200KvF, batch, ctx, hRate, util);
+    const bMonth = B.costPer1M * volM;
+    const hMonth = H.costPer1M * volM;
+    const winner = B.costPer1M <= H.costPer1M ? 'B200' : 'H200';
+    const pctSave = Math.abs(1 - Math.min(B.costPer1M, H.costPer1M) / Math.max(B.costPer1M, H.costPer1M)) * 100;
+    const breakEvenB200Rate = H.costPer1M * (B.effTps * 3600 / 1e6) / B.nGpu;
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${winner==='B200'?'kpi--ok':''}"><div class="kpi__label">B200 Cost / 1M Tokens</div><div class="kpi__val">$${B.costPer1M.toFixed(3)}</div><div class="kpi__sub">${B.nGpu}&times; B200 &middot; ${B.tps.toFixed(0)} tok/s peak</div></div>
+      <div class="kpi ${winner==='H200'?'kpi--ok':''}"><div class="kpi__label">H200 Cost / 1M Tokens</div><div class="kpi__val">$${H.costPer1M.toFixed(3)}</div><div class="kpi__sub">${H.nGpu}&times; H200 &middot; ${H.tps.toFixed(0)} tok/s peak</div></div>
+      <div class="kpi"><div class="kpi__label">Break-Even B200 Rate</div><div class="kpi__val">$${breakEvenB200Rate.toFixed(2)}/hr</div><div class="kpi__sub">vs H200 at $${hRate.toFixed(2)}/GPU-hr</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Monthly Spend (${winner})</div><div class="kpi__val">$${Math.round(Math.min(bMonth,hMonth)).toLocaleString()}</div><div class="kpi__sub">Saves ${pctSave.toFixed(1)}% vs ${winner==='B200'?'H200':'B200'}</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict: ${winner} wins by ${pctSave.toFixed(1)}% on $/1M tokens.</strong> At ${volM.toLocaleString()}M output tokens/mo, ${winner} costs <strong>$${Math.round(Math.min(bMonth,hMonth)).toLocaleString()}/mo</strong> vs $${Math.round(Math.max(bMonth,hMonth)).toLocaleString()}/mo. B200 stays cheaper whenever its hourly rate is below <strong>$${breakEvenB200Rate.toFixed(2)}/GPU-hr</strong>.`;
+    $('rows').innerHTML = `
+      <tr><td>Minimum GPUs required</td><td class="num">${B.nGpu}&times; B200 (${B.nGpu*192} GB)</td><td class="num">${H.nGpu}&times; H200 (${H.nGpu*141} GB)</td><td class="num">${(H.nGpu/B.nGpu).toFixed(2)}x fewer GPUs</td></tr>
+      <tr><td>Total VRAM footprint (weights + KV + act)</td><td class="num">${B.totalGB.toFixed(1)} GB</td><td class="num">${H.totalGB.toFixed(1)} GB</td><td class="num">${((1 - B.totalGB/H.totalGB)*100).toFixed(0)}% smaller</td></tr>
+      <tr><td>Cluster decode throughput (peak)</td><td class="num">${B.tps.toFixed(0)} tok/s</td><td class="num">${H.tps.toFixed(0)} tok/s</td><td class="num">${(B.tps/H.tps).toFixed(2)}x</td></tr>
+      <tr><td>Per-user stream speed (batch ${batch})</td><td class="num">${(B.tps/batch).toFixed(1)} tok/s</td><td class="num">${(H.tps/batch).toFixed(1)} tok/s</td><td class="num">${(B.tps/H.tps).toFixed(2)}x</td></tr>
+      <tr><td>Primary bottleneck</td><td class="num">${B.bottleneck}</td><td class="num">${H.bottleneck}</td><td class="num">&mdash;</td></tr>
+      <tr><td>Cluster hourly burn</td><td class="num">$${B.clusterHr.toFixed(2)}/hr</td><td class="num">$${H.clusterHr.toFixed(2)}/hr</td><td class="num">${(B.clusterHr/H.clusterHr).toFixed(2)}x</td></tr>
+      <tr class="tt"><td>Effective cost per 1M output tokens</td><td class="num">$${B.costPer1M.toFixed(3)}</td><td class="num">$${H.costPer1M.toFixed(3)}</td><td class="num">${winner} -${pctSave.toFixed(1)}%</td></tr>
+      <tr class="tt"><td>Estimated monthly spend (${volM.toLocaleString()}M tok)</td><td class="num">$${Math.round(bMonth).toLocaleString()}</td><td class="num">$${Math.round(hMonth).toLocaleString()}</td><td class="num">Save $${Math.round(Math.abs(bMonth-hMonth)).toLocaleString()}/mo</td></tr>
+    `;
+  }
+  ['model','prec','batch','ctx','b200Rate','h200Rate','volM','util','cTotalB','cActiveB','cKvKB'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

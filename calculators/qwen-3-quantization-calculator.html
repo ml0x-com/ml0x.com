@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qwen 3 Quantization & VRAM Calculator (0.6B to 235B-A22B GGUF, FP8, AWQ) | ml0x</title>
+<meta name="description" content="Calculate exact file size, VRAM, KV cache, GPU fit, and decode speed ceiling for all Qwen3 dense (0.6B-32B) and MoE (30B-A3B, 235B-A22B) models across BF16, FP8, AWQ, and GGUF Q8_0 to Q2_K.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/qwen-3-quantization-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/qwen-3-quantization-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/qwen-3-quantization-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Qwen 3 Quantization & VRAM Calculator (0.6B to 235B-A22B GGUF, FP8, AWQ)">
+<meta property="og:description" content="Calculate exact file size, VRAM, KV cache, GPU fit, and decode speed ceiling for all Qwen3 dense (0.6B-32B) and MoE (30B-A3B, 235B-A22B) models across BF16, FP8, AWQ, and GGUF Q8_0 to Q2_K.">
+<meta property="og:url" content="https://ml0x.com/calculators/qwen-3-quantization-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Qwen 3 Quantization & VRAM Calculator (0.6B to 235B-A22B GGUF, FP8, AWQ)">
+<meta name="twitter:description" content="Calculate exact file size, VRAM, KV cache, GPU fit, and decode speed ceiling for all Qwen3 dense (0.6B-32B) and MoE (30B-A3B, 235B-A22B) models across BF16, FP8, AWQ, and GGUF Q8_0 to Q2_K.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:24px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 12px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:20px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 12px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:24px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 5px;letter-spacing:.2px}
+.llm-calc .field select,.llm-calc .field input{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink)}
+.llm-calc .field input:focus,.llm-calc .field select:focus{outline:2px solid var(--ink);outline-offset:1px;background:var(--surface)}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 16px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 16px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 16px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .note,.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.llm-calc section p a:hover{color:var(--ink)}
+/* Universal Sprint 10 CRO Ladder */
+.s10-cro{margin:16px 0 22px;padding:16px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid var(--ink,#1A1A1A);border-radius:10px;background:var(--surface,#fff);color:var(--ink,#1A1A1A);font-family:var(--font-body,Inter,-apple-system,sans-serif)}
+.s10-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:var(--ink)}
+.s10-cro__disc{font-size:12px;line-height:1.45;color:#4A4A4A;background:#F2F2F0;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s10-cro__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 12px}
+.s10-tier{background:#FAFAF9;border:1px solid #D8D8D6;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:space-between}
+.s10-tier--pop{background:#fff;border:2px solid #1A1A1A}
+.s10-tier__tag{font-family:var(--font-mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:#6E6E6E;font-weight:600}
+.s10-tier--pop .s10-tier__tag{color:#1A1A1A}
+.s10-tier__price{font-family:var(--font-mono);font-size:20px;font-weight:700;color:#1A1A1A;margin:2px 0 4px}
+.s10-tier__name{font-size:12.5px;font-weight:600;color:#1A1A1A;margin-bottom:4px}
+.s10-tier__desc{font-size:11.5px;color:#555;line-height:1.4;margin-bottom:10px}
+.s10-tier__btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;font-family:var(--font-body);font-size:13px;font-weight:600;color:#fff!important;background:#1A1A1A;padding:8px 12px;border-radius:980px;text-decoration:none!important;text-align:center}
+.s10-tier__btn:hover{background:#333;color:#fff!important}
+.s10-cro details{margin:0;font-size:13px;color:#4A4A4A;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:8px 12px}
+.s10-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s10-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+@media(max-width:767px){.s10-cro__grid{grid-template-columns:1fr}.llm-calc .tool{padding:16px}}
+@media print{.s10-cro,.postresult-pro{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Qwen 3 quantization calculator","url":"https://ml0x.com/calculators/qwen-3-quantization-calculator.html","description":"Calculate exact file size, VRAM, KV cache, GPU fit, and decode speed ceiling for all Qwen3 dense (0.6B-32B) and MoE (30B-A3B, 235B-A22B) models across BF16, FP8, AWQ, and GGUF Q8_0 to Q2_K.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can Qwen3-30B-A3B run on an RTX 4090 24GB?","acceptedAnswer":{"@type":"Answer","text":"Yes. At Q4_K_M (~18.5 GB file size) or AWQ INT4 (~17.2 GB), Qwen3-30B-A3B fits inside 24 GB VRAM with room for a 16K-32K KV cache, and decodes very fast because only 3.3B parameters are active per token."}},{"@type":"Question","name":"What GPU do I need for Qwen3-235B-A22B?","acceptedAnswer":{"@type":"Answer","text":"In FP8 (~241 GB weights), Qwen3-235B-A22B needs 4x H100 80GB or 2x H200 141GB. In GGUF Q4_K_M (~142 GB weights), it fits on 2x H100 80GB, a single H200 141GB (at Q3_K_M), or a 192GB-256GB Mac Studio."}},{"@type":"Question","name":"Is Q4_K_M or AWQ INT4 better for Qwen3?","acceptedAnswer":{"@type":"Answer","text":"For llama.cpp / Ollama / Apple Silicon local inference, GGUF Q4_K_M (~4.85 bpw) is the sweet spot for quality vs size. For vLLM / SGLang GPU serving, AWQ INT4 or native FP8 delivers much higher batched throughput via Marlin/FP8 Tensor Core kernels."}},{"@type":"Question","name":"How much KV cache does Qwen3-32B use at 32K context?","acceptedAnswer":{"@type":"Answer","text":"Qwen3-32B uses 64 layers, 8 KV heads (GQA), and 128 head_dim, which is 262,144 bytes (256 KiB) per token in FP16. At 32,768 tokens that is 8.59 GB (8.0 GiB) in FP16, or 4.29 GB in FP8 KV cache."}},{"@type":"Question","name":"Why is effective bits-per-weight higher than 4.0 for Q4_K_M?","acceptedAnswer":{"@type":"Answer","text":"GGUF Q4_K_M stores 4-bit weights plus block scales/mins and keeps sensitive tensors (embeddings, output head, and selected attention projections) at 6-bit or 8-bit, averaging ~4.85 bits per parameter on medium/large models."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Qwen 3 quantization calculator","item":"https://ml0x.com/calculators/qwen-3-quantization-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Qwen 3 quantization calculator</span></nav>
+  <h1>Qwen 3 quantization calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=calculators-qwen_3_quant" rel="author">Michael Lip</a> &middot; Updated 27 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <aside class="s10-cro" data-cro="sprint10-ml0x-ladder" data-mr-placement="s10_top_qwen_3_quant" aria-label="ml0x Engineering Packs">
+  <p class="s10-cro__lead"><strong>Quantizing Qwen3 for local RTX, Mac Studio, or H100 serving?</strong> Grab the $9 ML Systems Cheatsheets (quantization & VRAM ladders), the $29 Claude Code Workflow Pack, or the $99 ml0x Agent Pipeline.</p>
+  <p class="s10-cro__disc">Secure checkout by Stripe &mdash; your checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong>, our company account. Instant download, no account, 60-day refund.</p>
+  <div class="s10-cro__grid">
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Reference</div>
+        <div class="s10-tier__price">$9</div>
+        <div class="s10-tier__name">ML Systems Cheatsheet Pack</div>
+        <div class="s10-tier__desc">12 print-ready sheets (KV cache, LLM VRAM, quantization, GPU sizing). PDF, HTML &amp; Markdown.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s10_ml0x_qwen_3_quant" rel="nofollow noopener" data-cta="s10_buy_cs_qwen_3_quant" data-mr-placement="calc_top">Get Cheatsheets, $9</a>
+    </div>
+    <div class="s10-tier s10-tier--pop">
+      <div>
+        <div class="s10-tier__tag">Most Popular</div>
+        <div class="s10-tier__price">$29</div>
+        <div class="s10-tier__name">Claude Code Workflow Pack</div>
+        <div class="s10-tier__desc">5 CLAUDE.md templates, 5 guard hooks (cost_guard.py, guard_bash.py) &amp; 8 slash commands. MIT files.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_qwen_3_quant" rel="nofollow noopener" data-cta="s10_buy_cc_qwen_3_quant" data-mr-placement="calc_top">Get Workflow Pack, $29</a>
+    </div>
+    <div class="s10-tier">
+      <div>
+        <div class="s10-tier__tag">Full System</div>
+        <div class="s10-tier__price">$99</div>
+        <div class="s10-tier__name">ml0x Agent Pipeline</div>
+        <div class="s10-tier__desc">Pinned 100x CLI, parallel runner, hard budget caps, NASA P10 gates &amp; 13 research docs.</div>
+      </div>
+      <a class="s10-tier__btn" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_qwen_3_quant" rel="nofollow noopener" data-cta="s10_buy_pl_qwen_3_quant" data-mr-placement="calc_top">Get Pipeline, $99</a>
+    </div>
+  </div>
+  <details>
+    <summary>Preview what is inside each pack ($9 / $29 / $99)</summary>
+    <ul>
+      <li><strong>$9 ML Systems Cheatsheet Pack:</strong> 12 Letter-size reference sheets (GQA/MLA KV cache formulas, 4-term LLM VRAM budget, GGUF quantization ladder, ROC/PR &amp; MCC, scikit-learn snippets) in PDF, print HTML &amp; Markdown.</li>
+      <li><strong>$29 Claude Code Workflow Pack:</strong> <code>cost_guard.py</code>, <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, <code>notify.py</code> (64 passing hook tests), 5 <code>CLAUDE.md</code> templates, and 8 slash commands (<code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, <code>/handoff</code>). <a href="/claude-code-workflow-pack/">Full file list</a>.</li>
+      <li><strong>$99 ml0x Agent Pipeline:</strong> Pinned release, 1,160-line 100x CLI, 8 research presets, parallel runner, hard token budget caps, NASA P10 config, runbook &amp; 13 research docs. <a href="/pipeline/">Full breakdown</a>.</li>
+    </ul>
+  </details>
+</aside>
+
+  <p>Alibaba's <strong>Qwen3</strong> lineup spans six dense models (<strong>0.6B, 1.7B, 4B, 8B, 14B, 32B</strong>) and two sparse Mixture-of-Experts models (<strong>Qwen3-30B-A3B</strong> with 3.3B active params and <strong>Qwen3-235B-A22B</strong> with 22B active params). Pick any Qwen3 release, quantization format, context length, and GPU below to see exact file size, total VRAM, fit verdict, and single-stream decode speed.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      
+<div class="grid">
+  <div class="field"><label for="model">Qwen3 model</label>
+    <select id="model">
+      <option value="q3_235b">Qwen3-235B-A22B (MoE, 22B active)</option>
+      <option value="q3_30b" selected>Qwen3-30B-A3B (MoE, 3.3B active)</option>
+      <option value="q3_32b">Qwen3-32B (Dense)</option>
+      <option value="q3_14b">Qwen3-14B (Dense)</option>
+      <option value="q3_8b">Qwen3-8B (Dense)</option>
+      <option value="q3_4b">Qwen3-4B (Dense)</option>
+      <option value="q3_1_7b">Qwen3-1.7B (Dense)</option>
+      <option value="q3_0_6b">Qwen3-0.6B (Dense)</option>
+    </select>
+  </div>
+  <div class="field"><label for="quant">Quantization level</label>
+    <select id="quant">
+      <option value="bf16">BF16 / FP16 (16.0 bpw)</option>
+      <option value="fp8">FP8 (8.2 bpw)</option>
+      <option value="q8_0">GGUF Q8_0 (8.5 bpw)</option>
+      <option value="q6_k">GGUF Q6_K (6.6 bpw)</option>
+      <option value="q5_k_m">GGUF Q5_K_M (5.7 bpw)</option>
+      <option value="q4_k_m" selected>GGUF Q4_K_M (4.85 bpw)</option>
+      <option value="awq4">AWQ / GPTQ INT4 (4.50 bpw)</option>
+      <option value="q3_k_m">GGUF Q3_K_M (3.90 bpw)</option>
+      <option value="q2_k">GGUF Q2_K (3.10 bpw)</option>
+    </select>
+  </div>
+  <div class="field"><label for="ctx">Context length (tokens)</label><input id="ctx" type="number" min="1024" max="131072" step="1024" value="16384"></div>
+  <div class="field"><label for="kvPrec">KV cache precision</label>
+    <select id="kvPrec">
+      <option value="2" selected>FP16 / BF16 (2 bytes)</option>
+      <option value="1">FP8 / Q8_0 (1 byte)</option>
+    </select>
+  </div>
+  <div class="field"><label for="gpu">Target GPU / Apple Silicon</label>
+    <select id="gpu">
+      <option value="rtx4090" selected>RTX 4090 24GB (1,008 GB/s)</option>
+      <option value="rtx5090">RTX 5090 32GB (1,792 GB/s)</option>
+      <option value="m4max64">Apple M4 Max 64GB (546 GB/s)</option>
+      <option value="m4max128">Apple M4 Max 128GB (546 GB/s)</option>
+      <option value="h100">NVIDIA H100 80GB (3,350 GB/s)</option>
+      <option value="h200">NVIDIA H200 141GB (4,800 GB/s)</option>
+    </select>
+  </div>
+</div>
+<div class="kpi-grid" id="kpis"></div>
+<div class="verdict" id="verdict"></div>
+<div class="tablewrap">
+  <table>
+    <thead><tr><th>Quantization</th><th class="num">Effective bpw</th><th class="num">Model File (GB)</th><th class="num">Total VRAM w/ KV</th><th class="num">Decode Ceiling</th><th class="num">Hardware Fit</th></tr></thead>
+    <tbody id="ladder"></tbody>
+  </table>
+</div>
+
+    </div>
+    <aside class="postresult-pro" data-cro="sprint10-postresult" aria-label="ml0x Pro tools" style="margin:18px 0;padding:14px 16px;border:1px solid var(--line,#d4d4d8);border-radius:10px;background:var(--surface,#fafafa);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;">
+  <div style="flex:1 1 280px;">
+    <p style="margin:0 0 4px;font-weight:700;font-size:15px;color:#1A1A1A;">Running local or cloud Qwen3 coding agents?</p>
+    <p style="margin:0;font-size:13.5px;color:var(--ink-muted,#52525b);">Wrap your coding agents in guard hooks and hard budget caps with the $29 Claude Code Pack or $99 ml0x Pipeline. Checkout &amp; receipt show <strong>BeLikeNative (AUTOM8 LLC)</strong> &middot; 60-day refund.</p>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+    <a data-cta="postresult_cc_qwen_3_quant" href="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s10_ml0x_qwen_3_quant" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#111;color:#fff;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">Claude Code Pack &middot; $29</a>
+    <a data-cta="postresult_pipeline_qwen_3_quant" href="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s10_ml0x_qwen_3_quant" rel="nofollow noopener" style="display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 13.5px/1 Inter,system-ui,sans-serif;text-decoration:none;">ml0x Pipeline &middot; $99</a>
+  </div>
+</aside>
+  </section>
+
+  
+<section>
+  <h2>Why Qwen3-30B-A3B and Qwen3-235B-A22B punch above their VRAM</h2>
+  <p>In Qwen3's MoE models, every parameter still resides in VRAM (30.5B for 30B-A3B, 235B for 235B-A22B), so quantization determines whether the file fits on your card. However, during token generation only <strong>3.3B</strong> (30B-A3B) or <strong>22B</strong> (235B-A22B) active weights are streamed from memory per token. That lets <strong>Qwen3-30B-A3B at Q4_K_M (~18.5 GB)</strong> fit on a single RTX 4090 24GB while decoding at speeds comparable to a 3B&ndash;4B dense model.</p>
+</section>
+
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Can Qwen3-30B-A3B run on an RTX 4090 24GB?</h3><p>Yes. At Q4_K_M (~18.5 GB file size) or AWQ INT4 (~17.2 GB), Qwen3-30B-A3B fits inside 24 GB VRAM with room for a 16K-32K KV cache, and decodes very fast because only 3.3B parameters are active per token.</p></div>
+<div class="faq-item"><h3>What GPU do I need for Qwen3-235B-A22B?</h3><p>In FP8 (~241 GB weights), Qwen3-235B-A22B needs 4x H100 80GB or 2x H200 141GB. In GGUF Q4_K_M (~142 GB weights), it fits on 2x H100 80GB, a single H200 141GB (at Q3_K_M), or a 192GB-256GB Mac Studio.</p></div>
+<div class="faq-item"><h3>Is Q4_K_M or AWQ INT4 better for Qwen3?</h3><p>For llama.cpp / Ollama / Apple Silicon local inference, GGUF Q4_K_M (~4.85 bpw) is the sweet spot for quality vs size. For vLLM / SGLang GPU serving, AWQ INT4 or native FP8 delivers much higher batched throughput via Marlin/FP8 Tensor Core kernels.</p></div>
+<div class="faq-item"><h3>How much KV cache does Qwen3-32B use at 32K context?</h3><p>Qwen3-32B uses 64 layers, 8 KV heads (GQA), and 128 head_dim, which is 262,144 bytes (256 KiB) per token in FP16. At 32,768 tokens that is 8.59 GB (8.0 GiB) in FP16, or 4.29 GB in FP8 KV cache.</p></div>
+<div class="faq-item"><h3>Why is effective bits-per-weight higher than 4.0 for Q4_K_M?</h3><p>GGUF Q4_K_M stores 4-bit weights plus block scales/mins and keeps sensitive tensors (embeddings, output head, and selected attention projections) at 6-bit or 8-bit, averaging ~4.85 bits per parameter on medium/large models.</p></div>
+  </section>
+
+  <section id="related">
+    <h2>Related LLM &amp; GPU calculators</h2>
+    <ul>
+      <li><a href="/calculators/quantization-calculator.html">Qwen2.5 GGUF quantization calculator</a> &mdash; Measured Hugging Face GGUF byte sizes for Qwen2.5 0.5B-72B.</li>
+<li><a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM calculator</a> &mdash; Compare Qwen3-235B-A22B against DeepSeek-V3 671B.</li>
+<li><a href="/calculators/tokens-per-second-calculator/">Tokens per second calculator</a> &mdash; Single-stream decode speed roofline by GPU bandwidth.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run locally in your browser. Published hardware specs, model architectures, and API rates are planning baselines; verify against live profiling and current provider rate cards before committing cluster spend.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261119-s-calculators-qwen_3_quant" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <p class="footer-offer" style="margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><a data-cta="footer_ccpack" href="/claude-code-workflow-pack/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">Claude Code Pack, $29 once</a><a data-cta="footer_pipeline" href="/pipeline/" style="display:inline-flex;align-items:center;min-height:48px;padding:0 18px;border-radius:999px;background:#fff;color:#111;border:1px solid #111;font:600 14px/1 Inter,system-ui,sans-serif;text-decoration:none">ml0x Pipeline, $99 once</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/b200-vs-h200-inference-cost-calculator.html">B200 vs H200 cost</a>
+    <a href="/calculators/deepseek-v3-vram-calculator.html">DeepSeek-V3 VRAM</a>
+    <a href="/calculators/llama-4-vram-calculator.html">Llama 4 VRAM</a>
+    <a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost</a>
+    <a href="/calculators/vllm-vs-sglang-throughput-calculator.html">vLLM vs SGLang throughput</a>
+    <a href="/calculators/qwen-3-quantization-calculator.html">Qwen3 quantization</a>
+    <a href="/calculators/llm-memory-calculator.html">LLM memory</a>
+    <a href="/calculators/kv-cache-size-calculator.html">KV cache</a>
+    <a href="/calculators/llm-api-cost-calculator.html">LLM API cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+
+(function(){
+  const MODELS = {
+    q3_235b: { name:"Qwen3-235B-A22B", totalB:235.1, activeB:22.0, layers:94, kvHeads:4, headDim:128, moe:true },
+    q3_30b:  { name:"Qwen3-30B-A3B",   totalB:30.5,  activeB:3.3,  layers:48, kvHeads:4, headDim:128, moe:true },
+    q3_32b:  { name:"Qwen3-32B",       totalB:32.8,  activeB:32.8, layers:64, kvHeads:8, headDim:128, moe:false },
+    q3_14b:  { name:"Qwen3-14B",       totalB:14.8,  activeB:14.8, layers:40, kvHeads:8, headDim:128, moe:false },
+    q3_8b:   { name:"Qwen3-8B",        totalB:8.2,   activeB:8.2,  layers:36, kvHeads:8, headDim:128, moe:false },
+    q3_4b:   { name:"Qwen3-4B",        totalB:4.0,   activeB:4.0,  layers:36, kvHeads:8, headDim:128, moe:false },
+    q3_1_7b: { name:"Qwen3-1.7B",      totalB:1.72,  activeB:1.72, layers:28, kvHeads:8, headDim:128, moe:false },
+    q3_0_6b: { name:"Qwen3-0.6B",      totalB:0.60,  activeB:0.60, layers:28, kvHeads:8, headDim:128, moe:false }
+  };
+  const QUANTS = [
+    { id:"bf16",   label:"BF16 / FP16", bpw:16.0 },
+    { id:"fp8",    label:"FP8",         bpw:8.2  },
+    { id:"q8_0",   label:"GGUF Q8_0",   bpw:8.5  },
+    { id:"q6_k",   label:"GGUF Q6_K",   bpw:6.6  },
+    { id:"q5_k_m", label:"GGUF Q5_K_M", bpw:5.7  },
+    { id:"q4_k_m", label:"GGUF Q4_K_M", bpw:4.85 },
+    { id:"awq4",   label:"AWQ / GPTQ 4-bit", bpw:4.50 },
+    { id:"q3_k_m", label:"GGUF Q3_K_M", bpw:3.90 },
+    { id:"q2_k",   label:"GGUF Q2_K",   bpw:3.10 }
+  ];
+  const GPUS = {
+    rtx4090:  { name:"RTX 4090 24GB", vram:24,  bw:1008, usable:0.92 },
+    rtx5090:  { name:"RTX 5090 32GB", vram:32,  bw:1792, usable:0.92 },
+    m4max64:  { name:"M4 Max 64GB",   vram:64,  bw:546,  usable:0.75 },
+    m4max128: { name:"M4 Max 128GB",  vram:128, bw:546,  usable:0.80 },
+    h100:     { name:"H100 80GB",     vram:80,  bw:3350, usable:0.90 },
+    h200:     { name:"H200 141GB",    vram:141, bw:4800, usable:0.90 }
+  };
+  const $ = id => document.getElementById(id);
+  function evalQuant(m, q, ctx, kvB, g){
+    const fileGB = (m.totalB * q.bpw) / 8;
+    const kvBytesPerTok = 2 * m.layers * m.kvHeads * m.headDim * kvB;
+    const kvGB = (kvBytesPerTok * ctx) / 1e9;
+    const ovhGB = Math.max(0.8, fileGB * 0.05);
+    const totalGB = fileGB + kvGB + ovhGB;
+    const nGpu = Math.max(1, Math.ceil(totalGB / (g.vram * g.usable)));
+    const activeReadGB = (m.activeB * q.bpw) / 8 + kvGB;
+    const effBw = g.bw * Math.min(nGpu, 8) * (nGpu > 1 ? 0.78 : 0.72);
+    const tps = effBw / Math.max(0.15, activeReadGB);
+    return { fileGB, kvGB, ovhGB, totalGB, nGpu, tps };
+  }
+  function calc(){
+    const m = MODELS[$('model').value];
+    const qId = $('quant').value;
+    const q = QUANTS.find(x => x.id === qId);
+    const ctx = Math.max(1024, +$('ctx').value||16384);
+    const kvB = +$('kvPrec').value;
+    const g = GPUS[$('gpu').value];
+    const r = evalQuant(m, q, ctx, kvB, g);
+    const fits1 = r.nGpu === 1;
+
+    $('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi__label">Model File Size</div><div class="kpi__val">${r.fileGB.toFixed(2)} GB</div><div class="kpi__sub">${q.label} (${q.bpw} bpw)</div></div>
+      <div class="kpi ${fits1?'kpi--ok':'kpi--warn'}"><div class="kpi__label">Total VRAM (${ctx.toLocaleString()} ctx)</div><div class="kpi__val">${r.totalGB.toFixed(2)} GB</div><div class="kpi__sub">Includes ${r.kvGB.toFixed(2)} GB KV cache</div></div>
+      <div class="kpi ${fits1?'kpi--ok':'kpi--warn'}"><div class="kpi__label">Hardware Fit</div><div class="kpi__val">${r.nGpu}&times; ${g.name.split(' ')[0]}</div><div class="kpi__sub">${fits1?'Fits on 1 GPU/node':'Requires '+r.nGpu+' GPUs'}</div></div>
+      <div class="kpi"><div class="kpi__label">Decode Ceiling</div><div class="kpi__val">${r.tps.toFixed(1)} tok/s</div><div class="kpi__sub">Reads ${m.activeB}B active params</div></div>
+    `;
+    $('verdict').innerHTML = fits1
+      ? `<strong>Fits cleanly on 1&times; ${g.name}:</strong> ${m.name} (${q.label}) needs <strong>${r.totalGB.toFixed(1)} GB</strong> total at ${ctx.toLocaleString()} context, leaving ~${(g.vram*g.usable - r.totalGB).toFixed(1)} GB usable headroom.`
+      : `<strong>Multi-GPU required on ${g.name}:</strong> ${m.name} (${q.label}) needs <strong>${r.totalGB.toFixed(1)} GB</strong> (${r.nGpu}&times; ${g.name}), or drop quantization / context length to fit on a single card.`;
+
+    $('ladder').innerHTML = QUANTS.map(item => {
+      const e = evalQuant(m, item, ctx, kvB, g);
+      const cls = item.id === qId ? ' class="tt"' : '';
+      return `<tr${cls}><td>${item.label}</td><td class="num">${item.bpw.toFixed(2)}</td><td class="num">${e.fileGB.toFixed(2)} GB</td><td class="num">${e.totalGB.toFixed(2)} GB</td><td class="num">${e.tps.toFixed(1)} tok/s</td><td class="num">${e.nGpu}&times; ${g.name}</td></tr>`;
+    }).join('');
+  }
+  ['model','quant','ctx','kvPrec','gpu'].forEach(id=>{
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+})();
+
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

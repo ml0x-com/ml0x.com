@@ -361,4 +361,34 @@
     <lastmod>2026-11-13</lastmod>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://ml0x.com/calculators/b200-vs-h200-inference-cost-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/deepseek-v3-vram-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/llama-4-vram-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/claude-code-token-cost-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/vllm-vs-sglang-throughput-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/qwen-3-quantization-calculator.html</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>
