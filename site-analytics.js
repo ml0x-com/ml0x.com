@@ -493,7 +493,7 @@ var MR_CONSENT_MODE = 'basic'; // 'basic' | 'advanced'
     bar.setAttribute('role', 'region');
     bar.setAttribute('aria-label', 'Zovo Black Friday offer');
     bar.style.cssText = 'background:#111;color:#fff;font:500 13px/1.4 Inter,-apple-system,BlinkMacSystemFont,sans-serif;text-align:center;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,0.12);';
-    bar.innerHTML = 'Black Friday (Nov 27\u2013Dec 1 UTC): Zovo Pro Lifetime (all 15 developer Chrome extensions) is <strong>$79</strong> once (reg. $99) \u2014 <a href="https://zovo.one/pricing?utm_source=ml0x&amp;utm_medium=bfcm_bar" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-weight:700;">Claim $79 Lifetime &rarr;</a>';
+    bar.innerHTML = 'Black Friday (Nov 27\u2013Dec 1 UTC) \u2014 Zovo Pro Lifetime (all 15 developer Chrome extensions) is <strong>$79</strong> once (reg. $99) \u2014 <a href="https://zovo.one/pricing?utm_source=ml0x&amp;utm_medium=bfcm_bar" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline;font-weight:700;">Claim $79 Lifetime &rarr;</a>';
     document.body.insertBefore(bar, document.body.firstChild);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
