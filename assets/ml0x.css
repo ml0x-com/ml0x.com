@@ -421,7 +421,7 @@ canvas { display: block; max-width: 100%; background: var(--surface); border-rad
 .site-footer__meta, .site-footer p { font-family: var(--font-body); font-size: 11px; color: var(--on-dark-muted); margin: 0; }
 .site-footer a { color: var(--on-dark-muted); text-decoration: none; }
 .site-footer a:hover { color: #ccc; }
-.site-footer__links { display: flex; gap: 20px; }
+.site-footer__links { flex-wrap: wrap; display: flex; gap: 20px; }
 .site-footer__links a { font-family: var(--font-body); font-size: 11px; }
 
 /* ------------------------------------------------- support (tip) CTA */
