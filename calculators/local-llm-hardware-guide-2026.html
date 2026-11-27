@@ -69,6 +69,14 @@
 .s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
 @media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
 @media print{.s12-cro,.s12-post{display:none}}
+/* Sprint 13 Dynamic Output-to-CTA Echo & Concrete Previews */
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
+@media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Local LLM Hardware Guide & Calculator (2026)","url":"https://ml0x.com/calculators/local-llm-hardware-guide-2026.html","description":"Interactive 2026 local AI hardware recommender: compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Should I buy an RTX 5090 PC or a Mac Studio M4 Ultra for local LLMs?","acceptedAnswer":{"@type":"Answer","text":"Buy an RTX 5090 (or 2x 5090) if you want 2x\u20133x faster decode speeds on 8B\u201370B models and CUDA fine-tuning. Buy a Mac Studio M4 Ultra (192GB or 512GB) if you want to load 109B\u2013671B MoE models quietly at <180W."}},{"@type":"Question","name":"How much electricity does a dual RTX 5090 rig use?","acceptedAnswer":{"@type":"Answer","text":"Under load, a 2x RTX 5090 workstation draws ~950\u20131,100W (~$25\u2013$40/month at 6 hrs/day and $0.16/kWh), compared to ~160W (~$5/month) on a Mac Studio."}},{"@type":"Question","name":"What is the sweet spot model size for 32 GB VRAM in 2026?","acceptedAnswer":{"@type":"Answer","text":"Qwen3-32B (Q4_K_M, ~19 GB) and Qwen3-30B-A3B MoE (~18 GB) are the top 32 GB local models, leaving ample headroom for 32K+ context windows."}}]}</script>
@@ -121,14 +129,27 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_local-llm-hardware-guide-2026" aria-label="ML Systems Cheatsheet Pack">
+    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_local-llm-hardware-guide-2026" aria-label="ML Systems Cheatsheet Pack">
       <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Building a 2026 local LLM rig?</strong> Keep VRAM budgets, GGUF file sizes, and bandwidth decode formulas right next to your build list with the $9 ML Systems Cheatsheet Pack.</p>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_local-llm-hardware-guide-2026" data-cta="s12_buy_cs9_local-llm-hardware-guide-2026">Get ML Systems Cheatsheets — $9</button>
-      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <p class="s13-who"><strong>Best for:</strong> ML & infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas & serving flags.</p>
+      <p class="s13-files"><strong>Instant 10s download:</strong> <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_local-llm-hardware-guide-2026" data-cta="s13_buy_cs9_local-llm-hardware-guide-2026">Download Exact Config &amp; Cost Pack &mdash; $9 &rarr;</button>
+      <p class="s12-cro__alts">Need agent guard hooks or a full 4-stage pipeline? <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
-        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <summary>Preview exact files & sample lines inside the $9 Cheatsheet Pack</summary>
+        <pre class="s13-preview"><code># vllm-fp8-sizing.sh (included in Quantization &amp; Serving Sheet)
+vllm serve meta-llama/Llama-3.3-70B-Instruct \
+  --tensor-parallel-size 2 --quantization fp8 --kv-cache-dtype fp8 \
+  --gpu-memory-utilization 0.92 --max-model-len 32768 --enable-chunked-prefill
+
+# gpu-rooflines-2026.csv (excerpt)
+gpu,vram_gb,bw_tb_s,fp8_tflops,ridge_batch_70b,cloud_hr_usd
+H200_SXM,141,4.8,1979,48,3.40
+B200_SXM,192,8.0,4500,64,5.80
+RTX_5090,32,1.79,419,16,0.65</code></pre>
         <ul>
         <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
         <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
@@ -145,11 +166,11 @@
     <div class="faq-item"><h3>What is the sweet spot model size for 32 GB VRAM in 2026?</h3><p>Qwen3-32B (Q4_K_M, ~19 GB) and Qwen3-30B-A3B MoE (~18 GB) are the top 32 GB local models, leaving ample headroom for 32K+ context windows.</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Don't overbuy or under-spec your local LLM rig</p>
     <p class="s12-post__desc">12 print-ready ML Systems sheets covering VRAM math, GGUF quantizations, and GPU sizing for $9 once.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_local-llm-hardware-guide-2026" data-cta="s12_post_cs9_local-llm-hardware-guide-2026">Get ML Systems Cheatsheets — $9</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_local-llm-hardware-guide-2026" data-cta="s13_post_cs9_local-llm-hardware-guide-2026">Get ML Systems Cheatsheets — $9</button>
   </aside>
 
   <section id="related">
@@ -244,6 +265,27 @@
   ['budget','targetB','cloudMo','hrsDay'].forEach(id => $(id).addEventListener('input', calc));
   calc();
         
+  
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your setup: ${k[0]} VRAM · ${k[1]} (${k[2]} · ${k[3]} payback)`;
+    if (pBtn) pBtn.textContent = `Download Config Sheet for Your ${k[0]} / ${k[1]} Rig — $9 →`;
+    if (postBtn) postBtn.textContent = `Download Config Sheet for Your ${k[0]} / ${k[1]} Rig — $9 →`;
+  }
+  var _s13CalcRef = typeof calc === 'function' ? calc : null;
+  if (_s13CalcRef) {
+    document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+      el.addEventListener('input', updateS13Echo);
+      el.addEventListener('change', updateS13Echo);
+    });
+    updateS13Echo();
+  }
+
   document.querySelectorAll('[data-checkout]').forEach(function(btn){
     btn.addEventListener('click', function(e){
       if (!e.isTrusted) return;

@@ -69,6 +69,14 @@
 .s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
 @media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
 @media print{.s12-cro,.s12-post{display:none}}
+/* Sprint 13 Dynamic Output-to-CTA Echo & Concrete Previews */
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
+@media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Claude Code vs Cursor Cost Calculator","url":"https://ml0x.com/calculators/claude-code-vs-cursor-cost.html","description":"Slide daily coding turns, team headcount, and Anthropic prompt cache hit rate to compare Claude Code (API & Max $100/$200) against Cursor Pro, Pro+, Ultra, and Teams.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Claude Code cheaper than Cursor for heavy daily coding?","acceptedAnswer":{"@type":"Answer","text":"Once a developer exceeds ~80-100 agent turns per day, Cursor Pro ($20) runs into usage overages. At that point Claude Max ($100) or prompt-cached Claude Code API often matches or beats Cursor Pro+/Ultra."}},{"@type":"Question","name":"Why does prompt cache hit rate matter so much for Claude Code?","acceptedAnswer":{"@type":"Answer","text":"Anthropic charges 0.10x (90% off) for cached input tokens. Because Claude Code re-sends repository context across turns in a session, an 85% cache hit rate reduces monthly API bills by ~70%."}},{"@type":"Question","name":"Can I cap Claude Code API spend per session?","acceptedAnswer":{"@type":"Answer","text":"Yes. PreToolUse/PostToolUse hooks like cost_guard.py track cumulative session tokens and stop execution before a stuck loop burns $50+."}}]}</script>
@@ -123,14 +131,27 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_claude-code-vs-cursor-cost" aria-label="Claude Code Workflow Pack">
+    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_claude-code-vs-cursor-cost" aria-label="Claude Code Workflow Pack">
       <div class="s12-cro__tag">Most Popular · $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Using Claude Code instead of Cursor Ultra?</strong> Protect your API spend with <code>cost_guard.py</code> and 5 drop-in <code>CLAUDE.md</code> templates in the $29 Claude Code Workflow Pack.</p>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s12_ml0x_claude-code-vs-cursor-cost" data-cta="s12_buy_cc29_claude-code-vs-cursor-cost">Get Claude Code Pack — $29</button>
-      <p class="s12-cro__alts">Also available: <a href="/cheatsheet-pack/">$9 ML Systems Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <p class="s13-who"><strong>Best for:</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps & safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download:</strong> <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_claude-code-vs-cursor-cost" data-cta="s13_buy_cc29_claude-code-vs-cursor-cost">Download Exact Config &amp; Cost Pack &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
-        <summary>Preview what&rsquo;s inside the Claude Code Workflow Pack ($29)</summary>
+        <summary>Preview exact files & sample lines inside the $29 Claude Code Pack</summary>
+        <pre class="s13-preview"><code># .claude/hooks/cost_guard.py (PreToolUse / PostToolUse excerpt)
+MAX_SESSION_USD = float(os.getenv("CLAUDE_MAX_USD", "5.00"))
+if session_spend_usd &gt;= MAX_SESSION_USD:
+    print(json.dumps({"decision": "block", "reason": f"Cap ${MAX_SESSION_USD:.2f} hit"}))
+    sys.exit(2)
+
+# CLAUDE.md (Routing &amp; Prompt-Cache Discipline excerpt)
+- Default model: sonnet-4; escalate to opus-4 only on /plan or multi-file refactors
+- Keep system prefix static for &gt;=85% Anthropic prompt-cache hits
+- Run /test-fix before /commit; never bypass guard_bash.py</code></pre>
         <ul>
         <li><strong>Hard Spend Protection (<code>cost_guard.py</code>):</strong> PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
         <li><strong>Safety &amp; Velocity Hooks:</strong> <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> — 64 passing unit tests included.</li>
@@ -147,11 +168,11 @@
     <div class="faq-item"><h3>Can I cap Claude Code API spend per session?</h3><p>Yes. PreToolUse/PostToolUse hooks like cost_guard.py track cumulative session tokens and stop execution before a stuck loop burns $50+.</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Keep Claude Code under budget without babysitting token burn</p>
     <p class="s12-post__desc">Drop cost_guard.py, guard_bash.py, and 8 slash commands directly into .claude/ with the $29 Workflow Pack.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s12_ml0x_claude-code-vs-cursor-cost" data-cta="s12_post_cc29_claude-code-vs-cursor-cost">Get Claude Code Pack — $29</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_claude-code-vs-cursor-cost" data-cta="s13_post_cc29_claude-code-vs-cursor-cost">Get Claude Code Pack — $29</button>
   </aside>
 
   <section id="related">
@@ -252,6 +273,27 @@
   ['teamSize','turns','ctxK','cache','model','cursorTier'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
   calc();
         
+  
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your setup: Claude Code ${k[0]} vs Cursor ${k[1]} (${k[3]} annual delta)`;
+    if (pBtn) pBtn.textContent = `Cut Your ${k[0]} Agent Bill with Guard Hooks — $29 →`;
+    if (postBtn) postBtn.textContent = `Cut Your ${k[0]} Agent Bill with Guard Hooks — $29 →`;
+  }
+  var _s13CalcRef = typeof calc === 'function' ? calc : null;
+  if (_s13CalcRef) {
+    document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+      el.addEventListener('input', updateS13Echo);
+      el.addEventListener('change', updateS13Echo);
+    });
+    updateS13Echo();
+  }
+
   document.querySelectorAll('[data-checkout]').forEach(function(btn){
     btn.addEventListener('click', function(e){
       if (!e.isTrusted) return;

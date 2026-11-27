@@ -9,6 +9,22 @@
 <link rel="canonical" href="https://ml0x.com/calculators/">
 <link rel="stylesheet" href="/assets/ml0x.css">
 <style>
+.s13-hub-cro{margin:0 0 28px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s13-hub-cro__head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin:0 0 12px}
+.s13-hub-cro__title{margin:0;font-size:16px;font-weight:700;color:#1A1A1A}
+.s13-hub-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.s13-hub-tab{font-family:var(--font-mono);font-size:12px;font-weight:600;padding:7px 12px;border-radius:980px;border:1px solid #D4D4D8;background:#FAFAF9;color:#27272A;cursor:pointer;min-height:36px}
+.s13-hub-tab[aria-pressed="true"]{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+.s13-hub-who{margin:0 0 6px;font-size:13.5px;line-height:1.45;color:#18181B}
+.s13-hub-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-hub-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-hub-disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s13-hub-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:10px 22px;border-radius:980px;cursor:pointer;text-align:center}
+.s13-hub-btn:hover{background:#333}
+.s13-hub-cro details{margin:12px 0 0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s13-hub-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s13-hub-pre{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 2px;white-space:pre}
+@media(max-width:767px){.s13-hub-cro{padding:14px}.s13-hub-btn{width:100%}}
 </style>
 <script src="/site-analytics.js?v=1126m" defer></script>
 <link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
@@ -41,6 +57,33 @@
     <h1>Calculators</h1>
     <p class="subtitle">Browser-based calculators for sizing machine learning models. Every number is computed from a primary source, and nothing you enter leaves your machine.</p>
   </div>
+
+  <aside class="s13-hub-cro" data-cro="sprint13-ml0x-hub" aria-label="ml0x Engineering Packs">
+    <div class="s13-hub-cro__head">
+      <p class="s13-hub-cro__title">Download the configs, guard hooks &amp; sheets behind these calculators</p>
+      <div class="s13-hub-tabs" role="group" aria-label="Choose pack tier">
+        <button type="button" class="s13-hub-tab" data-tier="cs9" aria-pressed="false">$9 Cheatsheets</button>
+        <button type="button" class="s13-hub-tab" data-tier="cc29" aria-pressed="true">$29 Claude Code Pack</button>
+        <button type="button" class="s13-hub-tab" data-tier="pl99" aria-pressed="false">$99 Agent Pipeline</button>
+      </div>
+    </div>
+    <p class="s13-hub-who" id="s13HubWho"><strong>Best for:</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+    <p class="s13-hub-files" id="s13HubFiles"><strong>Instant 10s download:</strong> <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+    <p class="s13-hub-disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s13-hub-btn" id="s13HubBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_calculators_hub_cc29" data-cta="s13_hub_cc29">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
+    <details>
+      <summary id="s13HubPrevSummary">Preview exact sample lines inside the $29 Claude Code Pack</summary>
+      <pre class="s13-hub-pre"><code id="s13HubPrevCode"># .claude/hooks/cost_guard.py (PreToolUse / PostToolUse excerpt)
+MAX_SESSION_USD = float(os.getenv("CLAUDE_MAX_USD", "5.00"))
+if session_spend_usd &gt;= MAX_SESSION_USD:
+    print(json.dumps({"decision": "block", "reason": f"Cap ${MAX_SESSION_USD:.2f} hit"}))
+    sys.exit(2)
+
+# CLAUDE.md (Routing &amp; Prompt-Cache Discipline excerpt)
+- Default model: sonnet-4; escalate to opus-4 only on /plan or multi-file refactors
+- Keep system prefix static for &gt;=85% Anthropic prompt-cache hits</code></pre>
+    </details>
+  </aside>
 
   <div class="grid-2">
     <a href="/calculators/deepseek-r1-vs-claude-4-cost.html" class="link-card">
@@ -272,5 +315,70 @@
 <a class="h57e0e31" href="https://tg.zovo.one" style="font-family: 'Inter', sans-serif; font-size: 11px; color: #8a8a8a; text-decoration: none;" target="_blank" rel="noopener">Tiny Telegram Tools</a>
 </footer>
   <script src="/assets/js/mlx-ui.js" defer></script>
+<script>
+(function(){
+  var TIERS = {
+    cs9: {
+      who: '<strong>Best for:</strong> ML &amp; infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas &amp; serving flags.',
+      files: '<strong>Instant 10s download:</strong> <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code>',
+      btn: 'Download ML Systems Cheatsheet Pack — $9 →',
+      url: 'https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_calculators_hub_cs9',
+      cta: 's13_hub_cs9',
+      summary: 'Preview exact sample lines inside the $9 Cheatsheet Pack',
+      code: '# vllm-fp8-sizing.sh (included in Quantization & Serving Sheet)\nvllm serve meta-llama/Llama-3.3-70B-Instruct \\\n  --tensor-parallel-size 2 --quantization fp8 --kv-cache-dtype fp8 \\\n  --gpu-memory-utilization 0.92 --max-model-len 32768\n\n# gpu-rooflines-2026.csv (excerpt)\ngpu,vram_gb,bw_tb_s,fp8_tflops,ridge_batch_70b,cloud_hr_usd\nH200_SXM,141,4.8,1979,48,3.40\nB200_SXM,192,8.0,4500,64,5.80'
+    },
+    cc29: {
+      who: '<strong>Best for:</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.',
+      files: '<strong>Instant 10s download:</strong> <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code>',
+      btn: 'Download Claude Code Workflow Pack — $29 →',
+      url: 'https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_calculators_hub_cc29',
+      cta: 's13_hub_cc29',
+      summary: 'Preview exact sample lines inside the $29 Claude Code Pack',
+      code: '# .claude/hooks/cost_guard.py (PreToolUse / PostToolUse excerpt)\nMAX_SESSION_USD = float(os.getenv("CLAUDE_MAX_USD", "5.00"))\nif session_spend_usd >= MAX_SESSION_USD:\n    print(json.dumps({"decision": "block", "reason": f"Cap ${MAX_SESSION_USD:.2f} hit"}))\n    sys.exit(2)\n\n# CLAUDE.md (Routing & Prompt-Cache Discipline excerpt)\n- Default model: sonnet-4; escalate to opus-4 only on /plan or multi-file refactors\n- Keep system prefix static for >=85% Anthropic prompt-cache hits'
+    },
+    pl99: {
+      who: '<strong>Best for:</strong> Teams &amp; solo builders shipping autonomous multi-step AI pipelines in production with deterministic quality gates.',
+      files: '<strong>Instant 10s download:</strong> <code>1,160-Line 100x CLI + Parallel Runner + NASA P10 YAML Gates + 13 Research Docs</code>',
+      btn: 'Download ml0x Agent Pipeline — $99 →',
+      url: 'https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s13_ml0x_calculators_hub_pl99',
+      cta: 's13_hub_pl99',
+      summary: 'Preview exact sample lines inside the $99 ml0x Agent Pipeline',
+      code: '# ml0x-pipeline.yaml (Hard Gateway Budget & 4-Stage Gates)\nstages: [analyze, implement, test, review]\nbudget:\n  hard_cap_usd_per_run: 4.50\n  monthly_ceiling_usd: 400.00\n  on_breach: halt_and_rollback\ngates:\n  nasa_p10_max_fn_lines: 60\n  require_zero_console_errors: true\n# CLI: ml0x run --preset production --parallel 4 --budget 4.50'
+    }
+  };
+  var tabs = document.querySelectorAll('.s13-hub-tab');
+  var who = document.getElementById('s13HubWho');
+  var files = document.getElementById('s13HubFiles');
+  var btn = document.getElementById('s13HubBtn');
+  var prevSum = document.getElementById('s13HubPrevSummary');
+  var prevCode = document.getElementById('s13HubPrevCode');
+  tabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var key = tab.getAttribute('data-tier');
+      var t = TIERS[key];
+      if (!t) return;
+      tabs.forEach(function(b){ b.setAttribute('aria-pressed', b === tab ? 'true' : 'false'); });
+      who.innerHTML = t.who;
+      files.innerHTML = t.files;
+      btn.textContent = t.btn;
+      btn.setAttribute('data-checkout', t.url);
+      btn.setAttribute('data-cta', t.cta);
+      prevSum.textContent = t.summary;
+      prevCode.textContent = t.code;
+    });
+  });
+  if (btn) {
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', { site: 'ml0x.com', cta: btn.getAttribute('data-cta') || '', slug: 'calculators_hub' });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  }
+})();
+</script>
 </body>
 </html>

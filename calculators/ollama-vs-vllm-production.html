@@ -69,6 +69,14 @@
 .s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
 @media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
 @media print{.s12-cro,.s12-post{display:none}}
+/* Sprint 13 Dynamic Output-to-CTA Echo & Concrete Previews */
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
+@media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Ollama vs vLLM Production Calculator","url":"https://ml0x.com/calculators/ollama-vs-vllm-production.html","description":"Calculate when to migrate from Ollama to vLLM in production: model concurrency scaling, P95 latency, required GPUs, and monthly cloud cost.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can I run Ollama in production?","acceptedAnswer":{"@type":"Answer","text":"Ollama works well for internal tools with 1\u20135 concurrent users or asynchronous single-worker queues. Above ~8 concurrent users, Ollama's lack of continuous batching causes P95 latency spikes."}},{"@type":"Question","name":"How much higher is vLLM throughput than Ollama?","acceptedAnswer":{"@type":"Answer","text":"Under 32\u201364 concurrent requests, vLLM typically delivers 4x to 10x higher aggregate tokens/second on the same GPU thanks to PagedAttention and iteration-level continuous batching."}},{"@type":"Question","name":"Does vLLM support GGUF models like Ollama?","acceptedAnswer":{"@type":"Answer","text":"vLLM supports GGUF experimentally, but for peak production throughput you should serve FP8, AWQ, or GPTQ safetensors checkpoints."}}]}</script>
@@ -122,14 +130,27 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_ollama-vs-vllm-production" aria-label="ml0x Agent Pipeline">
+    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_ollama-vs-vllm-production" aria-label="ml0x Agent Pipeline">
       <div class="s12-cro__tag">Full Production System · $99 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Moving AI workloads from local Ollama prototypes to production?</strong> Ship with deterministic 4-stage quality gates and hard token caps in the $99 ml0x Agent Pipeline.</p>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s12_ml0x_ollama-vs-vllm-production" data-cta="s12_buy_pl99_ollama-vs-vllm-production">Get ml0x Pipeline — $99</button>
-      <p class="s12-cro__alts">Also available: <a href="/cheatsheet-pack/">$9 ML Systems Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a></p>
+      <p class="s13-who"><strong>Best for:</strong> Teams & solo builders shipping autonomous multi-step AI pipelines in production with deterministic quality gates.</p>
+      <p class="s13-files"><strong>Instant 10s download:</strong> <code>1,160-Line 100x CLI + Parallel Runner + NASA P10 YAML Gates + 13 Research Docs</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s13_ml0x_ollama-vs-vllm-production" data-cta="s13_buy_pl99_ollama-vs-vllm-production">Download Exact Config &amp; Cost Pack &mdash; $99 &rarr;</button>
+      <p class="s12-cro__alts">Starting smaller? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a></p>
       <details>
-        <summary>Preview what&rsquo;s inside the ml0x Agent Pipeline ($99)</summary>
+        <summary>Preview exact files & sample lines inside the $99 ml0x Agent Pipeline</summary>
+        <pre class="s13-preview"><code># ml0x-pipeline.yaml (Hard Gateway Budget &amp; 4-Stage Gates)
+stages: [analyze, implement, test, review]
+budget:
+  hard_cap_usd_per_run: 4.50
+  monthly_ceiling_usd: 400.00
+  on_breach: halt_and_rollback
+gates:
+  nasa_p10_max_fn_lines: 60
+  require_zero_console_errors: true
+# CLI: ml0x run --preset production --parallel 4 --budget 4.50</code></pre>
         <ul>
         <li><strong>4-Stage Automated Pipeline &amp; 1,160-line 100x CLI:</strong> Structured analyze &rarr; implement &rarr; test &rarr; review loop with deterministic rollback and audit logs.</li>
         <li><strong>Hard Gateway Token Budget Caps:</strong> Enforce per-run and monthly token/dollar ceilings across multi-agent and parallel execution lanes.</li>
@@ -146,11 +167,11 @@
     <div class="faq-item"><h3>Does vLLM support GGUF models like Ollama?</h3><p>vLLM supports GGUF experimentally, but for peak production throughput you should serve FP8, AWQ, or GPTQ safetensors checkpoints.</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Productionize your AI stack with hard gates & budget caps</p>
     <p class="s12-post__desc">Get the pinned 100x CLI, parallel runner, NASA P10 quality gates, and 13 research docs for $99 once.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s12_ml0x_ollama-vs-vllm-production" data-cta="s12_post_pl99_ollama-vs-vllm-production">Get ml0x Pipeline — $99</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s13_ml0x_ollama-vs-vllm-production" data-cta="s13_post_pl99_ollama-vs-vllm-production">Get ml0x Pipeline — $99</button>
   </aside>
 
   <section id="related">
@@ -243,6 +264,27 @@
   ['users','reqMin','outTok','gpuHr','singleTps'].forEach(id => $(id).addEventListener('input', calc));
   calc();
         
+  
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your setup: ${k[0]} target · vLLM uses ${k[2]} (saves ${k[3]})`;
+    if (pBtn) pBtn.textContent = `Ship ${k[2]} vLLM Pipeline & Save ${k[3]} — $99 →`;
+    if (postBtn) postBtn.textContent = `Ship ${k[2]} vLLM Pipeline & Save ${k[3]} — $99 →`;
+  }
+  var _s13CalcRef = typeof calc === 'function' ? calc : null;
+  if (_s13CalcRef) {
+    document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+      el.addEventListener('input', updateS13Echo);
+      el.addEventListener('change', updateS13Echo);
+    });
+    updateS13Echo();
+  }
+
   document.querySelectorAll('[data-checkout]').forEach(function(btn){
     btn.addEventListener('click', function(e){
       if (!e.isTrusted) return;

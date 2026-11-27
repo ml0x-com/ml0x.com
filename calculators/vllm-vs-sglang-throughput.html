@@ -69,6 +69,14 @@
 .s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
 @media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
 @media print{.s12-cro,.s12-post{display:none}}
+/* Sprint 13 Dynamic Output-to-CTA Echo & Concrete Previews */
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
+@media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"vLLM vs SGLang Throughput Calculator","url":"https://ml0x.com/calculators/vllm-vs-sglang-throughput.html","description":"Compare SGLang RadixAttention against vLLM PagedAttention on prefix cache reuse, TTFT, aggregate tokens/sec, and $/1M output tokens.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is SGLang faster than vLLM on agent and JSON workloads?","acceptedAnswer":{"@type":"Answer","text":"SGLang's RadixAttention keeps a persistent radix tree of KV-cache prefixes across requests, and its compressed finite-state machine (XGrammar) eliminates token-masking overhead during structured JSON generation."}},{"@type":"Question","name":"When should I choose vLLM over SGLang?","acceptedAnswer":{"@type":"Answer","text":"vLLM has broader day-one model architecture coverage, mature LoRA multi-adapter serving, and deeper Kubernetes/Ray ecosystem integrations."}},{"@type":"Question","name":"Does prefix caching help if every user prompt is unique?","acceptedAnswer":{"@type":"Answer","text":"No. When prefix reuse is near 0% and outputs are unconstrained prose, vLLM and SGLang perform within ~5% of each other."}}]}</script>
@@ -123,14 +131,27 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_vllm-vs-sglang-throughput" aria-label="ML Systems Cheatsheet Pack">
+    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_vllm-vs-sglang-throughput" aria-label="ML Systems Cheatsheet Pack">
       <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Tuning vLLM or SGLang in production?</strong> Keep KV-cache math, continuous batching ridge points, and quantization rules handy with the $9 ML Systems Cheatsheet Pack.</p>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_vllm-vs-sglang-throughput" data-cta="s12_buy_cs9_vllm-vs-sglang-throughput">Get ML Systems Cheatsheets — $9</button>
-      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <p class="s13-who"><strong>Best for:</strong> ML & infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas & serving flags.</p>
+      <p class="s13-files"><strong>Instant 10s download:</strong> <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_vllm-vs-sglang-throughput" data-cta="s13_buy_cs9_vllm-vs-sglang-throughput">Download Exact Config &amp; Cost Pack &mdash; $9 &rarr;</button>
+      <p class="s12-cro__alts">Need agent guard hooks or a full 4-stage pipeline? <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
-        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <summary>Preview exact files & sample lines inside the $9 Cheatsheet Pack</summary>
+        <pre class="s13-preview"><code># vllm-fp8-sizing.sh (included in Quantization &amp; Serving Sheet)
+vllm serve meta-llama/Llama-3.3-70B-Instruct \
+  --tensor-parallel-size 2 --quantization fp8 --kv-cache-dtype fp8 \
+  --gpu-memory-utilization 0.92 --max-model-len 32768 --enable-chunked-prefill
+
+# gpu-rooflines-2026.csv (excerpt)
+gpu,vram_gb,bw_tb_s,fp8_tflops,ridge_batch_70b,cloud_hr_usd
+H200_SXM,141,4.8,1979,48,3.40
+B200_SXM,192,8.0,4500,64,5.80
+RTX_5090,32,1.79,419,16,0.65</code></pre>
         <ul>
         <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
         <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
@@ -147,11 +168,11 @@
     <div class="faq-item"><h3>Does prefix caching help if every user prompt is unique?</h3><p>No. When prefix reuse is near 0% and outputs are unconstrained prose, vLLM and SGLang perform within ~5% of each other.</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Master LLM inference sizing with 12 desk-ready sheets</p>
     <p class="s12-post__desc">KV cache equations, roofline formulas, and GPU sizing checklists in PDF, HTML & Markdown for $9 once.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_vllm-vs-sglang-throughput" data-cta="s12_post_cs9_vllm-vs-sglang-throughput">Get ML Systems Cheatsheets — $9</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_vllm-vs-sglang-throughput" data-cta="s13_post_cs9_vllm-vs-sglang-throughput">Get ML Systems Cheatsheets — $9</button>
   </aside>
 
   <section id="related">
@@ -245,6 +266,27 @@
   ['workload','prefixShare','conc','inLen','gpuHr','baseTps'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
   calc();
         
+  
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your setup: vLLM ${k[0]} vs SGLang ${k[1]} (${k[2]} gain · ${k[3]} TTFT)`;
+    if (pBtn) pBtn.textContent = `Download ${k[1]} Serving & Roofline Config Sheet — $9 →`;
+    if (postBtn) postBtn.textContent = `Download ${k[1]} Serving & Roofline Config Sheet — $9 →`;
+  }
+  var _s13CalcRef = typeof calc === 'function' ? calc : null;
+  if (_s13CalcRef) {
+    document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+      el.addEventListener('input', updateS13Echo);
+      el.addEventListener('change', updateS13Echo);
+    });
+    updateS13Echo();
+  }
+
   document.querySelectorAll('[data-checkout]').forEach(function(btn){
     btn.addEventListener('click', function(e){
       if (!e.isTrusted) return;

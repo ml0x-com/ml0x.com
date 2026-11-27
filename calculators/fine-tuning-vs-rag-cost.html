@@ -69,6 +69,14 @@
 .s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
 @media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
 @media print{.s12-cro,.s12-post{display:none}}
+/* Sprint 13 Dynamic Output-to-CTA Echo & Concrete Previews */
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
+@media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Fine-Tuning vs RAG Cost Calculator","url":"https://ml0x.com/calculators/fine-tuning-vs-rag-cost.html","description":"Compare QLoRA/LoRA fine-tuning (training + dedicated hosting) against RAG (embeddings + vector DB + prompt context tokens) over 12 months.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"When is RAG cheaper than fine-tuning?","acceptedAnswer":{"@type":"Answer","text":"RAG is cheaper below ~200K\u2013500K queries/month or whenever your knowledge base changes daily, because you avoid dedicated GPU hosting and repeated retraining cycles."}},{"@type":"Question","name":"When does fine-tuning beat RAG on cost?","acceptedAnswer":{"@type":"Answer","text":"At high query volume (>1M queries/month) with long retrieved contexts (>4,000 tokens/query), fine-tuning a smaller 8B\u201332B model eliminates the recurring input-token tax."}},{"@type":"Question","name":"Should I combine RAG and fine-tuning?","acceptedAnswer":{"@type":"Answer","text":"Yes \u2014 in production, RAG supplies up-to-date factual grounding while a lightweight LoRA adapter enforces strict JSON schemas, domain tone, and citation behavior."}}]}</script>
@@ -122,14 +130,27 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_fine-tuning-vs-rag-cost" aria-label="ml0x Agent Pipeline">
+    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_fine-tuning-vs-rag-cost" aria-label="ml0x Agent Pipeline">
       <div class="s12-cro__tag">Full Production System · $99 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Architecting a production RAG or fine-tuning pipeline?</strong> Get deterministic evals, hard token budget caps, and 13 research docs in the $99 ml0x Agent Pipeline.</p>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s12_ml0x_fine-tuning-vs-rag-cost" data-cta="s12_buy_pl99_fine-tuning-vs-rag-cost">Get ml0x Pipeline — $99</button>
-      <p class="s12-cro__alts">Also available: <a href="/cheatsheet-pack/">$9 ML Systems Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a></p>
+      <p class="s13-who"><strong>Best for:</strong> Teams & solo builders shipping autonomous multi-step AI pipelines in production with deterministic quality gates.</p>
+      <p class="s13-files"><strong>Instant 10s download:</strong> <code>1,160-Line 100x CLI + Parallel Runner + NASA P10 YAML Gates + 13 Research Docs</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s13_ml0x_fine-tuning-vs-rag-cost" data-cta="s13_buy_pl99_fine-tuning-vs-rag-cost">Download Exact Config &amp; Cost Pack &mdash; $99 &rarr;</button>
+      <p class="s12-cro__alts">Starting smaller? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a></p>
       <details>
-        <summary>Preview what&rsquo;s inside the ml0x Agent Pipeline ($99)</summary>
+        <summary>Preview exact files & sample lines inside the $99 ml0x Agent Pipeline</summary>
+        <pre class="s13-preview"><code># ml0x-pipeline.yaml (Hard Gateway Budget &amp; 4-Stage Gates)
+stages: [analyze, implement, test, review]
+budget:
+  hard_cap_usd_per_run: 4.50
+  monthly_ceiling_usd: 400.00
+  on_breach: halt_and_rollback
+gates:
+  nasa_p10_max_fn_lines: 60
+  require_zero_console_errors: true
+# CLI: ml0x run --preset production --parallel 4 --budget 4.50</code></pre>
         <ul>
         <li><strong>4-Stage Automated Pipeline &amp; 1,160-line 100x CLI:</strong> Structured analyze &rarr; implement &rarr; test &rarr; review loop with deterministic rollback and audit logs.</li>
         <li><strong>Hard Gateway Token Budget Caps:</strong> Enforce per-run and monthly token/dollar ceilings across multi-agent and parallel execution lanes.</li>
@@ -146,11 +167,11 @@
     <div class="faq-item"><h3>Should I combine RAG and fine-tuning?</h3><p>Yes — in production, RAG supplies up-to-date factual grounding while a lightweight LoRA adapter enforces strict JSON schemas, domain tone, and citation behavior.</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Ship production AI pipelines with built-in budget caps</p>
     <p class="s12-post__desc">4-stage pipeline, pinned 100x CLI, NASA P10 quality gates, and operator runbook for $99 once.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s12_ml0x_fine-tuning-vs-rag-cost" data-cta="s12_post_pl99_fine-tuning-vs-rag-cost">Get ml0x Pipeline — $99</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s13_ml0x_fine-tuning-vs-rag-cost" data-cta="s13_post_pl99_fine-tuning-vs-rag-cost">Get ml0x Pipeline — $99</button>
   </aside>
 
   <section id="related">
@@ -251,6 +272,27 @@
   ['queriesMo','ragTok','docMb','retrains','apiInRate'].forEach(id => $(id).addEventListener('input', calc));
   calc();
         
+  
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your setup: ${k[3]} wins (RAG ${k[0]} · FT ${k[1]} · Hybrid ${k[2]})`;
+    if (pBtn) pBtn.textContent = `Ship Your ${k[3]} Production Pipeline — $99 →`;
+    if (postBtn) postBtn.textContent = `Ship Your ${k[3]} Production Pipeline — $99 →`;
+  }
+  var _s13CalcRef = typeof calc === 'function' ? calc : null;
+  if (_s13CalcRef) {
+    document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+      el.addEventListener('input', updateS13Echo);
+      el.addEventListener('change', updateS13Echo);
+    });
+    updateS13Echo();
+  }
+
   document.querySelectorAll('[data-checkout]').forEach(function(btn){
     btn.addEventListener('click', function(e){
       if (!e.isTrusted) return;

@@ -69,6 +69,14 @@
 .s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
 @media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{max-width:100%}}
 @media print{.s12-cro,.s12-post{display:none}}
+/* Sprint 13 Dynamic Output-to-CTA Echo & Concrete Previews */
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s12-cta-btn{max-width:100%;width:auto;min-width:260px;padding:11px 22px;line-height:1.3}
+@media(max-width:767px){.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"H200 vs B200 Inference Cost Calculator","url":"https://ml0x.com/calculators/h200-vs-b200-inference-cost.html","description":"Compare NVIDIA H200 (141GB HBM3e, 4.8 TB/s, FP8) vs Blackwell B200 (192GB HBM3e, 8.0 TB/s, FP4) on GPU count, tok/s throughput, and $/1M output tokens.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-27","dateModified":"2026-11-27"}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is B200 so much faster than H200 on LLM inference?","acceptedAnswer":{"@type":"Answer","text":"B200 pairs 8.0 TB/s of HBM3e bandwidth (1.67x H200's 4.8 TB/s) with native NVFP4 tensor cores, halving weight bytes read per decode step and cutting minimum GPU count on 70B\u2013671B models."}},{"@type":"Question","name":"When is H200 still cheaper per token than B200?","acceptedAnswer":{"@type":"Answer","text":"When spot or reserved H200 pricing drops below half the B200 hourly rate and your workload runs FP8 at low batch sizes where B200's FP4 compute advantage is underutilized."}},{"@type":"Question","name":"How many H200 vs B200 GPUs do I need for DeepSeek-V3 671B?","acceptedAnswer":{"@type":"Answer","text":"In FP8, DeepSeek-V3 needs ~700 GB for weights plus KV cache, requiring 8x H200 (1,128 GB total). In NVFP4 on B200, weights drop to ~370 GB, fitting cleanly on 4x B200 (768 GB total)."}}]}</script>
@@ -123,14 +131,27 @@
       </div>
     </div>
 
-    <aside class="s12-cro" data-cro="sprint12-ml0x-primary" data-mr-placement="s12_calc_h200-vs-b200-inference-cost" aria-label="ML Systems Cheatsheet Pack">
+    <aside class="s12-cro" data-cro="sprint13-ml0x-primary" data-mr-placement="s13_calc_h200-vs-b200-inference-cost" aria-label="ML Systems Cheatsheet Pack">
       <div class="s12-cro__tag">Reference Pack · $9 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
       <p class="s12-cro__lead"><strong>Sizing an H200 or B200 inference cluster?</strong> Keep all GPU bandwidth ceilings, KV-cache equations, and quantization ladders on one desk sheet with the $9 ML Systems Cheatsheet Pack.</p>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-      <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_h200-vs-b200-inference-cost" data-cta="s12_buy_cs9_h200-vs-b200-inference-cost">Get ML Systems Cheatsheets — $9</button>
-      <p class="s12-cro__alts">Also available: <a href="/claude-code-workflow-pack/">$29 Claude Code Workflow Pack</a> &middot; <a href="/pipeline/">$99 ml0x Agent Pipeline</a></p>
+      <p class="s13-who"><strong>Best for:</strong> ML & infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas & serving flags.</p>
+      <p class="s13-files"><strong>Instant 10s download:</strong> <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_h200-vs-b200-inference-cost" data-cta="s13_buy_cs9_h200-vs-b200-inference-cost">Download Exact Config &amp; Cost Pack &mdash; $9 &rarr;</button>
+      <p class="s12-cro__alts">Need agent guard hooks or a full 4-stage pipeline? <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
-        <summary>Preview what&rsquo;s inside the ML Systems Cheatsheet Pack ($9)</summary>
+        <summary>Preview exact files & sample lines inside the $9 Cheatsheet Pack</summary>
+        <pre class="s13-preview"><code># vllm-fp8-sizing.sh (included in Quantization &amp; Serving Sheet)
+vllm serve meta-llama/Llama-3.3-70B-Instruct \
+  --tensor-parallel-size 2 --quantization fp8 --kv-cache-dtype fp8 \
+  --gpu-memory-utilization 0.92 --max-model-len 32768 --enable-chunked-prefill
+
+# gpu-rooflines-2026.csv (excerpt)
+gpu,vram_gb,bw_tb_s,fp8_tflops,ridge_batch_70b,cloud_hr_usd
+H200_SXM,141,4.8,1979,48,3.40
+B200_SXM,192,8.0,4500,64,5.80
+RTX_5090,32,1.79,419,16,0.65</code></pre>
         <ul>
         <li><strong>4-Term LLM VRAM &amp; KV Cache Sheets:</strong> Exact formulas for dense &amp; MoE weights, GQA/MLA KV cache, activation overhead, and multi-GPU TP sizing.</li>
         <li><strong>Quantization &amp; GPU Roofline Ladder:</strong> BF16 vs FP8 vs AWQ/GPTQ/GGUF memory multipliers, H200/B200/RTX 5090 bandwidth ceilings, and batch ridge points.</li>
@@ -147,11 +168,11 @@
     <div class="faq-item"><h3>How many H200 vs B200 GPUs do I need for DeepSeek-V3 671B?</h3><p>In FP8, DeepSeek-V3 needs ~700 GB for weights plus KV cache, requiring 8x H200 (1,128 GB total). In NVFP4 on B200, weights drop to ~370 GB, fitting cleanly on 4x B200 (768 GB total).</p></div>
   </section>
 
-  <aside class="s12-post" data-cro="sprint12-postresult" aria-label="ml0x Engineering Kit">
+  <aside class="s12-post" data-cro="sprint13-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Put GPU roofline & KV-cache formulas at your fingertips</p>
     <p class="s12-post__desc">12 print-ready Letter-size sheets covering H200/B200 memory sizing, FP8/FP4 weights, and batch ridge points.</p>
     <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; Refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s12_ml0x_h200-vs-b200-inference-cost" data-cta="s12_post_cs9_h200-vs-b200-inference-cost">Get ML Systems Cheatsheets — $9</button>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_h200-vs-b200-inference-cost" data-cta="s13_post_cs9_h200-vs-b200-inference-cost">Get ML Systems Cheatsheets — $9</button>
   </aside>
 
   <section id="related">
@@ -257,6 +278,27 @@
   ['modelB','conc','h200Rate','b200Rate','util','b200Prec'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
   calc();
         
+  
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your setup: ${k[2]} wins (${k[0]} H200 vs ${k[1]} B200 · break-even ${k[3]})`;
+    if (pBtn) pBtn.textContent = `Download Exact ${k[2]} Config & Cost Sheet — $9 →`;
+    if (postBtn) postBtn.textContent = `Download Exact ${k[2]} Config & Cost Sheet — $9 →`;
+  }
+  var _s13CalcRef = typeof calc === 'function' ? calc : null;
+  if (_s13CalcRef) {
+    document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+      el.addEventListener('input', updateS13Echo);
+      el.addEventListener('change', updateS13Echo);
+    });
+    updateS13Echo();
+  }
+
   document.querySelectorAll('[data-checkout]').forEach(function(btn){
     btn.addEventListener('click', function(e){
       if (!e.isTrusted) return;
