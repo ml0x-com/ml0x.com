@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Coding Agent ROI & Payback Calculator (2026) | ml0x</title>
+<meta name="description" content="Compute engineering ROI, net monthly savings, hours reclaimed, and break-even payback for Claude Code, Cursor, and hybrid AI coding agent teams.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Coding Agent ROI & Payback Calculator">
+<meta property="og:description" content="Compute engineering ROI, net monthly savings, hours reclaimed, and break-even payback for Claude Code, Cursor, and hybrid AI coding agent teams.">
+<meta property="og:url" content="https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AI Coding Agent ROI & Payback Calculator">
+<meta name="twitter:description" content="Compute engineering ROI, net monthly savings, hours reclaimed, and break-even payback for Claude Code, Cursor, and hybrid AI coding agent teams.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;max-width:100%;width:auto;min-width:260px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:11px 22px;line-height:1.3;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s14-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s14-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s14-sample-btn:hover{background:#F5F5F3}
+.s14-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}.s14-sample-btn{width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI Coding Agent ROI & Payback Calculator","url":"https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html","description":"Compute engineering ROI, net monthly savings, hours reclaimed, and break-even payback for Claude Code, Cursor, and hybrid AI coding agent teams.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a realistic hours-saved estimate for AI coding agents?","acceptedAnswer":{"@type":"Answer","text":"Most production engineering teams measure 3 to 6 net hours saved per developer per week after accounting for code review, prompt iteration, and test verification."}},{"@type":"Question","name":"Why include an AI review and rework tax?","acceptedAnswer":{"@type":"Answer","text":"Unchecked agent diffs can create subtle regressions or style drift. Modeling a 10% to 15% review tax gives finance leaders a defensible net ROI number."}},{"@type":"Question","name":"How do guard hooks improve engineering ROI?","acceptedAnswer":{"@type":"Answer","text":"Automated format_on_edit, guard_bash, and /test-fix hooks catch broken builds before PR review, directly cutting senior engineer rework hours."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"AI Coding Agent ROI & Payback Calculator","item":"https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>AI Coding Agent ROI & Payback Calculator</span></nav>
+  <h1>AI Coding Agent ROI & Payback Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s14-ai-coding-agent-roi-calculator" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Justifying <strong>Claude Code</strong>, <strong>Claude Max</strong>, or <strong>Cursor</strong> seats to engineering leadership requires real math — including AI review and rework overhead. Adjust team size, loaded hourly rate, and reclaimed hours below to calculate net monthly ROI and payback days.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="teamSize">Engineers on team <span class="val-pill" id="teamSizeVal">8</span></label><input id="teamSize" type="range" min="1" max="100" step="1" value="8"></div>
+        <div class="field"><label for="hourly">Loaded eng rate ($/hr) <span class="val-pill" id="hourlyVal">$110</span></label><input id="hourly" type="range" min="40" max="250" step="5" value="110"></div>
+        <div class="field"><label for="hrsSaved">Gross hrs saved / dev / wk <span class="val-pill" id="hrsSavedVal">5.0</span></label><input id="hrsSaved" type="range" min="1" max="15" step="0.5" value="5"></div>
+        <div class="field"><label for="toolSpend">AI spend / dev / mo <span class="val-pill" id="toolSpendVal">$140</span></label><input id="toolSpend" type="range" min="20" max="500" step="10" value="140"></div>
+        <div class="field"><label for="rework">AI review / rework tax <span class="val-pill" id="reworkVal">12%</span></label><input id="rework" type="range" min="0" max="40" step="2" value="12"></div>
+        <div class="field"><label for="adopt">Active team adoption <span class="val-pill" id="adoptVal">85%</span></label><input id="adopt" type="range" min="30" max="100" step="5" value="85"></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>ROI Scenario</th><th class='num'>Net Hrs / Mo</th><th class='num'>Value Created</th><th class='num'>AI Spend / Mo</th><th class='num'>ROI Multiple</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint14-ml0x-primary" data-mr-placement="s14_calc_ai-coding-agent-roi-calculator" aria-label="Claude Code Workflow Pack">
+      <div class="s12-cro__tag">Most Popular &middot; $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
+      <p class="s12-cro__lead"><strong>Want to cut AI rework tax and standardize every engineer?</strong> Roll out 5 shared <code>CLAUDE.md</code> templates, 8 slash commands, and 5 guard hooks in the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who"><strong>Built for</strong> developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <div class="s14-sample-wrap" data-cro="sprint14-sample-bar">
+        <button type="button" class="s14-sample-btn" id="s14SampleBtn" data-sample-download="ml0x-claude-code-sample-rules.md">&#8595; Download Free AI Agent ROI & Guardrail Brief (.md, instant)</button>
+        <div class="s14-proof-banner" id="s14ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full production Claude Code kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s14_ml0x_ai-coding-agent-roi-calculator" data-cta="s14_buy_cc29_ai-coding-agent-roi-calculator">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <details>
+        <summary>Preview exact files &amp; sample lines inside the $29 Claude Code Pack</summary>
+        <pre class="s13-preview"><code># Shared Team Workflow Commands (.claude/commands/)
+/plan      # architecture spec before touching source files
+/test-fix  # run test suite and repair failures in tight loop
+/review    # pre-PR diff audit for regressions and secrets
+/commit    # clean conventional commit after checks pass</code></pre>
+        <ul>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> &mdash; 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>What is a realistic hours-saved estimate for AI coding agents?</h3><p>Most production engineering teams measure 3 to 6 net hours saved per developer per week after accounting for code review, prompt iteration, and test verification.</p></div>
+    <div class="faq-item"><h3>Why include an AI review and rework tax?</h3><p>Unchecked agent diffs can create subtle regressions or style drift. Modeling a 10% to 15% review tax gives finance leaders a defensible net ROI number.</p></div>
+    <div class="faq-item"><h3>How do guard hooks improve engineering ROI?</h3><p>Automated format_on_edit, guard_bash, and /test-fix hooks catch broken builds before PR review, directly cutting senior engineer rework hours.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint14-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Standardize Claude Code across your whole team in 10 minutes</p>
+    <p class="s12-post__desc">Ship 5 CLAUDE.md templates, 5 Python safety hooks, and 8 slash commands for $29 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s14_ml0x_ai-coding-agent-roi-calculator" data-cta="s14_post_cc29_ai-coding-agent-roi-calculator">Get Claude Code Pack &mdash; $29 &rarr;</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related Claude Code &amp; AI agent calculators</h2>
+    <ul>
+      <li><a href="/calculators/cursor-pro-vs-claude-max-calculator.html">Cursor Pro vs Claude Max calculator</a> &mdash; Compare flat-rate seat plans for your team.</li>
+      <li><a href="/calculators/ai-code-review-cost-estimator.html">AI code review cost estimator</a> &mdash; Price automated PR review across your monthly PR volume.</li>
+      <li><a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost calculator</a> &mdash; Forecast per-developer API spend with caching.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and rate limits reflect published 2026 provider rate cards.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261128-s14-ai-coding-agent-roi-calculator" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost</a>
+    <a href="/calculators/claude-md-context-budget-calculator.html">CLAUDE.md context budget</a>
+    <a href="/calculators/mcp-server-latency-cost-calculator.html">MCP latency &amp; cost</a>
+    <a href="/calculators/cursor-pro-vs-claude-max-calculator.html">Cursor Pro vs Claude Max</a>
+    <a href="/calculators/anthropic-prompt-caching-savings-calculator.html">Prompt caching savings</a>
+    <a href="/calculators/claude-code-rate-limit-planner.html">Claude Code rate limits</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const team = +$('teamSize').value;
+    const hourly = +$('hourly').value;
+    const hrsSaved = +$('hrsSaved').value;
+    const toolSpend = +$('toolSpend').value;
+    const rework = +$('rework').value / 100;
+    const adopt = +$('adopt').value / 100;
+
+    $('teamSizeVal').textContent = team;
+    $('hourlyVal').textContent = '$' + hourly;
+    $('hrsSavedVal').textContent = hrsSaved.toFixed(1);
+    $('toolSpendVal').textContent = '$' + toolSpend;
+    $('reworkVal').textContent = Math.round(rework*100) + '%';
+    $('adoptVal').textContent = Math.round(adopt*100) + '%';
+
+    const activeDevs = team * adopt;
+    const netHrsPerDevMo = hrsSaved * 4.33 * (1 - rework);
+    const totalNetHrs = activeDevs * netHrsPerDevMo;
+    const grossVal = totalNetHrs * hourly;
+    const totalSpend = team * toolSpend;
+    const netSavings = grossVal - totalSpend;
+    const roiMult = totalSpend > 0 ? (grossVal / totalSpend) : 0;
+    const paybackDays = grossVal > 0 ? Math.max(0.5, (totalSpend / (grossVal / 22))) : 99;
+
+    const scenarios = [
+      { name: 'Conservative (50% of est. hours)', mult: 0.5 },
+      { name: 'Your Expected Baseline', mult: 1.0, hi: true },
+      { name: 'Guardrailed (+20% less rework via hooks)', mult: 1.2 },
+      { name: 'Full Workflow Maturity (1.4x velocity)', mult: 1.4 }
+    ];
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${netSavings>0?'kpi--ok':'kpi--bad'}"><div class="kpi__label">Net Monthly Value</div><div class="kpi__val">$${Math.round(netSavings).toLocaleString()}/mo</div><div class="kpi__sub">After $${totalSpend.toLocaleString()} AI spend</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">ROI Multiple</div><div class="kpi__val">${roiMult.toFixed(1)}x</div><div class="kpi__sub">$${Math.round(netSavings*12).toLocaleString()}/yr net gain</div></div>
+      <div class="kpi"><div class="kpi__label">Net Hours Reclaimed</div><div class="kpi__val">${Math.round(totalNetHrs).toLocaleString()} hrs</div><div class="kpi__sub">${netHrsPerDevMo.toFixed(1)} hrs / active dev / mo</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Monthly Payback</div><div class="kpi__val">${paybackDays.toFixed(1)} days</div><div class="kpi__sub">Break-even within ${Math.ceil(paybackDays)} workdays</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict (${team} engineers)</strong> &mdash; At ${Math.round(adopt*100)}% adoption and ${Math.round(rework*100)}% rework tax, your AI coding stack returns <strong>${roiMult.toFixed(1)}x ROI</strong> and pays for itself in <strong>${paybackDays.toFixed(1)} workdays</strong> each month.`;
+    $('rows').innerHTML = scenarios.map(s => {
+      const h = totalNetHrs * s.mult;
+      const v = h * hourly;
+      const r = totalSpend > 0 ? v / totalSpend : 0;
+      return `<tr${s.hi?' class="tt"':''}><td>${s.name}</td><td class="num">${Math.round(h).toLocaleString()}</td><td class="num">$${Math.round(v).toLocaleString()}</td><td class="num">$${totalSpend.toLocaleString()}</td><td class="num">${r.toFixed(1)}x</td></tr>`;
+    }).join('');
+  }
+  ['teamSize','hourly','hrsSaved','toolSpend','rework','adopt'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+        
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+
+    if (badge) badge.textContent = `Your ROI — ${k[0]} net value (${k[1]} multiple, ${k[3]} payback)`;
+    if (pBtn) pBtn.textContent = `Protect Your ${k[1]} AI ROI with Team Guardrails — $29 →`;
+    if (postBtn) postBtn.textContent = `Protect Your ${k[1]} AI ROI with Team Guardrails — $29 →`;
+        
+  }
+  document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+    el.addEventListener('input', updateS13Echo);
+    el.addEventListener('change', updateS13Echo);
+  });
+  updateS13Echo();
+
+  var sampleBtn = document.getElementById('s14SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+
+      var md = [
+        '# ml0x AI Coding Agent ROI & Guardrail Summary',
+        '# Generated from https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html',
+        '',
+        '## Team ROI Model',
+        '- Engineers = ' + $('teamSize').value,
+        '- Loaded hourly rate = $' + $('hourly').value + '/hr',
+        '- Gross hours saved per dev per week = ' + $('hrsSaved').value,
+        '- AI tool and API spend per dev = $' + $('toolSpend').value + '/mo',
+        '- Review and rework tax = ' + $('rework').value + '%',
+        '- Active adoption = ' + $('adopt').value + '%',
+        '- Net monthly value = ' + (vals[0] || '$0/mo'),
+        '- ROI multiple = ' + (vals[1] || '0x'),
+        '- Net hours reclaimed = ' + (vals[2] || '0 hrs'),
+        '- Payback window = ' + (vals[3] || '0 days'),
+        '',
+        '## How to Cut Rework Tax Below 10%',
+        '- Standardize /test-fix and /review slash commands across every repo.',
+        '- Enforce format_on_edit.py and protect_files.py hooks on every Claude Code session.',
+        '- Cap runaway token spend with cost_guard.py.'
+      ].join('\n');
+        
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-claude-code-sample-rules.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s14ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-claude-code-sample-rules.md — unlock the full production Claude Code kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'ai-coding-agent-roi-calculator', file: 'ml0x-claude-code-sample-rules.md' });
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'ai-coding-agent-roi-calculator'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

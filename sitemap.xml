@@ -378,7 +378,7 @@
   </url>
   <url>
     <loc>https://ml0x.com/calculators/claude-code-token-cost-calculator.html</loc>
-    <lastmod>2026-11-27</lastmod>
+    <lastmod>2026-11-28</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
@@ -534,6 +534,51 @@
   <url>
     <loc>https://ml0x.com/calculators/ai-agent-token-cost-estimator.html</loc>
     <lastmod>2026-11-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/claude-md-context-budget-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/mcp-server-latency-cost-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/cursor-pro-vs-claude-max-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/anthropic-prompt-caching-savings-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/ai-code-review-cost-estimator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/subagent-parallel-token-estimator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/claude-code-rate-limit-planner.html</loc>
+    <lastmod>2026-11-28</lastmod>
     <priority>0.8</priority>
   </url>
 </urlset>

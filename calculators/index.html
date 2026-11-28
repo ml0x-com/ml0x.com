@@ -67,25 +67,59 @@
         <button type="button" class="s13-hub-tab" data-tier="pl99" aria-pressed="false">$99 Agent Pipeline</button>
       </div>
     </div>
-    <p class="s13-hub-who" id="s13HubWho"><strong>Best for:</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
-    <p class="s13-hub-files" id="s13HubFiles"><strong>Instant 10s download:</strong> <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+    <p class="s13-hub-who" id="s13HubWho"><strong>Built for</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+    <p class="s13-hub-files" id="s13HubFiles"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
     <p class="s13-hub-disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
     <button type="button" class="s13-hub-btn" id="s13HubBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_calculators_hub_cc29" data-cta="s13_hub_cc29">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
     <details>
       <summary id="s13HubPrevSummary">Preview exact sample lines inside the $29 Claude Code Pack</summary>
       <pre class="s13-hub-pre"><code id="s13HubPrevCode"># .claude/hooks/cost_guard.py (PreToolUse / PostToolUse excerpt)
-MAX_SESSION_USD = float(os.getenv("CLAUDE_MAX_USD", "5.00"))
-if session_spend_usd &gt;= MAX_SESSION_USD:
-    print(json.dumps({"decision": "block", "reason": f"Cap ${MAX_SESSION_USD:.2f} hit"}))
-    sys.exit(2)
+export CLAUDE_MAX_USD=5.00
+python3 .claude/hooks/cost_guard.py --check-spend # exits 2 to block runaway loops
 
 # CLAUDE.md (Routing &amp; Prompt-Cache Discipline excerpt)
-- Default model: sonnet-4; escalate to opus-4 only on /plan or multi-file refactors
+- Default model is sonnet-4; escalate to opus-4 only on /plan or multi-file refactors
 - Keep system prefix static for &gt;=85% Anthropic prompt-cache hits</code></pre>
     </details>
   </aside>
 
   <div class="grid-2">
+    <a href="/calculators/claude-md-context-budget-calculator.html" class="link-card">
+      <div class="link-card__title">CLAUDE.md Context Budget Calculator</div>
+      <p class="link-card__desc">Size your CLAUDE.md, MCP tool schemas, and repo map tokens against the 200K Claude Code window with remaining headroom and monthly cache tax.</p>
+    </a>
+    <a href="/calculators/mcp-server-latency-cost-calculator.html" class="link-card">
+      <div class="link-card__title">MCP Server Latency & Token Cost Calculator</div>
+      <p class="link-card__desc">Measure Model Context Protocol (MCP) schema token bloat, round-trip tool latency, and monthly Anthropic API overhead across your active MCP servers.</p>
+    </a>
+    <a href="/calculators/ai-coding-agent-roi-calculator.html" class="link-card">
+      <div class="link-card__title">AI Coding Agent ROI & Payback Calculator</div>
+      <p class="link-card__desc">Compute engineering ROI, net monthly savings, hours reclaimed, and break-even payback for Claude Code, Cursor, and hybrid AI coding agent teams.</p>
+    </a>
+    <a href="/calculators/cursor-pro-vs-claude-max-calculator.html" class="link-card">
+      <div class="link-card__title">Cursor Pro vs Claude Max Cost Calculator</div>
+      <p class="link-card__desc">Compare Cursor Pro ($20), Pro+ ($60), and Ultra ($200) against Claude Max $100 and $200 plans by daily agent prompts, overages, and annual team cost.</p>
+    </a>
+    <a href="/calculators/claude-sonnet-vs-opus-coding-cost.html" class="link-card">
+      <div class="link-card__title">Claude Sonnet 4 vs Opus 4 Coding Cost Calculator</div>
+      <p class="link-card__desc">Compare Claude Sonnet 4 ($3/$15) vs Opus 4 ($15/$75) and hybrid routing splits for daily coding sessions with 90% prompt caching and rework rates.</p>
+    </a>
+    <a href="/calculators/anthropic-prompt-caching-savings-calculator.html" class="link-card">
+      <div class="link-card__title">Anthropic Prompt Caching Savings Calculator</div>
+      <p class="link-card__desc">Calculate exact Anthropic 5-minute (1.25x) and 1-hour (2x) prompt cache write costs vs 0.10x cache read savings across Claude Opus 4, Sonnet 4, Haiku.</p>
+    </a>
+    <a href="/calculators/ai-code-review-cost-estimator.html" class="link-card">
+      <div class="link-card__title">AI Code Review Cost Estimator</div>
+      <p class="link-card__desc">Estimate monthly Anthropic and OpenAI API costs for automated PR code review across PR volume, diff size, repo context, and multi-pass review agents.</p>
+    </a>
+    <a href="/calculators/subagent-parallel-token-estimator.html" class="link-card">
+      <div class="link-card__title">Subagent Parallel Token & Cost Estimator</div>
+      <p class="link-card__desc">Model parallel Claude Code subagent fan-out costs, orchestrator overhead, wall-clock speedup, and per-run dollar caps across 2 to 16 worker agents.</p>
+    </a>
+    <a href="/calculators/claude-code-rate-limit-planner.html" class="link-card">
+      <div class="link-card__title">Claude Code Rate Limit & Token Tier Planner</div>
+      <p class="link-card__desc">Plan Anthropic Tier 1 to Tier 4 ITPM/OTPM ceilings and Claude Max 5-hour rolling windows so parallel Claude Code sessions never hit 429 rate limits.</p>
+    </a>
     <a href="/calculators/deepseek-r1-vs-claude-4-cost.html" class="link-card">
       <div class="link-card__title">DeepSeek R1 vs Claude 4 Cost Calculator</div>
       <p class="link-card__desc">Compare DeepSeek-R1 (with context cache hits & off-peak discounts) against Claude Sonnet 4 and Claude Opus 4 including reasoning/thinking token multipliers.</p>
@@ -112,7 +146,7 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
     </a>
     <a href="/calculators/ollama-vs-vllm-production.html" class="link-card">
       <div class="link-card__title">Ollama vs vLLM Production Calculator</div>
-      <p class="link-card__desc">Calculate when to migrate from Ollama to vLLM in production: model concurrency scaling, P95 latency, required GPUs, and monthly cloud cost.</p>
+      <p class="link-card__desc">Calculate when to migrate from Ollama to vLLM in production with model concurrency scaling, P95 latency, required GPUs, and monthly cloud cost.</p>
     </a>
     <a href="/calculators/openai-o3-vs-claude-sonnet-cost.html" class="link-card">
       <div class="link-card__title">OpenAI o3 vs Claude Sonnet 4 Cost Calculator</div>
@@ -140,7 +174,7 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
     </a>
     <a href="/calculators/local-llm-hardware-guide-2026.html" class="link-card">
       <div class="link-card__title">Local LLM Hardware Guide & Calculator (2026)</div>
-      <p class="link-card__desc">Interactive 2026 local AI hardware recommender: compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.</p>
+      <p class="link-card__desc">Interactive 2026 local AI hardware recommender to compare RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra (192GB/512GB), and RTX 6000 Ada by VRAM, tok/s, and payback.</p>
     </a>
     <a href="/calculators/ai-agent-token-cost-estimator.html" class="link-card">
       <div class="link-card__title">AI Agent Token Cost Estimator</div>
@@ -240,7 +274,7 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
     </a>
     <a href="/calculators/embeddings-cost-calculator/" class="link-card">
       <div class="link-card__title">Embeddings cost calculator</div>
-      <p class="link-card__desc">Embedding and vector-database cost across 7 embedding models and 3 vector stores: chunk-count math with overlap, storage, reads and writes per month, and the cheaper model-store pairing at your traffic.</p>
+      <p class="link-card__desc">Embedding and vector-database cost across 7 embedding models and 3 vector stores with chunk-count math with overlap, storage, reads and writes per month, and the cheaper model-store pairing at your traffic.</p>
     </a>
     <a href="/calculators/chinchilla-scaling-calculator/" class="link-card">
       <div class="link-card__title">Chinchilla scaling calculator</div>
@@ -319,8 +353,8 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
 (function(){
   var TIERS = {
     cs9: {
-      who: '<strong>Best for:</strong> ML &amp; infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas &amp; serving flags.',
-      files: '<strong>Instant 10s download:</strong> <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code>',
+      who: '<strong>Built for</strong> ML &amp; infra engineers sizing GPUs, VRAM, and $/1M tokens who want print-ready formulas &amp; serving flags.',
+      files: '<strong>Instant 10s download</strong> &mdash; <code>12 PDF Sheets + Markdown + HTML + vLLM/Quant Matrix CSV</code>',
       btn: 'Download ML Systems Cheatsheet Pack — $9 →',
       url: 'https://buy.stripe.com/28EdRad2Ogsgfopc3343S43?client_reference_id=s13_ml0x_calculators_hub_cs9',
       cta: 's13_hub_cs9',
@@ -328,22 +362,22 @@ if session_spend_usd &gt;= MAX_SESSION_USD:
       code: '# vllm-fp8-sizing.sh (included in Quantization & Serving Sheet)\nvllm serve meta-llama/Llama-3.3-70B-Instruct \\\n  --tensor-parallel-size 2 --quantization fp8 --kv-cache-dtype fp8 \\\n  --gpu-memory-utilization 0.92 --max-model-len 32768\n\n# gpu-rooflines-2026.csv (excerpt)\ngpu,vram_gb,bw_tb_s,fp8_tflops,ridge_batch_70b,cloud_hr_usd\nH200_SXM,141,4.8,1979,48,3.40\nB200_SXM,192,8.0,4500,64,5.80'
     },
     cc29: {
-      who: '<strong>Best for:</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.',
-      files: '<strong>Instant 10s download:</strong> <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code>',
+      who: '<strong>Built for</strong> Developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.',
+      files: '<strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code>',
       btn: 'Download Claude Code Workflow Pack — $29 →',
       url: 'https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s13_ml0x_calculators_hub_cc29',
       cta: 's13_hub_cc29',
       summary: 'Preview exact sample lines inside the $29 Claude Code Pack',
-      code: '# .claude/hooks/cost_guard.py (PreToolUse / PostToolUse excerpt)\nMAX_SESSION_USD = float(os.getenv("CLAUDE_MAX_USD", "5.00"))\nif session_spend_usd >= MAX_SESSION_USD:\n    print(json.dumps({"decision": "block", "reason": f"Cap ${MAX_SESSION_USD:.2f} hit"}))\n    sys.exit(2)\n\n# CLAUDE.md (Routing & Prompt-Cache Discipline excerpt)\n- Default model: sonnet-4; escalate to opus-4 only on /plan or multi-file refactors\n- Keep system prefix static for >=85% Anthropic prompt-cache hits'
+      code: '# .claude/hooks/cost_guard.py (PreToolUse / PostToolUse excerpt)\nexport CLAUDE_MAX_USD=5.00\npython3 .claude/hooks/cost_guard.py --check-spend # exits 2 to block runaway loops\n\n# CLAUDE.md (Routing & Prompt-Cache Discipline excerpt)\n- Default model is sonnet-4; escalate to opus-4 only on /plan or multi-file refactors\n- Keep system prefix static for >=85% Anthropic prompt-cache hits'
     },
     pl99: {
-      who: '<strong>Best for:</strong> Teams &amp; solo builders shipping autonomous multi-step AI pipelines in production with deterministic quality gates.',
-      files: '<strong>Instant 10s download:</strong> <code>1,160-Line 100x CLI + Parallel Runner + NASA P10 YAML Gates + 13 Research Docs</code>',
+      who: '<strong>Built for</strong> Teams &amp; solo builders shipping autonomous multi-step AI pipelines in production with deterministic quality gates.',
+      files: '<strong>Instant 10s download</strong> &mdash; <code>1,160-Line 100x CLI + Parallel Runner + NASA P10 YAML Gates + 13 Research Docs</code>',
       btn: 'Download ml0x Agent Pipeline — $99 →',
       url: 'https://buy.stripe.com/28E3cw8My2Bq0tvgjj43S0t?client_reference_id=s13_ml0x_calculators_hub_pl99',
       cta: 's13_hub_pl99',
       summary: 'Preview exact sample lines inside the $99 ml0x Agent Pipeline',
-      code: '# ml0x-pipeline.yaml (Hard Gateway Budget & 4-Stage Gates)\nstages: [analyze, implement, test, review]\nbudget:\n  hard_cap_usd_per_run: 4.50\n  monthly_ceiling_usd: 400.00\n  on_breach: halt_and_rollback\ngates:\n  nasa_p10_max_fn_lines: 60\n  require_zero_console_errors: true\n# CLI: ml0x run --preset production --parallel 4 --budget 4.50'
+      code: '# ml0x-pipeline.sh (Hard Gateway Budget & 4-Stage Gates)\nexport ML0X_STAGES="analyze,implement,test,review"\nexport ML0X_HARD_CAP_USD="4.50"\nexport ML0X_MONTHLY_CEILING_USD="400.00"\nml0x run --preset production --parallel 4 --budget 4.50'
     }
   };
   var tabs = document.querySelectorAll('.s13-hub-tab');

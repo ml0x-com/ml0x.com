@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Sonnet 4 vs Opus 4 Coding Cost Calculator | ml0x</title>
+<meta name="description" content="Compare Claude Sonnet 4 ($3/$15) vs Opus 4 ($15/$75) and hybrid routing splits for daily coding sessions with 90% prompt caching and rework rates.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Claude Sonnet 4 vs Opus 4 Coding Cost Calculator">
+<meta property="og:description" content="Compare Claude Sonnet 4 ($3/$15) vs Opus 4 ($15/$75) and hybrid routing splits for daily coding sessions with 90% prompt caching and rework rates.">
+<meta property="og:url" content="https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Claude Sonnet 4 vs Opus 4 Coding Cost Calculator">
+<meta name="twitter:description" content="Compare Claude Sonnet 4 ($3/$15) vs Opus 4 ($15/$75) and hybrid routing splits for daily coding sessions with 90% prompt caching and rework rates.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;max-width:100%;width:auto;min-width:260px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:11px 22px;line-height:1.3;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s14-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s14-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s14-sample-btn:hover{background:#F5F5F3}
+.s14-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}.s14-sample-btn{width:100%}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Claude Sonnet 4 vs Opus 4 Coding Cost Calculator","url":"https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html","description":"Compare Claude Sonnet 4 ($3/$15) vs Opus 4 ($15/$75) and hybrid routing splits for daily coding sessions with 90% prompt caching and rework rates.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is Opus 4 worth 5x the price of Sonnet 4 for daily coding?","acceptedAnswer":{"@type":"Answer","text":"Rarely for 100% of turns. Using Opus 4 for the 10% to 20% of turns spent on architecture planning and deep debugging captures most of the quality gain at a fraction of the cost."}},{"@type":"Question","name":"When does Sonnet 4 rework cancel out its lower price?","acceptedAnswer":{"@type":"Answer","text":"Only if Sonnet requires more than 4 extra retry loops on the same task \u2014 which is rare for standard CRUD, test writing, and UI implementation."}},{"@type":"Question","name":"How does Claude Code switch between Opus and Sonnet?","acceptedAnswer":{"@type":"Answer","text":"You can use the /model command inside Claude Code or configure default and subagent models directly in your project settings and CLAUDE.md workflow."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Claude Sonnet 4 vs Opus 4 Coding Cost Calculator","item":"https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Claude Sonnet 4 vs Opus 4 Coding Cost Calculator</span></nav>
+  <h1>Claude Sonnet 4 vs Opus 4 Coding Cost Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s14-claude-sonnet-vs-opus-coding-cost" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p><strong>Claude Opus 4 ($15/$75 per 1M tokens)</strong> costs 5x more than <strong>Claude Sonnet 4 ($3/$15)</strong>, yet Opus can solve gnarly architectural bugs in fewer retries. Drag the sliders below to compare pure Sonnet 4, pure Opus 4, and hybrid model routing including rework loops.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="turnsDay">Coding turns / day <span class="val-pill" id="turnsDayVal">100</span></label><input id="turnsDay" type="range" min="10" max="350" step="10" value="100"></div>
+        <div class="field"><label for="ctxK">Avg context / turn <span class="val-pill" id="ctxKVal">50K</span></label><input id="ctxK" type="range" min="8" max="160" step="4" value="50"></div>
+        <div class="field"><label for="outTok">Output tokens / turn <span class="val-pill" id="outTokVal">1200</span></label><input id="outTok" type="range" min="400" max="3500" step="100" value="1200"></div>
+        <div class="field"><label for="cache">Prompt cache hit rate <span class="val-pill" id="cacheVal">85%</span></label><input id="cache" type="range" min="20" max="95" step="5" value="85"></div>
+        <div class="field"><label for="opusSplit">Hybrid Opus 4 share <span class="val-pill" id="opusSplitVal">15%</span></label><input id="opusSplit" type="range" min="5" max="80" step="5" value="15"></div>
+        <div class="field"><label for="reworkPct">Sonnet extra retry rate <span class="val-pill" id="reworkPctVal">10%</span></label><input id="reworkPct" type="range" min="0" max="40" step="5" value="10"></div>
+        </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Routing Strategy</th><th class='num'>Per Turn</th><th class='num'>Daily Spend</th><th class='num'>Monthly (22d)</th><th class='num'>Savings vs Opus</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint14-ml0x-primary" data-mr-placement="s14_calc_claude-sonnet-vs-opus-coding-cost" aria-label="Claude Code Workflow Pack">
+      <div class="s12-cro__tag">Most Popular &middot; $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
+      <p class="s12-cro__lead"><strong>Stop paying Opus 4 rates on boilerplate turns.</strong> Drop our hybrid routing <code>CLAUDE.md</code> templates and <code>cost_guard.py</code> into your repo with the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who"><strong>Built for</strong> developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <div class="s14-sample-wrap" data-cro="sprint14-sample-bar">
+        <button type="button" class="s14-sample-btn" id="s14SampleBtn" data-sample-download="ml0x-claude-code-sample-rules.md">&#8595; Download Free Hybrid Sonnet/Opus Routing Rules (.md, instant)</button>
+        <div class="s14-proof-banner" id="s14ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full production Claude Code kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s14_ml0x_claude-sonnet-vs-opus-coding-cost" data-cta="s14_buy_cc29_claude-sonnet-vs-opus-coding-cost">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <details>
+        <summary>Preview exact files &amp; sample lines inside the $29 Claude Code Pack</summary>
+        <pre class="s13-preview"><code># CLAUDE.md Model Escalation Policy (excerpt)
+- Start every session on claude-sonnet-4
+- Switch to claude-opus-4 only during /plan or stuck 2-failure loops
+- Delegate test log parsing and file discovery to haiku subagents
+- Enforce hard session cap via .claude/hooks/cost_guard.py</code></pre>
+        <ul>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> &mdash; 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Is Opus 4 worth 5x the price of Sonnet 4 for daily coding?</h3><p>Rarely for 100% of turns. Using Opus 4 for the 10% to 20% of turns spent on architecture planning and deep debugging captures most of the quality gain at a fraction of the cost.</p></div>
+    <div class="faq-item"><h3>When does Sonnet 4 rework cancel out its lower price?</h3><p>Only if Sonnet requires more than 4 extra retry loops on the same task — which is rare for standard CRUD, test writing, and UI implementation.</p></div>
+    <div class="faq-item"><h3>How does Claude Code switch between Opus and Sonnet?</h3><p>You can use the /model command inside Claude Code or configure default and subagent models directly in your project settings and CLAUDE.md workflow.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint14-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Lock in 60%+ hybrid routing savings without manual model babysitting</p>
+    <p class="s12-post__desc">Get 5 CLAUDE.md routing templates, 8 slash commands, and 5 Python guard hooks for $29 once.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s14_ml0x_claude-sonnet-vs-opus-coding-cost" data-cta="s14_post_cc29_claude-sonnet-vs-opus-coding-cost">Get Claude Code Pack &mdash; $29 &rarr;</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related Claude Code &amp; AI agent calculators</h2>
+    <ul>
+      <li><a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost calculator</a> &mdash; Full monthly API vs Claude Max comparison.</li>
+      <li><a href="/calculators/subagent-parallel-token-estimator.html">Subagent parallel token estimator</a> &mdash; Pair an Opus coordinator with Haiku or Sonnet workers.</li>
+      <li><a href="/calculators/anthropic-prompt-caching-savings-calculator.html">Anthropic prompt caching savings</a> &mdash; Cut cached input costs by 90%.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and rate limits reflect published 2026 provider rate cards.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261128-s14-claude-sonnet-vs-opus-coding-cost" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost</a>
+    <a href="/calculators/claude-md-context-budget-calculator.html">CLAUDE.md context budget</a>
+    <a href="/calculators/mcp-server-latency-cost-calculator.html">MCP latency &amp; cost</a>
+    <a href="/calculators/cursor-pro-vs-claude-max-calculator.html">Cursor Pro vs Claude Max</a>
+    <a href="/calculators/anthropic-prompt-caching-savings-calculator.html">Prompt caching savings</a>
+    <a href="/calculators/claude-code-rate-limit-planner.html">Claude Code rate limits</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/extensions?utm_source=ml0x&amp;utm_medium=footer" target="_blank" rel="noopener">Chrome productivity tools</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const turns = +$('turnsDay').value;
+    const ctxK = +$('ctxK').value;
+    const outTok = +$('outTok').value;
+    const cache = +$('cache').value / 100;
+    const opusSplit = +$('opusSplit').value / 100;
+    const rework = +$('reworkPct').value / 100;
+
+    $('turnsDayVal').textContent = turns;
+    $('ctxKVal').textContent = ctxK + 'K';
+    $('outTokVal').textContent = outTok.toLocaleString();
+    $('cacheVal').textContent = Math.round(cache*100) + '%';
+    $('opusSplitVal').textContent = Math.round(opusSplit*100) + '%';
+    $('reworkPctVal').textContent = Math.round(rework*100) + '%';
+
+    const cacheMult = cache * 0.10 + (1 - cache) * 1.25;
+    const turnCost = (inp, out) => (ctxK * 1000 / 1e6) * (inp * cacheMult) + (outTok / 1e6) * out;
+
+    const sonnetTurn = turnCost(3.0, 15.0) * (1 + rework);
+    const opusTurn = turnCost(15.0, 75.0);
+    const hybridTurn = turnCost(15.0, 75.0) * opusSplit + turnCost(3.0, 15.0) * (1 - opusSplit) * (1 + rework * 0.3);
+    const haikuHybridTurn = turnCost(15.0, 75.0) * opusSplit + turnCost(3.0, 15.0) * Math.max(0, 0.8 - opusSplit) + turnCost(0.8, 4.0) * 0.2;
+
+    const mo = t => t * turns * 22;
+    const opusMo = mo(opusTurn);
+    const sonnetMo = mo(sonnetTurn);
+    const hybridMo = mo(hybridTurn);
+    const savedHybrid = Math.max(0, opusMo - hybridMo);
+
+    const rows = [
+      { name: '100% Claude Sonnet 4 (incl. retries)', t: sonnetTurn, m: sonnetMo },
+      { name: 'Hybrid (' + Math.round(opusSplit*100) + '% Opus / ' + Math.round((1-opusSplit)*100) + '% Sonnet)', t: hybridTurn, m: hybridMo, hi: true },
+      { name: '3-Tier Hybrid (Opus + Sonnet + 20% Haiku)', t: haikuHybridTurn, m: mo(haikuHybridTurn) },
+      { name: '100% Claude Opus 4', t: opusTurn, m: opusMo }
+    ];
+
+    $('kpis').innerHTML = `
+      <div class="kpi kpi--ok"><div class="kpi__label">Sonnet 4 Monthly</div><div class="kpi__val">$${Math.round(sonnetMo).toLocaleString()}/mo</div><div class="kpi__sub">$${sonnetTurn.toFixed(3)}/turn incl. ${Math.round(rework*100)}% retries</div></div>
+      <div class="kpi kpi--warn"><div class="kpi__label">Opus 4 Monthly</div><div class="kpi__val">$${Math.round(opusMo).toLocaleString()}/mo</div><div class="kpi__sub">$${opusTurn.toFixed(3)}/turn (5x base rate)</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Hybrid Routing</div><div class="kpi__val">$${Math.round(hybridMo).toLocaleString()}/mo</div><div class="kpi__sub">${Math.round(opusSplit*100)}% Opus for /plan &amp; hard bugs</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Saved vs All-Opus</div><div class="kpi__val">$${Math.round(savedHybrid).toLocaleString()}/mo</div><div class="kpi__sub">${Math.round((savedHybrid/opusMo)*100)}% lower bill</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; Routing ${Math.round(opusSplit*100)}% of turns to Opus 4 and the rest to Sonnet 4 cuts your bill from <strong>$${Math.round(opusMo).toLocaleString()}/mo</strong> to <strong>$${Math.round(hybridMo).toLocaleString()}/mo</strong> — saving <strong>$${Math.round(savedHybrid*12).toLocaleString()}/year</strong> per developer.`;
+    $('rows').innerHTML = rows.map(o => `<tr${o.hi?' class="tt"':''}><td>${o.name}</td><td class="num">$${o.t.toFixed(3)}</td><td class="num">$${(o.t*turns).toFixed(2)}</td><td class="num">$${Math.round(o.m).toLocaleString()}</td><td class="num">${o.m>=opusMo?'Baseline':'-$'+Math.round(opusMo-o.m).toLocaleString()}</td></tr>`).join('');
+  }
+  ['turnsDay','ctxK','outTok','cache','opusSplit','reworkPct'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+        
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+
+    if (badge) badge.textContent = `Your split — Sonnet ${k[0]} vs Opus ${k[1]} (Hybrid saves ${k[3]})`;
+    if (pBtn) pBtn.textContent = `Automate Hybrid Routing & Save ${k[3]} — $29 →`;
+    if (postBtn) postBtn.textContent = `Automate Hybrid Routing & Save ${k[3]} — $29 →`;
+        
+  }
+  document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+    el.addEventListener('input', updateS13Echo);
+    el.addEventListener('change', updateS13Echo);
+  });
+  updateS13Echo();
+
+  var sampleBtn = document.getElementById('s14SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+
+      var md = [
+        '# ml0x Sonnet 4 vs Opus 4 Hybrid Routing Rules',
+        '# Generated from https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html',
+        '',
+        '## Your Live Cost Split',
+        '- Daily turns = ' + $('turnsDay').value,
+        '- Avg context = ' + $('ctxK').value + 'K tokens',
+        '- Hybrid Opus share = ' + $('opusSplit').value + '%',
+        '- Sonnet 4 monthly = ' + (vals[0] || '$0/mo'),
+        '- Opus 4 monthly = ' + (vals[1] || '$0/mo'),
+        '- Hybrid monthly = ' + (vals[2] || '$0/mo'),
+        '- Savings vs All-Opus = ' + (vals[3] || '$0/mo'),
+        '',
+        '## Routing Discipline for CLAUDE.md',
+        '- Use Opus 4 only for /plan, architecture specs, and multi-file root-cause debugging.',
+        '- Execute implementation, tests, and refactors on Sonnet 4.',
+        '- Offload boilerplate generation and log scanning to Haiku 3.5 subagents.'
+      ].join('\n');
+        
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-claude-code-sample-rules.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s14ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-claude-code-sample-rules.md — unlock the full production Claude Code kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'claude-sonnet-vs-opus-coding-cost', file: 'ml0x-claude-code-sample-rules.md' });
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'claude-sonnet-vs-opus-coding-cost'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

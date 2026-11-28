@@ -10,9 +10,20 @@
 - [Training Run Triage ($99)](https://ml0x.com/triage/): Diagnostic runbook and toolkit for failing LLM/ML training runs, loss spikes, OOM debugging, and checkpoint recovery. $99 once, 60-day refund.
 - [All 5 Production Pipelines](https://ml0x.com/x/): Index of all 5 pipelines built and run on 33 production sites (ml0x Pipeline, Training Run Triage, handsofflinks, toolsthatrank, aiwebsitepipeline).
 
-## Interactive AI Engineering, LLM & GPU Calculators (46 Free Browser Tools)
+## Interactive AI Engineering, LLM & GPU Calculators (55 Free Browser Tools)
 
 - [All Calculators Directory](https://ml0x.com/calculators/): Complete index of all interactive client-side ML, LLM, and GPU calculators.
+
+### Claude Code & AI Coding Agent Calculators (Sprint 14 Wave 2)
+- [CLAUDE.md Context Budget Calculator](https://ml0x.com/calculators/claude-md-context-budget-calculator.html) — Size your CLAUDE.md, MCP tool schemas, and repo map tokens against the 200K Claude Code window with remaining headroom and monthly cache tax.
+- [MCP Server Latency & Token Cost Calculator](https://ml0x.com/calculators/mcp-server-latency-cost-calculator.html) — Measure Model Context Protocol (MCP) schema token bloat, round-trip tool latency, and monthly Anthropic API overhead across your active MCP servers.
+- [AI Coding Agent ROI & Payback Calculator](https://ml0x.com/calculators/ai-coding-agent-roi-calculator.html) — Compute engineering ROI, net monthly savings, hours reclaimed, and break-even payback for Claude Code, Cursor, and hybrid AI coding agent teams.
+- [Cursor Pro vs Claude Max Cost Calculator](https://ml0x.com/calculators/cursor-pro-vs-claude-max-calculator.html) — Compare Cursor Pro ($20), Pro+ ($60), and Ultra ($200) against Claude Max $100 and $200 plans by daily agent prompts, overages, and annual team cost.
+- [Claude Sonnet 4 vs Opus 4 Coding Cost Calculator](https://ml0x.com/calculators/claude-sonnet-vs-opus-coding-cost.html) — Compare Claude Sonnet 4 ($3/$15) vs Opus 4 ($15/$75) and hybrid routing splits for daily coding sessions with 90% prompt caching and rework rates.
+- [Anthropic Prompt Caching Savings Calculator](https://ml0x.com/calculators/anthropic-prompt-caching-savings-calculator.html) — Calculate exact Anthropic 5-minute (1.25x) and 1-hour (2x) prompt cache write costs vs 0.10x cache read savings across Claude Opus 4, Sonnet 4, Haiku.
+- [AI Code Review Cost Estimator](https://ml0x.com/calculators/ai-code-review-cost-estimator.html) — Estimate monthly Anthropic and OpenAI API costs for automated PR code review across PR volume, diff size, repo context, and multi-pass review agents.
+- [Subagent Parallel Token & Cost Estimator](https://ml0x.com/calculators/subagent-parallel-token-estimator.html) — Model parallel Claude Code subagent fan-out costs, orchestrator overhead, wall-clock speedup, and per-run dollar caps across 2 to 16 worker agents.
+- [Claude Code Rate Limit & Token Tier Planner](https://ml0x.com/calculators/claude-code-rate-limit-planner.html) — Plan Anthropic Tier 1 to Tier 4 ITPM/OTPM ceilings and Claude Max 5-hour rolling windows so parallel Claude Code sessions never hit 429 rate limits.
 
 ### 2026 AI Model, GPU & Agent Comparison Calculators (Sprint 12)
 - [DeepSeek R1 vs Claude 4 Cost Calculator](https://ml0x.com/calculators/deepseek-r1-vs-claude-4-cost.html): Compare DeepSeek-R1 (with context cache hits & off-peak discounts) against Claude Sonnet 4 and Claude Opus 4 including reasoning/thinking token multipliers.
