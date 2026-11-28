@@ -120,7 +120,7 @@
   <h1>vLLM vs Ollama Local GPU Cost Calculator</h1>
   <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s16-vllm-vs-ollama-local-gpu-cost" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
 
-  <p>Ollama is effortless for single-user local coding, while <strong>vLLM PagedAttention</strong> delivers 3x to 6x higher aggregate throughput once parallel agents or teammates hit the same GPU. Model your concurrency, hardware rig, and exact monthly cost below.</p>
+  <p>Ollama is effortless for single-user local coding, while vLLM PagedAttention delivers 3x to 6x higher aggregate throughput once parallel agents or teammates hit the same GPU. Model your concurrency, hardware rig, and exact monthly cost below.</p>
 
   <section id="calculator">
     <h2>Interactive calculator</h2>
@@ -156,11 +156,11 @@
 
     <aside class="s12-cro" data-cro="sprint16-ml0x-primary" data-mr-placement="s16_calc_vllm-vs-ollama-local-gpu-cost" aria-label="ml0x Engineering Kit">
       <div class="s12-cro__tag" id="s16TierTag">Most Popular &middot; $29 Once</div>
-      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust controls above to customize</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready. Adjust controls above to customize.</div>
       
-      <p class="s12-cro__lead" id="s16CroLead"><strong>Running local models alongside Claude Code or hybrid agents?</strong> Pair vLLM serving flags with <code>cost_guard.py</code> and hybrid routing templates in the $29 Claude Code Workflow Pack (or grab the $9 GPU/VRAM Cheatsheet Pack).</p>
-      <p class="s13-who" id="s16CroWho"><strong>Built for</strong> ML engineers and local-LLM builders sizing RTX 5090, Mac Studio, and H100 serving stacks for parallel agents.</p>
-      <p class="s13-files" id="s16CroFiles"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s12-cro__lead" id="s16CroLead">Running local models alongside Claude Code or hybrid agents? Pair vLLM serving flags with <code>cost_guard.py</code> and hybrid routing templates in the $29 Claude Code Workflow Pack (or grab the $9 GPU/VRAM Cheatsheet Pack).</p>
+      <p class="s13-who" id="s16CroWho">Built for ML engineers and local-LLM builders sizing RTX 5090, Mac Studio, and H100 serving stacks for parallel agents.</p>
+      <p class="s13-files" id="s16CroFiles">Instant 10s download. <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
       <div class="s16-diff-wrap" data-cro="sprint16-diff-table">
         <p class="s16-diff-title">Free Sample vs Full $29 Pack</p>
         <table class="s16-diff-table">
@@ -174,13 +174,13 @@
           </tbody>
         </table>
       </div>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
       <div class="s16-sample-wrap" data-cro="sprint16-sample-bar">
         <button type="button" class="s16-sample-btn" id="s16SampleBtn" data-sample-download="ml0x-vllm-vs-ollama-gpu-sizing.md">&#8595; Download Free vLLM vs Ollama Sizing Sheet (.md, instant)</button>
-        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-vllm-vs-ollama-gpu-sizing.md &mdash; unlock the full production kit below</div>
+        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-vllm-vs-ollama-gpu-sizing.md . Get the full production kit below</div>
       </div>
-      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_vllm-vs-ollama-local-gpu-cost" data-cta="s16_buy_vllm-vs-ollama-local-gpu-cost">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
-      <p class="s12-cro__alts">Explore the full ml0x engineering ladder &mdash; <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_vllm-vs-ollama-local-gpu-cost" data-cta="s16_buy_vllm-vs-ollama-local-gpu-cost">Download Claude Code Workflow Pack ($29) &rarr;</button>
+      <p class="s12-cro__alts">Explore the full ml0x engineering ladder. <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
         <summary id="s16PrevSummary">Preview exact vLLM FP8 &amp; hybrid routing flags inside the kit</summary>
         <pre class="s13-preview"><code id="s16PrevCode"># vLLM Production Launch (Continuous Batching + Prefix Caching)
@@ -190,9 +190,9 @@ vllm serve Qwen/Qwen3-32B --quantization fp8 --enable-prefix-caching \
 # Hybrid Fallback Guard (Claude API cap when local GPU saturates)
 export CLAUDE_MAX_USD=5.00</code></pre>
         <ul>
-          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
-          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
-          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong>. PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong>. <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong>. Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
         </ul>
       </details>
     </aside>
@@ -202,33 +202,33 @@ export CLAUDE_MAX_USD=5.00</code></pre>
     <h2>When to switch from Ollama to vLLM on local GPUs</h2>
     <div class="playbook">
       <ol>
-      <li><strong>Stay on Ollama for 1 to 2 concurrent streams</strong> &mdash; Single-developer autocomplete and solo chat rarely saturate memory bandwidth, so Ollama setup simplicity wins.</li>
-      <li><strong>Switch to vLLM at 4+ parallel agents</strong> &mdash; Continuous batching and PagedAttention prevent KV-cache fragmentation and cut P95 queue latency by 3x to 5x.</li>
-      <li><strong>Enable automatic prefix caching in vLLM</strong> &mdash; Pass <code>--enable-prefix-caching</code> so parallel coding agents sharing one repository prompt skip redundant prefill compute.</li>
+      <li><strong>Stay on Ollama for 1 to 2 concurrent streams</strong>. Single-developer autocomplete and solo chat rarely saturate memory bandwidth, so Ollama setup simplicity wins.</li>
+      <li><strong>Switch to vLLM at 4+ parallel agents</strong>. Continuous batching and PagedAttention prevent KV-cache fragmentation and cut P95 queue latency by 3x to 5x.</li>
+      <li><strong>Enable automatic prefix caching in vLLM</strong>. Pass <code>--enable-prefix-caching</code> so parallel coding agents sharing one repository prompt skip redundant prefill compute.</li>
       </ol>
     </div>
   </section>
 
   <section id="faq">
-    <h2>Frequently asked questions</h2>
+    <h2>Common questions</h2>
     <div class="faq-item"><h3>Is vLLM faster than Ollama for a single user?</h3><p>For a single stream (concurrency 1), both engines are memory-bandwidth bound and run within 5% to 15% of each other. vLLM pulls far ahead once 4 or more requests run concurrently.</p></div>
     <div class="faq-item"><h3>Can vLLM run on Apple Silicon Mac Studio M4 Ultra?</h3><p>vLLM targets CUDA and ROCm GPUs. On Mac Studio M4 Ultra, use MLX or llama.cpp server with continuous batching instead of CUDA vLLM.</p></div>
-    <div class="faq-item"><h3>How much electricity does a local RTX 5090 rig add per month?</h3><p>At 450W average load for 10 hours/day and $0.18/kWh, electricity adds roughly $24/mo — far below renting cloud H100 GPUs around the clock.</p></div>
+    <div class="faq-item"><h3>How much electricity does a local RTX 5090 rig add per month?</h3><p>At 450W average load for 10 hours/day and $0.18/kWh, electricity adds roughly $24/mo. far below renting cloud H100 GPUs around the clock.</p></div>
   </section>
 
   <aside class="s12-post" data-cro="sprint16-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Route routine turns to local vLLM and guard cloud API spend</p>
     <p class="s12-post__desc">Pair your local GPU server with hard cloud fallback caps and lean templates in the $29 Claude Code Pack.</p>
-    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_vllm-vs-ollama-local-gpu-cost" data-cta="s16_post_vllm-vs-ollama-local-gpu-cost">Get Claude Code Pack &mdash; $29 &rarr;</button>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_vllm-vs-ollama-local-gpu-cost" data-cta="s16_post_vllm-vs-ollama-local-gpu-cost">Get Claude Code Pack ($29) &rarr;</button>
   </aside>
 
   <section id="related">
     <h2>Related AI cost &amp; workflow calculators</h2>
     <ul>
-      <li><a href="/calculators/ollama-vs-vllm-production.html">Ollama vs vLLM production calculator</a> &mdash; Model cloud cluster GPU counts for high concurrency.</li>
-      <li><a href="/calculators/local-vs-api-coding-agent-breakeven.html">Local vs API coding agent breakeven</a> &mdash; Find exact payback months for buying a local rig.</li>
-      <li><a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit wizard</a> &mdash; Audit total annual waste across your entire AI stack.</li>
+      <li><a href="/calculators/ollama-vs-vllm-production.html">Ollama vs vLLM production calculator</a>. Model cloud cluster GPU counts for high concurrency.</li>
+      <li><a href="/calculators/local-vs-api-coding-agent-breakeven.html">Local vs API coding agent breakeven</a>. Find exact payback months for buying a local rig.</li>
+      <li><a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit wizard</a>. Audit total annual waste across your entire AI stack.</li>
     </ul>
   </section>
 
@@ -314,7 +314,7 @@ export CLAUDE_MAX_USD=5.00</code></pre>
       <div class="kpi"><div class="kpi__label">Ollama Aggregate</div><div class="kpi__val">${Math.round(ollamaAgg)} tok/s</div><div class="kpi__sub">${ollamaPerUser.toFixed(1)} tok/s per user</div></div>
       <div class="kpi"><div class="kpi__label">Monthly Rig Cost</div><div class="kpi__val">$${Math.round(moCost).toLocaleString()}/mo</div><div class="kpi__sub">${r.cloudHr > 0 ? 'On-demand cloud GPU' : amort + '-mo amort + power'}</div></div>
     `;
-    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; At <strong>${conc} concurrent stream${conc>1?'s':''}</strong> on ${r.name}, <strong>${winner}</strong> is the optimal engine (${fits ? 'model fits cleanly in ' + r.vram + 'GB VRAM' : 'warning — ' + mSz + 'B INT4 exceeds ' + r.vram + 'GB VRAM; step down model size or add a GPU'}). Monthly operating cost is <strong>$${Math.round(moCost).toLocaleString()}/mo</strong>.`;
+    $('verdict').innerHTML = `<strong>Verdict</strong>. At <strong>${conc} concurrent stream${conc>1?'s':''}</strong> on ${r.name}, <strong>${winner}</strong> is the optimal engine (${fits ? 'model fits cleanly in ' + r.vram + 'GB VRAM' : 'warning. ' + mSz + 'B INT4 exceeds ' + r.vram + 'GB VRAM; step down model size or add a GPU'}). Monthly operating cost is <strong>$${Math.round(moCost).toLocaleString()}/mo</strong>.`;
 
     const rows = [
       { name: 'vLLM (PagedAttention + Continuous Batching)', agg: Math.round(vllmAgg), pu: vllmPerUser.toFixed(1), p95: vllmP95.toFixed(1) + 's', cost: moCost, hi: winner === 'vLLM' },
@@ -325,9 +325,9 @@ export CLAUDE_MAX_USD=5.00</code></pre>
     var badge = $('s13EchoBadge');
     var pBtn = $('s13PrimaryBtn');
     var postBtn = $('s13PostBtn');
-    if (badge) badge.textContent = `${r.name} at ${conc}x concurrency — ${winner} wins (${Math.round(vllmAgg)} tok/s, $${Math.round(moCost)}/mo)`;
-    if (pBtn) pBtn.textContent = `Pair Local ${winner} with Cloud Spend Guards — $29 →`;
-    if (postBtn) postBtn.textContent = `Get Claude Code Pack — $29 →`;
+    if (badge) badge.textContent = `${r.name} at ${conc}x concurrency. ${winner} wins (${Math.round(vllmAgg)} tok/s, $${Math.round(moCost)}/mo)`;
+    if (pBtn) pBtn.textContent = `Pair Local ${winner} with Cloud Spend Guards ($29) →`;
+    if (postBtn) postBtn.textContent = `Get Claude Code Pack ($29) →`;
   }
   ['gpuRig','modelSz','conc','hrsDay','kwhRate','amortMo'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
   calc();
@@ -357,7 +357,7 @@ export CLAUDE_MAX_USD=5.00</code></pre>
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       var b = $('s16ProofBanner');
-      if (b) { b.textContent = 'Downloaded ml0x-vllm-vs-ollama-gpu-sizing.md — unlock the full $29 kit below'; b.hidden = false; }
+      if (b) { b.textContent = 'Downloaded ml0x-vllm-vs-ollama-gpu-sizing.md. Get the full $29 kit below'; b.hidden = false; }
       if (typeof gtag === 'function') gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'vllm-vs-ollama-local-gpu-cost', file: 'ml0x-vllm-vs-ollama-gpu-sizing.md' });
     });
   }

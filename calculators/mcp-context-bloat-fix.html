@@ -91,7 +91,7 @@
 @media print{.s12-cro,.s12-post{display:none}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"MCP Context Bloat Fix Calculator","url":"https://ml0x.com/calculators/mcp-context-bloat-fix.html","description":"Measure how global MCP servers bloat your 200K context window and calculate exact token and dollar savings from workspace-scoped .mcp.json profiles.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why do MCP servers cause context bloat in Claude Code?","acceptedAnswer":{"@type":"Answer","text":"Every enabled MCP server registers its full JSON schema (tool name, description, and nested parameters) inside the system prompt on every API turn, consuming 350 to 1,000 tokens per tool."}},{"@type":"Question","name":"Does prompt caching eliminate MCP context bloat?","acceptedAnswer":{"@type":"Answer","text":"Prompt caching cuts the dollar cost of re-reading schemas by 90%, yet the tokens still occupy your 200K context window and degrade tool-selection accuracy."}},{"@type":"Question","name":"How many MCP tools should be active in a single workspace?","acceptedAnswer":{"@type":"Answer","text":"Keep 8 to 15 high-leverage tools active per workspace. That caps schema overhead under 7K tokens (3.5% of context) while keeping tool calls sharp."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why do MCP servers cause context bloat in Claude Code?","acceptedAnswer":{"@type":"Answer","text":"Every enabled MCP server registers its full JSON schema (tool name, description, and nested parameters) inside the system prompt on every API turn, consuming 350 to 1,000 tokens per tool."}},{"@type":"Question","name":"Does prompt caching eliminate MCP context bloat?","acceptedAnswer":{"@type":"Answer","text":"Prompt caching cuts the dollar cost of re-reading schemas by 90%, yet the tokens still occupy your 200K context window and degrade tool-selection accuracy."}},{"@type":"Question","name":"How many MCP tools should be active in a single workspace?","acceptedAnswer":{"@type":"Answer","text":"Keep 8 to 15 high-impact tools active per workspace. That caps schema overhead under 7K tokens (3.5% of context) while keeping tool calls sharp."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"MCP Context Bloat Fix Calculator","item":"https://ml0x.com/calculators/mcp-context-bloat-fix.html"}]}</script>
 <script src="/site-analytics.js?v=1126m" defer></script>
 <link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
@@ -120,7 +120,7 @@
   <h1>MCP Context Bloat Fix Calculator</h1>
   <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s16-mcp-context-bloat-fix" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
 
-  <p>Installing 8 or 10 global MCP servers silently injects 30K to 60K JSON schema tokens before you even type a prompt. Use this interactive calculator to measure your <strong>MCP context bloat</strong> and see how much headroom workspace-scoped <code>.mcp.json</code> profiles recover.</p>
+  <p>Installing 8 or 10 global MCP servers silently injects 30K to 60K JSON schema tokens before you even type a prompt. Use this interactive calculator to measure your MCP context bloat and see how much headroom workspace-scoped <code>.mcp.json</code> profiles recover.</p>
 
   <section id="calculator">
     <h2>Interactive calculator</h2>
@@ -147,11 +147,11 @@
 
     <aside class="s12-cro" data-cro="sprint16-ml0x-primary" data-mr-placement="s16_calc_mcp-context-bloat-fix" aria-label="ml0x Engineering Kit">
       <div class="s12-cro__tag" id="s16TierTag">Most Popular &middot; $29 Once</div>
-      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust controls above to customize</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready. Adjust controls above to customize.</div>
       
-      <p class="s12-cro__lead" id="s16CroLead"><strong>Fix MCP context bloat in 5 minutes.</strong> Pair workspace-scoped <code>.mcp.json</code> profiles with <code>cost_guard.py</code> and lean <code>CLAUDE.md</code> CLI-first rules from the $29 Claude Code Workflow Pack.</p>
-      <p class="s13-who" id="s16CroWho"><strong>Built for</strong> developers running multiple MCP servers who want fast tool selection, clean 200K headroom, and lower monthly Claude bills.</p>
-      <p class="s13-files" id="s16CroFiles"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s12-cro__lead" id="s16CroLead">Fix MCP context bloat in 5 minutes. Pair workspace-scoped <code>.mcp.json</code> profiles with <code>cost_guard.py</code> and lean <code>CLAUDE.md</code> CLI-first rules from the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who" id="s16CroWho">Built for developers running multiple MCP servers who want fast tool selection, clean 200K headroom, and lower monthly Claude bills.</p>
+      <p class="s13-files" id="s16CroFiles">Instant 10s download. <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
       <div class="s16-diff-wrap" data-cro="sprint16-diff-table">
         <p class="s16-diff-title">Free Sample vs Full $29 Pack</p>
         <table class="s16-diff-table">
@@ -165,16 +165,16 @@
           </tbody>
         </table>
       </div>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
       <div class="s16-sample-wrap" data-cro="sprint16-sample-bar">
         <button type="button" class="s16-sample-btn" id="s16SampleBtn" data-sample-download="ml0x-mcp-context-bloat-fix.md">&#8595; Download Free MCP Context Bloat Fix Guide (.md, instant)</button>
-        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-mcp-context-bloat-fix.md &mdash; unlock the full production kit below</div>
+        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-mcp-context-bloat-fix.md . Get the full production kit below</div>
       </div>
-      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_mcp-context-bloat-fix" data-cta="s16_buy_mcp-context-bloat-fix">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
-      <p class="s12-cro__alts">Explore the full ml0x engineering ladder &mdash; <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_mcp-context-bloat-fix" data-cta="s16_buy_mcp-context-bloat-fix">Download Claude Code Workflow Pack ($29) &rarr;</button>
+      <p class="s12-cro__alts">Explore the full ml0x engineering ladder. <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
         <summary id="s16PrevSummary">Preview exact CLI-first &amp; MCP scoping lines inside the $29 Pack</summary>
-        <pre class="s13-preview"><code id="s16PrevCode"># .mcp.json (Project-Local Lean Profile — Keep Under 15 Tools)
+        <pre class="s13-preview"><code id="s16PrevCode"># .mcp.json (Project-Local Lean Profile. Keep Under 15 Tools)
 # Disable global GitHub, Postgres, and Playwright MCP servers when CLI suffices
 export CLAUDE_MAX_USD=5.00
 python3 .claude/hooks/cost_guard.py --check-spend
@@ -182,9 +182,9 @@ python3 .claude/hooks/cost_guard.py --check-spend
 # CLAUDE.md (CLI-First Rule)
 - Use gh, rg, jq, and psql via Bash instead of loading heavy MCP wrappers</code></pre>
         <ul>
-          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
-          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
-          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong>. PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong>. <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong>. Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
         </ul>
       </details>
     </aside>
@@ -194,33 +194,33 @@ python3 .claude/hooks/cost_guard.py --check-spend
     <h2>3 steps to fix MCP context bloat immediately</h2>
     <div class="playbook">
       <ol>
-      <li><strong>Audit active tool count with /context</strong> &mdash; Any project loading over 25 MCP tools is burning 12K+ tokens on tool schemas alone before reading a single source file.</li>
-      <li><strong>Move global servers into project .mcp.json</strong> &mdash; Keep global MCP config empty and enable only the 1 or 2 servers each repository actually requires.</li>
-      <li><strong>Prefer native CLIs over MCP wrappers</strong> &mdash; Tools like <code>gh</code>, <code>git</code>, <code>rg</code>, and <code>psql</code> cost 0 schema tokens and execute faster than JSON-RPC MCP bridges.</li>
+      <li><strong>Audit active tool count with /context</strong>. Any project loading over 25 MCP tools is burning 12K+ tokens on tool schemas alone before reading a single source file.</li>
+      <li><strong>Move global servers into project .mcp.json</strong>. Keep global MCP config empty and enable only the 1 or 2 servers each repository actually requires.</li>
+      <li><strong>Prefer native CLIs over MCP wrappers</strong>. Tools like <code>gh</code>, <code>git</code>, <code>rg</code>, and <code>psql</code> cost 0 schema tokens and execute faster than JSON-RPC MCP bridges.</li>
       </ol>
     </div>
   </section>
 
   <section id="faq">
-    <h2>Frequently asked questions</h2>
+    <h2>Common questions</h2>
     <div class="faq-item"><h3>Why do MCP servers cause context bloat in Claude Code?</h3><p>Every enabled MCP server registers its full JSON schema (tool name, description, and nested parameters) inside the system prompt on every API turn, consuming 350 to 1,000 tokens per tool.</p></div>
     <div class="faq-item"><h3>Does prompt caching eliminate MCP context bloat?</h3><p>Prompt caching cuts the dollar cost of re-reading schemas by 90%, yet the tokens still occupy your 200K context window and degrade tool-selection accuracy.</p></div>
-    <div class="faq-item"><h3>How many MCP tools should be active in a single workspace?</h3><p>Keep 8 to 15 high-leverage tools active per workspace. That caps schema overhead under 7K tokens (3.5% of context) while keeping tool calls sharp.</p></div>
+    <div class="faq-item"><h3>How many MCP tools should be active in a single workspace?</h3><p>Keep 8 to 15 high-impact tools active per workspace. That caps schema overhead under 7K tokens (3.5% of context) while keeping tool calls sharp.</p></div>
   </section>
 
   <aside class="s12-post" data-cro="sprint16-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Reclaim 20K+ context tokens and cap every coding session</p>
     <p class="s12-post__desc">Drop in lean CLAUDE.md templates, cost_guard.py, and 8 slash commands from the $29 Claude Code Pack.</p>
-    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_mcp-context-bloat-fix" data-cta="s16_post_mcp-context-bloat-fix">Get Claude Code Pack &mdash; $29 &rarr;</button>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_mcp-context-bloat-fix" data-cta="s16_post_mcp-context-bloat-fix">Get Claude Code Pack ($29) &rarr;</button>
   </aside>
 
   <section id="related">
     <h2>Related AI cost &amp; workflow calculators</h2>
     <ul>
-      <li><a href="/calculators/mcp-tool-schema-token-overhead.html">MCP tool schema token overhead</a> &mdash; Calculate raw JSON schema token burn across servers.</li>
-      <li><a href="/calculators/context-window-rot-cost-calculator.html">Context window rot cost calculator</a> &mdash; See how bloated context increases rework turns.</li>
-      <li><a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit wizard</a> &mdash; Audit total annual waste across your entire AI coding stack.</li>
+      <li><a href="/calculators/mcp-tool-schema-token-overhead.html">MCP tool schema token overhead</a>. Calculate raw JSON schema token burn across servers.</li>
+      <li><a href="/calculators/context-window-rot-cost-calculator.html">Context window rot cost calculator</a>. See how bloated context increases rework turns.</li>
+      <li><a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit wizard</a>. Audit total annual waste across your entire AI coding stack.</li>
     </ul>
   </section>
 
@@ -297,7 +297,7 @@ python3 .claude/hooks/cost_guard.py --check-spend
       <div class="kpi"><div class="kpi__label">Current Monthly Tax</div><div class="kpi__val">$${curCost.toFixed(0)}/mo</div><div class="kpi__sub">Sonnet 4 at ${Math.round(cache*100)}% cache</div></div>
       <div class="kpi kpi--ok"><div class="kpi__label">Monthly Savings</div><div class="kpi__val">$${saveMo.toFixed(0)}/mo</div><div class="kpi__sub">$${(saveMo*12).toFixed(0)}/yr per engineer</div></div>
     `;
-    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; Moving from ${curTools} global MCP tools to ${need} workspace-scoped tools reclaims <strong>${(reclaimedTok/1000).toFixed(1)}K tokens</strong> (${(reclaimedTok/2000).toFixed(1)}% of your 200K window) on every turn and saves <strong>$${(saveMo*12).toFixed(0)}/yr</strong> per developer.`;
+    $('verdict').innerHTML = `<strong>Verdict</strong>. Moving from ${curTools} global MCP tools to ${need} workspace-scoped tools reclaims <strong>${(reclaimedTok/1000).toFixed(1)}K tokens</strong> (${(reclaimedTok/2000).toFixed(1)}% of your 200K window) on every turn and saves <strong>$${(saveMo*12).toFixed(0)}/yr</strong> per developer.`;
 
     const rows = [
       { name: 'Global MCP Install (' + srv + ' servers)', t: curTools, tok: curTok, cost: curCost, hi: true },
@@ -309,9 +309,9 @@ python3 .claude/hooks/cost_guard.py --check-spend
     var badge = $('s13EchoBadge');
     var pBtn = $('s13PrimaryBtn');
     var postBtn = $('s13PostBtn');
-    if (badge) badge.textContent = `Reclaim ${(reclaimedTok/1000).toFixed(1)}K tokens/turn — cut MCP tax by $${saveMo.toFixed(0)}/mo`;
-    if (pBtn) pBtn.textContent = `Reclaim ${(reclaimedTok/1000).toFixed(1)}K Tokens with Claude Code Pack — $29 →`;
-    if (postBtn) postBtn.textContent = `Fix MCP Bloat & Cap Spend — $29 →`;
+    if (badge) badge.textContent = `Reclaim ${(reclaimedTok/1000).toFixed(1)}K tokens/turn. cut MCP tax by $${saveMo.toFixed(0)}/mo`;
+    if (pBtn) pBtn.textContent = `Reclaim ${(reclaimedTok/1000).toFixed(1)}K Tokens with Claude Code Pack ($29) →`;
+    if (postBtn) postBtn.textContent = `Fix MCP Bloat & Cap Spend ($29) →`;
   }
   ['globalSrv','toolsPerSrv','tokSchema','neededTools','turnsDay','cacheHit'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
   calc();
@@ -341,7 +341,7 @@ python3 .claude/hooks/cost_guard.py --check-spend
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       var b = $('s16ProofBanner');
-      if (b) { b.textContent = 'Downloaded ml0x-mcp-context-bloat-fix.md — unlock the full $29 Claude Code Pack below'; b.hidden = false; }
+      if (b) { b.textContent = 'Downloaded ml0x-mcp-context-bloat-fix.md. Get the full $29 Claude Code Pack below'; b.hidden = false; }
       if (typeof gtag === 'function') gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'mcp-context-bloat-fix', file: 'ml0x-mcp-context-bloat-fix.md' });
     });
   }

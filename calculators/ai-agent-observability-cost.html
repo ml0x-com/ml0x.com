@@ -120,7 +120,7 @@
   <h1>AI Agent Observability Cost Calculator</h1>
   <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s16-ai-agent-observability-cost" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
 
-  <p>Multi-step AI agents emit 8 to 30 nested traces per run. At scale, SaaS observability bills can quietly exceed <strong>20% of your LLM token spend</strong>. Model trace volume, payload size, and retention across LangSmith, Langfuse Cloud, Datadog LLM, and self-hosted OpenTelemetry below.</p>
+  <p>Multi-step AI agents emit 8 to 30 nested traces per run. At scale, SaaS observability bills can quietly exceed 20% of your LLM token spend. Model trace volume, payload size, and retention across LangSmith, Langfuse Cloud, Datadog LLM, and self-hosted OpenTelemetry below.</p>
 
   <section id="calculator">
     <h2>Interactive calculator</h2>
@@ -147,11 +147,11 @@
 
     <aside class="s12-cro" data-cro="sprint16-ml0x-primary" data-mr-placement="s16_calc_ai-agent-observability-cost" aria-label="ml0x Engineering Kit">
       <div class="s12-cro__tag" id="s16TierTag">Most Popular &middot; $29 Once</div>
-      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust controls above to customize</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready. Adjust controls above to customize.</div>
       
-      <p class="s12-cro__lead" id="s16CroLead"><strong>Stop paying SaaS trace overages for noisy debug spans.</strong> Pair local JSONL spend logging in <code>cost_guard.py</code> with deterministic guard hooks from the $29 Claude Code Workflow Pack.</p>
-      <p class="s13-who" id="s16CroWho"><strong>Built for</strong> AI platform engineers controlling both LLM token burn and SaaS observability overages across production agents.</p>
-      <p class="s13-files" id="s16CroFiles"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s12-cro__lead" id="s16CroLead">Stop paying SaaS trace overages for noisy debug spans. Pair local JSONL spend logging in <code>cost_guard.py</code> with deterministic guard hooks from the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who" id="s16CroWho">Built for AI platform engineers controlling both LLM token burn and SaaS observability overages across production agents.</p>
+      <p class="s13-files" id="s16CroFiles">Instant 10s download. <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
       <div class="s16-diff-wrap" data-cro="sprint16-diff-table">
         <p class="s16-diff-title">Free Sample vs Full $29 Pack</p>
         <table class="s16-diff-table">
@@ -165,13 +165,13 @@
           </tbody>
         </table>
       </div>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
       <div class="s16-sample-wrap" data-cro="sprint16-sample-bar">
         <button type="button" class="s16-sample-btn" id="s16SampleBtn" data-sample-download="ml0x-agent-observability-cost-audit.md">&#8595; Download Free Observability Cost Audit (.md, instant)</button>
-        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-agent-observability-cost-audit.md &mdash; unlock the full production kit below</div>
+        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-agent-observability-cost-audit.md . Get the full production kit below</div>
       </div>
-      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-agent-observability-cost" data-cta="s16_buy_ai-agent-observability-cost">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
-      <p class="s12-cro__alts">Explore the full ml0x engineering ladder &mdash; <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-agent-observability-cost" data-cta="s16_buy_ai-agent-observability-cost">Download Claude Code Workflow Pack ($29) &rarr;</button>
+      <p class="s12-cro__alts">Explore the full ml0x engineering ladder. <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
         <summary id="s16PrevSummary">Preview zero-SaaS local spend logging &amp; guard hook lines</summary>
         <pre class="s13-preview"><code id="s16PrevCode"># Local Zero-SaaS Spend Telemetry (cost_guard.py excerpt)
@@ -179,9 +179,9 @@
 export CLAUDE_MAX_USD=5.00
 python3 .claude/hooks/cost_guard.py --check-spend</code></pre>
         <ul>
-          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
-          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
-          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong>. PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong>. <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong>. Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
         </ul>
       </details>
     </aside>
@@ -191,15 +191,15 @@ python3 .claude/hooks/cost_guard.py --check-spend</code></pre>
     <h2>3 ways to keep AI observability under 8% of LLM spend</h2>
     <div class="playbook">
       <ol>
-      <li><strong>Sample 100% of errors, 15% of healthy runs</strong> &mdash; Tracing every successful routine turn inflates span counts 6x without improving incident response.</li>
-      <li><strong>Strip raw RAG chunks from span attributes</strong> &mdash; Store document IDs and token counts instead of 50KB raw text payloads to avoid ingestion GB overages.</li>
-      <li><strong>Use local hooks for spend caps, not SaaS alerts</strong> &mdash; Cloud trace dashboards alert minutes after a loop drains $80; local PreToolUse hooks halt it on turn one.</li>
+      <li><strong>Sample 100% of errors, 15% of healthy runs</strong>. Tracing every successful routine turn inflates span counts 6x without improving incident response.</li>
+      <li><strong>Strip raw RAG chunks from span attributes</strong>. Store document IDs and token counts instead of 50KB raw text payloads to avoid ingestion GB overages.</li>
+      <li><strong>Use local hooks for spend caps, not SaaS alerts</strong>. Cloud trace dashboards alert minutes after a loop drains $80; local PreToolUse hooks halt it on turn one.</li>
       </ol>
     </div>
   </section>
 
   <section id="faq">
-    <h2>Frequently asked questions</h2>
+    <h2>Common questions</h2>
     <div class="faq-item"><h3>What is a healthy observability-to-LLM spend ratio?</h3><p>Aim to keep LLM tracing and observability under 8% to 12% of your monthly model token bill. Above 15%, enable head-based sampling or self-host ClickHouse + OpenTelemetry.</p></div>
     <div class="faq-item"><h3>Why do multi-agent workflows trigger surprise LangSmith or Datadog bills?</h3><p>A single user prompt can fan out into 15 to 30 nested tool and subagent spans, multiplying trace volume and ingested gigabytes far faster than raw request counts.</p></div>
     <div class="faq-item"><h3>When should a team self-host Langfuse or OpenTelemetry?</h3><p>Once monthly SaaS tracing exceeds $350 to $500/mo, a single $60/mo VPS running self-hosted Langfuse or OTel + ClickHouse pays back immediately.</p></div>
@@ -208,16 +208,16 @@ python3 .claude/hooks/cost_guard.py --check-spend</code></pre>
   <aside class="s12-post" data-cro="sprint16-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Cap runaway loops locally instead of paying SaaS trace overages</p>
     <p class="s12-post__desc">Drop in cost_guard.py, local spend logging, and 5 lean CLAUDE.md templates for $29 once.</p>
-    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-agent-observability-cost" data-cta="s16_post_ai-agent-observability-cost">Get Claude Code Pack &mdash; $29 &rarr;</button>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-agent-observability-cost" data-cta="s16_post_ai-agent-observability-cost">Get Claude Code Pack ($29) &rarr;</button>
   </aside>
 
   <section id="related">
     <h2>Related AI cost &amp; workflow calculators</h2>
     <ul>
-      <li><a href="/calculators/agent-loop-runaway-cost-calculator.html">Agent loop runaway cost calculator</a> &mdash; Model quadratic token burn in uncapped agent loops.</li>
-      <li><a href="/calculators/multi-agent-orchestration-cost.html">Multi-agent orchestration cost</a> &mdash; Estimate parallel subagent fan-out token budgets.</li>
-      <li><a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit wizard</a> &mdash; Audit total annual waste across your entire AI stack.</li>
+      <li><a href="/calculators/agent-loop-runaway-cost-calculator.html">Agent loop runaway cost calculator</a>. Model quadratic token burn in uncapped agent loops.</li>
+      <li><a href="/calculators/multi-agent-orchestration-cost.html">Multi-agent orchestration cost</a>. Estimate parallel subagent fan-out token budgets.</li>
+      <li><a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit wizard</a>. Audit total annual waste across your entire AI stack.</li>
     </ul>
   </section>
 
@@ -293,7 +293,7 @@ python3 .claude/hooks/cost_guard.py --check-spend</code></pre>
       <div class="kpi kpi--ok"><div class="kpi__label">Langfuse Cloud</div><div class="kpi__val">$${Math.round(langfuse).toLocaleString()}/mo</div><div class="kpi__sub">${((langfuse/llm)*100).toFixed(1)}% of LLM bill</div></div>
       <div class="kpi kpi--ok"><div class="kpi__label">Self-Hosted OTel</div><div class="kpi__val">$${Math.round(selfHost)}/mo</div><div class="kpi__sub">Saves $${Math.max(0, Math.round(langsmith - selfHost)).toLocaleString()}/mo vs LangSmith</div></div>
     `;
-    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; Your agent stack emits <strong>${(totalSpans/1000).toFixed(0)}K spans/mo (${gbMonth.toFixed(1)} GB)</strong>. ${lsRatio > 15 ? 'SaaS tracing exceeds 15% of your LLM bill — cut sampling to 20% for healthy runs or move to Langfuse Cloud / self-hosted OTel to save up to <strong>$' + Math.max(0, Math.round((langsmith - selfHost)*12)).toLocaleString() + '/yr</strong>.' : 'Your observability overhead is well balanced against your underlying LLM spend.'}`;
+    $('verdict').innerHTML = `<strong>Verdict</strong>. Your agent stack emits <strong>${(totalSpans/1000).toFixed(0)}K spans/mo (${gbMonth.toFixed(1)} GB)</strong>. ${lsRatio > 15 ? 'SaaS tracing exceeds 15% of your LLM bill. cut sampling to 20% for healthy runs or move to Langfuse Cloud / self-hosted OTel to save up to <strong>$' + Math.max(0, Math.round((langsmith - selfHost)*12)).toLocaleString() + '/yr</strong>.' : 'Your observability overhead is well balanced against your underlying LLM spend.'}`;
 
     const rows = [
       { name: 'LangSmith Plus (' + seats + ' seats + spans)', c: langsmith, hi: false },
@@ -306,9 +306,9 @@ python3 .claude/hooks/cost_guard.py --check-spend</code></pre>
     var badge = $('s13EchoBadge');
     var pBtn = $('s13PrimaryBtn');
     var postBtn = $('s13PostBtn');
-    if (badge) badge.textContent = `${(totalSpans/1000).toFixed(0)}K spans/mo — save up to $${Math.max(0, Math.round(langsmith - selfHost)).toLocaleString()}/mo with lean tracing`;
-    if (pBtn) pBtn.textContent = `Add Zero-SaaS Local Spend Guards — $29 →`;
-    if (postBtn) postBtn.textContent = `Get Claude Code Pack — $29 →`;
+    if (badge) badge.textContent = `${(totalSpans/1000).toFixed(0)}K spans/mo. save up to $${Math.max(0, Math.round(langsmith - selfHost)).toLocaleString()}/mo with lean tracing`;
+    if (pBtn) pBtn.textContent = `Add Zero-SaaS Local Spend Guards ($29) →`;
+    if (postBtn) postBtn.textContent = `Get Claude Code Pack ($29) →`;
   }
   ['runsK','spansRun','payloadKb','llmBill','samplePct','seatsObs'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
   calc();
@@ -339,7 +339,7 @@ python3 .claude/hooks/cost_guard.py --check-spend</code></pre>
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       setTimeout(() => URL.revokeObjectURL(url), 1000);
       var b = $('s16ProofBanner');
-      if (b) { b.textContent = 'Downloaded ml0x-agent-observability-cost-audit.md — unlock the full $29 kit below'; b.hidden = false; }
+      if (b) { b.textContent = 'Downloaded ml0x-agent-observability-cost-audit.md. Get the full $29 kit below'; b.hidden = false; }
       if (typeof gtag === 'function') gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'ai-agent-observability-cost', file: 'ml0x-agent-observability-cost-audit.md' });
     });
   }

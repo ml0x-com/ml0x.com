@@ -91,7 +91,7 @@
 @media print{.s12-cro,.s12-post{display:none}}
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AI Stack Cost Audit Wizard","url":"https://ml0x.com/calculators/ai-stack-cost-audit.html","description":"Audit your AI coding stack in 15 seconds. Enter team size, agent, and monthly spend to calculate annual waste and download a custom report.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the AI Stack Cost Audit estimate annual waste?","acceptedAnswer":{"@type":"Answer","text":"It combines published 2026 token pricing with empirical waste shares across four levers &mdash; prompt cache misses, MCP and CLAUDE.md prefix bloat, unnecessary Opus or o3 over-routing, and uncapped retry loops."}},{"@type":"Question","name":"How are the $9, $29, and $99 ml0x tiers recommended?","acceptedAnswer":{"@type":"Answer","text":"Solo infra builders under $250/mo are matched to the $9 ML Systems Cheatsheet Pack, active coding-agent devs and small teams up to $1,500/mo get the $29 Claude Code Workflow Pack, and larger or multi-agent teams get the $99 ml0x Agent Pipeline."}},{"@type":"Question","name":"Is my team spend or stack data sent to any server?","acceptedAnswer":{"@type":"Answer","text":"No. The audit math and personalized Markdown report Blob download execute 100% locally inside your browser with zero external requests."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does the AI Stack Cost Audit estimate annual waste?","acceptedAnswer":{"@type":"Answer","text":"It combines published 2026 token pricing with empirical waste shares across four levers (prompt cache misses, MCP and CLAUDE.md prefix bloat, unnecessary Opus or o3 over-routing, and uncapped retry loops)."}},{"@type":"Question","name":"How are the $9, $29, and $99 ml0x tiers recommended?","acceptedAnswer":{"@type":"Answer","text":"Solo infra builders under $250/mo are matched to the $9 ML Systems Cheatsheet Pack, active coding-agent devs and small teams up to $1,500/mo get the $29 Claude Code Workflow Pack, and larger or multi-agent teams get the $99 ml0x Agent Pipeline."}},{"@type":"Question","name":"Is my team spend or stack data sent to any server?","acceptedAnswer":{"@type":"Answer","text":"No. The audit math and personalized Markdown report Blob download execute 100% locally inside your browser with zero external requests."}}]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"AI Stack Cost Audit Wizard","item":"https://ml0x.com/calculators/ai-stack-cost-audit.html"}]}</script>
 <script src="/site-analytics.js?v=1126m" defer></script>
 <link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
@@ -120,15 +120,15 @@
   <h1>AI Stack Cost Audit Wizard</h1>
   <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s16-ai-stack-cost-audit" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
 
-  <p>Answer three quick inputs below &mdash; team size, primary coding agent or LLM, and monthly API spend &mdash; to surface your exact <strong>annual AI stack waste</strong>, see which waste lever burns the most cash, and download a personalized Markdown audit report with the exact ml0x kit tier ($9, $29, or $99) matched to your spend.</p>
+  <p>Answer three quick inputs below (team size, primary coding agent or LLM, and monthly API spend) to surface your exact annual AI stack waste, see which waste lever burns the most cash, and download a personalized Markdown audit report with the exact ml0x kit tier ($9, $29, or $99) matched to your spend.</p>
 
   <section id="calculator">
     <h2>3-step interactive AI stack audit</h2>
     <div class="tool">
       <div class="grid">
         
-        <div class="field"><label for="teamSize">Step 1 &mdash; Team size (engineers) <span class="val-pill" id="teamSizeVal">4</span></label><input id="teamSize" type="range" min="1" max="50" step="1" value="4"></div>
-        <div class="field"><label for="primaryStack">Step 2 &mdash; Primary coding agent / LLM</label><select id="primaryStack">
+        <div class="field"><label for="teamSize">Step 1, Team size (engineers) <span class="val-pill" id="teamSizeVal">4</span></label><input id="teamSize" type="range" min="1" max="50" step="1" value="4"></div>
+        <div class="field"><label for="primaryStack">Step 2, Primary coding agent / LLM</label><select id="primaryStack">
           <option value="claude_sonnet" selected>Claude Code (Sonnet 4 primary)</option>
           <option value="claude_opus">Claude Code (Opus 4 heavy)</option>
           <option value="cursor_ultra">Cursor Pro / Ultra + API overages</option>
@@ -136,7 +136,7 @@
           <option value="codex_o3">OpenAI Codex CLI / o3</option>
           <option value="multi_agent">Multi-Agent Autonomous Pipeline</option>
         </select></div>
-        <div class="field"><label for="monthlySpend">Step 3 &mdash; Monthly API spend (USD) <span class="val-pill" id="monthlySpendVal">$1,200</span></label><input id="monthlySpend" type="range" min="100" max="15000" step="50" value="1200"></div>
+        <div class="field"><label for="monthlySpend">Step 3, Monthly API spend (USD) <span class="val-pill" id="monthlySpendVal">$1,200</span></label><input id="monthlySpend" type="range" min="100" max="15000" step="50" value="1200"></div>
         
       </div>
       <div class="kpi-grid" id="kpis"></div>
@@ -151,15 +151,15 @@
 
     <aside class="s12-cro" data-cro="sprint16-ml0x-primary" data-mr-placement="s16_calc_ai-stack-cost-audit" aria-label="ml0x Engineering Kit">
       <div class="s12-cro__tag" id="s16TierTag">Recommended Kit Tier &middot; Auto-Matched to Your Audit</div>
-      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust controls above to customize</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready. Adjust controls above to customize.</div>
       <div class="s16-tier-pills" role="group" aria-label="Recommended kit tier">
         <button type="button" class="s16-tier-pill" data-tier="cs9" aria-pressed="false">$9 Cheatsheets</button>
         <button type="button" class="s16-tier-pill" data-tier="cc29" aria-pressed="true">$29 Claude Code Pack</button>
         <button type="button" class="s16-tier-pill" data-tier="pl99" aria-pressed="false">$99 ml0x Pipeline</button>
       </div>
-      <p class="s12-cro__lead" id="s16CroLead"><strong>Stop donating 35% to 55% of your AI budget to cache misses, bloated MCP prefixes, and uncapped retries.</strong> Your audit auto-selects the exact $9, $29, or $99 ml0x kit built for your team scale.</p>
-      <p class="s13-who" id="s16CroWho"><strong>Built for</strong> engineering teams and solo builders running Claude Code, Cursor, or multi-agent pipelines who want hard spend caps and reproducible templates.</p>
-      <p class="s13-files" id="s16CroFiles"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <p class="s12-cro__lead" id="s16CroLead">Stop donating 35% to 55% of your AI budget to cache misses, bloated MCP prefixes, and uncapped retries. Your audit auto-selects the exact $9, $29, or $99 ml0x kit built for your team scale.</p>
+      <p class="s13-who" id="s16CroWho">Built for engineering teams and solo builders running Claude Code, Cursor, or multi-agent pipelines who want hard spend caps and reproducible templates.</p>
+      <p class="s13-files" id="s16CroFiles">Instant 10s download. <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
       <div class="s16-diff-wrap" data-cro="sprint16-diff-table">
         <p class="s16-diff-title">Free Sample vs Full $29 Pack</p>
         <table class="s16-diff-table">
@@ -173,13 +173,13 @@
           </tbody>
         </table>
       </div>
-      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
       <div class="s16-sample-wrap" data-cro="sprint16-sample-bar">
         <button type="button" class="s16-sample-btn" id="s16SampleBtn" data-sample-download="ml0x-ai-stack-cost-audit-report.md">&#8595; Download Your Personalized AI Stack Audit Report (.md, instant)</button>
-        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-ai-stack-cost-audit-report.md &mdash; unlock the full production kit below</div>
+        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-ai-stack-cost-audit-report.md . Get the full production kit below</div>
       </div>
-      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-stack-cost-audit" data-cta="s16_buy_ai-stack-cost-audit">Download Recommended Pack &mdash; $29 &rarr;</button>
-      <p class="s12-cro__alts">Explore the full ml0x engineering ladder &mdash; <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-stack-cost-audit" data-cta="s16_buy_ai-stack-cost-audit">Download Recommended Pack ($29) &rarr;</button>
+      <p class="s12-cro__alts">Explore the full ml0x engineering ladder. <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
       <details>
         <summary id="s16PrevSummary">Preview exact files &amp; guard lines inside your recommended kit</summary>
         <pre class="s13-preview"><code id="s16PrevCode"># .claude/hooks/cost_guard.py (Auto-halts runaway turns at your dollar cap)
@@ -190,9 +190,9 @@ python3 .claude/hooks/cost_guard.py --check-spend
 - Default model is sonnet-4; escalate to opus-4 only on /plan or multi-file refactors
 - Keep static system prefix pinned for 90% Anthropic prompt cache hit rates</code></pre>
         <ul>
-          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
-          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
-          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong>. PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong>. <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong>. Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
         </ul>
       </details>
     </aside>
@@ -202,16 +202,16 @@ python3 .claude/hooks/cost_guard.py --check-spend
     <h2>How to eliminate your audited AI stack waste in 48 hours</h2>
     <div class="playbook">
       <ol>
-      <li><strong>Pin your static prompt prefix</strong> &mdash; Move dynamic timestamps and git status outputs out of system prompts so Anthropic and OpenAI prompt caching stays above 85%.</li>
-      <li><strong>Scope MCP servers per repository</strong> &mdash; Replace global 50-tool MCP installs with project-local <code>.mcp.json</code> profiles under 15 active tools to recover 15K to 30K tokens per turn.</li>
-      <li><strong>Enforce hard dollar caps per session</strong> &mdash; Attach a PreToolUse spend hook (<code>cost_guard.py</code>) so stuck agent retry loops exit cleanly before burning $40 overnight.</li>
+      <li><strong>Pin your static prompt prefix</strong>. Move dynamic timestamps and git status outputs out of system prompts so Anthropic and OpenAI prompt caching stays above 85%.</li>
+      <li><strong>Scope MCP servers per repository</strong>. Replace global 50-tool MCP installs with project-local <code>.mcp.json</code> profiles under 15 active tools to recover 15K to 30K tokens per turn.</li>
+      <li><strong>Enforce hard dollar caps per session</strong>. Attach a PreToolUse spend hook (<code>cost_guard.py</code>) so stuck agent retry loops exit cleanly before burning $40 overnight.</li>
       </ol>
     </div>
   </section>
 
   <section id="faq">
-    <h2>Frequently asked questions</h2>
-    <div class="faq-item"><h3>How does the AI Stack Cost Audit estimate annual waste?</h3><p>It combines published 2026 token pricing with empirical waste shares across four levers &mdash; prompt cache misses, MCP and CLAUDE.md prefix bloat, unnecessary Opus or o3 over-routing, and uncapped retry loops.</p></div>
+    <h2>Common questions</h2>
+    <div class="faq-item"><h3>How does the AI Stack Cost Audit estimate annual waste?</h3><p>It combines published 2026 token pricing with empirical waste shares across four levers (prompt cache misses, MCP and CLAUDE.md prefix bloat, unnecessary Opus or o3 over-routing, and uncapped retry loops).</p></div>
     <div class="faq-item"><h3>How are the $9, $29, and $99 ml0x tiers recommended?</h3><p>Solo infra builders under $250/mo are matched to the $9 ML Systems Cheatsheet Pack, active coding-agent devs and small teams up to $1,500/mo get the $29 Claude Code Workflow Pack, and larger or multi-agent teams get the $99 ml0x Agent Pipeline.</p></div>
     <div class="faq-item"><h3>Is my team spend or stack data sent to any server?</h3><p>No. The audit math and personalized Markdown report Blob download execute 100% locally inside your browser with zero external requests.</p></div>
   </section>
@@ -219,16 +219,16 @@ python3 .claude/hooks/cost_guard.py --check-spend
   <aside class="s12-post" data-cro="sprint16-postresult" aria-label="ml0x Engineering Kit">
     <p class="s12-post__title">Turn this audit into hard automated spend caps today</p>
     <p class="s12-post__desc">Drop in the exact guard hooks, lean templates, and budget rules matched to your team size and monthly API bill.</p>
-    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
-    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-stack-cost-audit" data-cta="s16_post_ai-stack-cost-audit">Unlock Your Recommended ml0x Kit &rarr;</button>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as BeLikeNative / AUTOM8 LLC</p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_ai-stack-cost-audit" data-cta="s16_post_ai-stack-cost-audit">Get Your Recommended ml0x Kit &rarr;</button>
   </aside>
 
   <section id="related">
     <h2>Related AI cost &amp; workflow calculators</h2>
     <ul>
-      <li><a href="/calculators/cut-claude-code-bill-50-percent.html">Cut Claude Code bill by 50% calculator</a> &mdash; Model exact savings from Sonnet routing, caching, and compaction.</li>
-      <li><a href="/calculators/mcp-context-bloat-fix.html">MCP context bloat fix calculator</a> &mdash; Quantify how many tokens global MCP tools burn on every turn.</li>
-      <li><a href="/calculators/prompt-caching-architecture-guide.html">Prompt caching architecture guide</a> &mdash; Find your exact 5-minute vs 1-hour cache break-even hit rate.</li>
+      <li><a href="/calculators/cut-claude-code-bill-50-percent.html">Cut Claude Code bill by 50% calculator</a>. Model exact savings from Sonnet routing, caching, and compaction.</li>
+      <li><a href="/calculators/mcp-context-bloat-fix.html">MCP context bloat fix calculator</a>. Quantify how many tokens global MCP tools burn on every turn.</li>
+      <li><a href="/calculators/prompt-caching-architecture-guide.html">Prompt caching architecture guide</a>. Find your exact 5-minute vs 1-hour cache break-even hit rate.</li>
     </ul>
   </section>
 
@@ -325,8 +325,8 @@ python3 .claude/hooks/cost_guard.py --check-spend
       b.setAttribute('aria-pressed', b.getAttribute('data-tier') === key ? 'true' : 'false');
     });
     $('s16TierTag').textContent = t.tag;
-    $('s16CroWho').innerHTML = '<strong>Built for</strong> ' + t.who;
-    $('s16CroFiles').innerHTML = '<strong>Instant 10s download</strong> &mdash; <code>' + t.files + '</code>';
+    $('s16CroWho').innerHTML = 'Built for ' + t.who;
+    $('s16CroFiles').innerHTML = 'Instant 10s download. <code>' + t.files + '</code>';
     $('s16PrevSummary').textContent = t.summary;
     $('s16PrevCode').textContent = t.code;
     const annSave = lastAudit.annWaste ? '$' + Math.round(lastAudit.annWaste).toLocaleString() : '$0';
@@ -334,11 +334,11 @@ python3 .claude/hooks/cost_guard.py --check-spend
     const postBtn = $('s13PostBtn');
     if (pBtn) {
       pBtn.setAttribute('data-checkout', t.url);
-      pBtn.textContent = 'Cut ' + annSave + '/yr Waste with ' + t.name + ' — ' + t.price + ' →';
+      pBtn.textContent = 'Cut ' + annSave + '/yr Waste with ' + t.name + ' (' + t.price + ') →';
     }
     if (postBtn) {
       postBtn.setAttribute('data-checkout', t.url);
-      postBtn.textContent = 'Get ' + t.name + ' — ' + t.price + ' →';
+      postBtn.textContent = 'Get ' + t.name + ' (' + t.price + ') →';
     }
   }
 
@@ -379,7 +379,7 @@ python3 .claude/hooks/cost_guard.py --check-spend
       <div class="kpi kpi--ok"><div class="kpi__label">Recommended Kit Tier</div><div class="kpi__val">${recTier.price}</div><div class="kpi__sub">${recTier.name}</div></div>
     `;
 
-    $('verdict').innerHTML = `<strong>Audit Verdict</strong> &mdash; A ${team}-engineer team spending <strong>$${spend.toLocaleString()}/mo</strong> on ${st.label} typically leaks <strong>$${Math.round(annWaste).toLocaleString()}/yr</strong> (${wastePct.toFixed(0)}%). Recommended kit tier is <strong>${recTier.name} (${recTier.price} once)</strong>, which pays back in under <strong>${Math.max(1, Math.ceil((parseInt(recTier.price.slice(1),10) / Math.max(1, moWaste)) * 30))} days</strong>.`;
+    $('verdict').innerHTML = `<strong>Audit Verdict</strong>. A ${team}-engineer team spending <strong>$${spend.toLocaleString()}/mo</strong> on ${st.label} typically leaks <strong>$${Math.round(annWaste).toLocaleString()}/yr</strong> (${wastePct.toFixed(0)}%). Recommended kit tier is <strong>${recTier.name} (${recTier.price} once)</strong>, which pays back in under <strong>${Math.max(1, Math.ceil((parseInt(recTier.price.slice(1),10) / Math.max(1, moWaste)) * 30))} days</strong>.`;
 
     const levers = [
       { name: 'Prompt Cache Miss Tax (static prefix instability)', cur: cacheW, fix: cacheW * 0.15 },
@@ -393,7 +393,7 @@ python3 .claude/hooks/cost_guard.py --check-spend
     }).join('') + `<tr class="tt"><td>Total Recoverable AI Stack Waste</td><td class="num">$${moWaste.toFixed(0)}</td><td class="num">$${(moWaste*0.15).toFixed(0)}</td><td class="num">$${Math.round(annWaste).toLocaleString()}/yr</td></tr>`;
 
     const badge = $('s13EchoBadge');
-    if (badge) badge.textContent = `Audit complete — $${Math.round(annWaste).toLocaleString()}/yr waste found on ${st.label} · Recommended ${recTier.price} ${recTier.name}`;
+    if (badge) badge.textContent = `Audit complete. $${Math.round(annWaste).toLocaleString()}/yr waste found on ${st.label} · Recommended ${recTier.price} ${recTier.name}`;
     applyTier(recKey);
   }
 
@@ -446,7 +446,7 @@ python3 .claude/hooks/cost_guard.py --check-spend
       setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
       var banner = $('s16ProofBanner');
       if (banner) {
-        banner.textContent = 'Downloaded ml0x-ai-stack-cost-audit-report.md — unlock ' + a.recName + ' (' + a.recPrice + ') below';
+        banner.textContent = 'Downloaded ml0x-ai-stack-cost-audit-report.md. Get ' + a.recName + ' (' + a.recPrice + ') below';
         banner.hidden = false;
       }
       if (typeof gtag === 'function') {
