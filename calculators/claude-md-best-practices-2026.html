@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLAUDE.md Best Practices 2026 Budget Tool | ml0x</title>
+<meta name="description" content="Size your CLAUDE.md line count, @-imported docs, and prompt-cache stability to eliminate prefix bloat and trim monthly Claude Code token spend.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/claude-md-best-practices-2026.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/claude-md-best-practices-2026.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/claude-md-best-practices-2026.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CLAUDE.md Best Practices 2026 Budget Tool">
+<meta property="og:description" content="Size your CLAUDE.md line count, @-imported docs, and prompt-cache stability to eliminate prefix bloat and trim monthly Claude Code token spend.">
+<meta property="og:url" content="https://ml0x.com/calculators/claude-md-best-practices-2026.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CLAUDE.md Best Practices 2026 Budget Tool">
+<meta name="twitter:description" content="Size your CLAUDE.md line count, @-imported docs, and prompt-cache stability to eliminate prefix bloat and trim monthly Claude Code token spend.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc .playbook{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:16px 18px;margin:18px 0}
+.llm-calc .playbook ol{margin:8px 0 0;padding-left:20px;line-height:1.6;font-size:14.5px}
+.llm-calc .playbook li{margin-bottom:8px}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;max-width:100%;width:auto;min-width:260px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:11px 22px;line-height:1.3;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s16-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s16-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s16-sample-btn:hover{background:#F5F5F3}
+.s16-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s16-diff-wrap{margin:12px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.s16-diff-title{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#3F3F46}
+.llm-calc table.s16-diff-table{margin:0;width:100%;font-size:12.5px;table-layout:fixed}
+.llm-calc table.s16-diff-table th,.llm-calc table.s16-diff-table td{padding:7px 9px;word-break:break-word}
+.llm-calc table.s16-diff-table thead th:last-child{background:#1A1A1A;color:#fff}
+.llm-calc table.s16-diff-table td:last-child{background:#FAFAF9}
+.s16-tier-pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.s16-tier-pill{font-family:var(--font-mono);font-size:12px;font-weight:600;padding:7px 12px;border-radius:980px;border:1px solid #D4D4D8;background:#FAFAF9;color:#27272A;cursor:pointer;min-height:36px}
+.s16-tier-pill[aria-pressed="true"]{background:#1A1A1A;color:#fff;border-color:#1A1A1A}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}.s16-sample-btn{width:100%}.llm-calc table.s16-diff-table{font-size:11.5px}.llm-calc table.s16-diff-table th,.llm-calc table.s16-diff-table td{padding:6px 6px}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"CLAUDE.md Best Practices 2026 Budget Tool","url":"https://ml0x.com/calculators/claude-md-best-practices-2026.html","description":"Size your CLAUDE.md line count, @-imported docs, and prompt-cache stability to eliminate prefix bloat and trim monthly Claude Code token spend.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the ideal length for a CLAUDE.md file in 2026?","acceptedAnswer":{"@type":"Answer","text":"Keep root CLAUDE.md between 60 and 150 lines (roughly 900 to 2,200 tokens). Put exact build/test commands and repo conventions at the top, and push deep architecture docs into on-demand files."}},{"@type":"Question","name":"Do @-imported files inside CLAUDE.md hurt prompt caching?","acceptedAnswer":{"@type":"Answer","text":"Static @-imports still cache at 0.10x read rates, yet they permanently eat your 200K context window and trigger cache write penalties whenever any imported file changes."}},{"@type":"Question","name":"Why move style and safety rules from CLAUDE.md into hooks?","acceptedAnswer":{"@type":"Answer","text":"LLMs occasionally ignore prose instructions during long 60-turn sessions. Python hooks like guard_bash.py and format_on_edit.py execute with 100% reliability at zero token cost."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"CLAUDE.md Best Practices 2026 Budget Tool","item":"https://ml0x.com/calculators/claude-md-best-practices-2026.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>CLAUDE.md Best Practices 2026 Budget Tool</span></nav>
+  <h1>CLAUDE.md Best Practices 2026 Budget Tool</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s16-claude-md-best-practices-2026" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Every line in your root <code>CLAUDE.md</code> and its <code>@</code>-imported files is injected into the system prefix on every turn. Use this interactive 2026 budget tool to measure instruction bloat, adherence decay, and monthly token savings from a lean 120-line architecture.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        
+        <div class="field"><label for="mdLines">CLAUDE.md line count <span class="val-pill" id="mdLinesVal">340 lines</span></label><input id="mdLines" type="range" min="40" max="1200" step="20" value="340"></div>
+        <div class="field"><label for="importFiles">@-imported doc files <span class="val-pill" id="importFilesVal">4 files</span></label><input id="importFiles" type="range" min="0" max="15" step="1" value="4"></div>
+        <div class="field"><label for="avgImportTok">Avg tokens per @-import <span class="val-pill" id="avgImportTokVal">1,800</span></label><input id="avgImportTok" type="range" min="400" max="6000" step="200" value="1800"></div>
+        <div class="field"><label for="turnsDay">Daily coding turns <span class="val-pill" id="turnsDayVal">160</span></label><input id="turnsDay" type="range" min="30" max="500" step="10" value="160"></div>
+        <div class="field"><label for="cacheHit">Prompt cache hit rate <span class="val-pill" id="cacheHitVal">85%</span></label><input id="cacheHit" type="range" min="40" max="95" step="5" value="85"></div>
+        <div class="field"><label for="teamDevs">Engineers sharing repo <span class="val-pill" id="teamDevsVal">5</span></label><input id="teamDevs" type="range" min="1" max="30" step="1" value="5"></div>
+        
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>CLAUDE.md Architecture</th><th class='num'>Prefix Tokens</th><th class='num'>Instruction Adherence</th><th class='num'>Monthly Team Tax</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint16-ml0x-primary" data-mr-placement="s16_calc_claude-md-best-practices-2026" aria-label="ml0x Engineering Kit">
+      <div class="s12-cro__tag" id="s16TierTag">Most Popular &middot; $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust controls above to customize</div>
+      
+      <p class="s12-cro__lead" id="s16CroLead"><strong>Skip writing CLAUDE.md rules from scratch.</strong> Get 5 battle-tested, sub-120-line <code>CLAUDE.md</code> templates (TypeScript, Python, Monorepo, Next.js, Research) plus 5 Python guard hooks in the $29 Claude Code Pack.</p>
+      <p class="s13-who" id="s16CroWho"><strong>Built for</strong> developers who want crisp, high-adherence CLAUDE.md files that never trigger instruction drift or cache busts.</p>
+      <p class="s13-files" id="s16CroFiles"><strong>Instant 10s download</strong> &mdash; <code>5 Lean CLAUDE.md Templates + 5 Python Guard Hooks + 8 Slash Commands + 64 Tests</code></p>
+      <div class="s16-diff-wrap" data-cro="sprint16-diff-table">
+        <p class="s16-diff-title">Free Sample vs Full $29 Pack</p>
+        <table class="s16-diff-table">
+          <thead><tr><th>Capability</th><th>Free Sample ($0)</th><th>Full $29 Pack</th></tr></thead>
+          <tbody>
+          <tr><td>CLAUDE.md 2026 audit template</td><td>Included (.md)</td><td><strong>Included + 5 complete stack templates</strong></td></tr>
+          <tr><td>Deterministic hook enforcement</td><td>Prompt-only rules</td><td><strong>5 Python hooks (cost, bash, files, fmt)</strong></td></tr>
+          <tr><td>Slash command workflows</td><td>Not included</td><td><strong>8 commands (/plan, /review, /handoff)</strong></td></tr>
+          <tr><td>Prompt-cache prefix layout</td><td>Checklist only</td><td><strong>Pre-ordered static-first file structure</strong></td></tr>
+          <tr><td>Pytest suite for hooks</td><td>0 tests</td><td><strong>64 passing unit tests included</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <div class="s16-sample-wrap" data-cro="sprint16-sample-bar">
+        <button type="button" class="s16-sample-btn" id="s16SampleBtn" data-sample-download="ml0x-claude-md-2026-starter.md">&#8595; Download Free Lean CLAUDE.md Starter Template (.md, instant)</button>
+        <div class="s16-proof-banner" id="s16ProofBanner" role="status" aria-live="polite" hidden>Downloaded ml0x-claude-md-2026-starter.md &mdash; unlock the full production kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_claude-md-best-practices-2026" data-cta="s16_buy_claude-md-best-practices-2026">Download 5 CLAUDE.md Templates &amp; Hooks &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Explore the full ml0x engineering ladder &mdash; <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/claude-code-workflow-pack/">$29 Claude Code Pack</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <details>
+        <summary id="s16PrevSummary">Preview exact structure inside the 5 lean CLAUDE.md templates</summary>
+        <pre class="s13-preview"><code id="s16PrevCode"># CLAUDE.md (Lean 2026 Template — 95 Lines Total)
+## Commands
+- Test suite command = pytest -q
+- Typecheck command = npm run typecheck
+
+## Hard Boundaries (Enforced by Hooks, Not Prose)
+- Never edit .env or production secrets (protect_files.py blocks writes)
+- Default to Sonnet 4; escalate to Opus 4 only on /plan</code></pre>
+        <ul>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse and PostToolUse hook that tracks live session spend and halts runaway loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> with 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="playbook">
+    <h2>CLAUDE.md best practices for 2026</h2>
+    <div class="playbook">
+      <ol>
+      <li><strong>Keep root CLAUDE.md under 150 lines</strong> &mdash; Instruction adherence drops sharply once your root file exceeds ~250 lines of competing prose rules.</li>
+      <li><strong>Move hard safety rules into hooks</strong> &mdash; Never rely on polite prose to block <code>rm -rf</code> or secret edits. Enforce them deterministically with PreToolUse hooks.</li>
+      <li><strong>Load domain docs on demand</strong> &mdash; Replace eager <code>@docs/</code> imports with short pointers so Claude reads deep specs only when touching that subsystem.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>What is the ideal length for a CLAUDE.md file in 2026?</h3><p>Keep root CLAUDE.md between 60 and 150 lines (roughly 900 to 2,200 tokens). Put exact build/test commands and repo conventions at the top, and push deep architecture docs into on-demand files.</p></div>
+    <div class="faq-item"><h3>Do @-imported files inside CLAUDE.md hurt prompt caching?</h3><p>Static @-imports still cache at 0.10x read rates, yet they permanently eat your 200K context window and trigger cache write penalties whenever any imported file changes.</p></div>
+    <div class="faq-item"><h3>Why move style and safety rules from CLAUDE.md into hooks?</h3><p>LLMs occasionally ignore prose instructions during long 60-turn sessions. Python hooks like guard_bash.py and format_on_edit.py execute with 100% reliability at zero token cost.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint16-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Replace bloated prose with 5 lean CLAUDE.md templates + hooks</p>
+    <p class="s12-post__desc">Get production-tested CLAUDE.md files and 5 deterministic Python guard hooks in one $29 download.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s16_ml0x_claude-md-best-practices-2026" data-cta="s16_post_claude-md-best-practices-2026">Download Claude Code Pack &mdash; $29 &rarr;</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related AI cost &amp; workflow calculators</h2>
+    <ul>
+      <li><a href="/calculators/claude-md-context-budget-calculator.html">CLAUDE.md context budget calculator</a> &mdash; Combine CLAUDE.md, MCP schemas, and repo maps against 200K.</li>
+      <li><a href="/calculators/cut-claude-code-bill-50-percent.html">Cut Claude Code bill by 50%</a> &mdash; Combine lean templates with Sonnet routing and compaction.</li>
+      <li><a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit wizard</a> &mdash; Calculate total annual waste across your entire engineering team.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and rate limits reflect published 2026 provider rate cards.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261128-s16-claude-md-best-practices-2026" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/ai-stack-cost-audit.html">AI stack cost audit</a>
+    <a href="/calculators/cut-claude-code-bill-50-percent.html">Cut Claude Code bill 50%</a>
+    <a href="/calculators/claude-md-best-practices-2026.html">CLAUDE.md best practices</a>
+    <a href="/calculators/mcp-context-bloat-fix.html">MCP context bloat fix</a>
+    <a href="/calculators/deepseek-v3-vs-claude-sonnet-coding.html">DeepSeek V3 vs Sonnet</a>
+    <a href="/calculators/prompt-caching-architecture-guide.html">Prompt caching guide</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/guides/best-chrome-extensions-for-developers-2026" target="_blank" rel="noopener">Chrome Developer Extensions by Zovo</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+
+  function calc() {
+    const lines = +$('mdLines').value;
+    const imports = +$('importFiles').value;
+    const impTok = +$('avgImportTok').value;
+    const turns = +$('turnsDay').value;
+    const cache = +$('cacheHit').value / 100;
+    const devs = +$('teamDevs').value;
+
+    $('mdLinesVal').textContent = lines + ' lines';
+    $('importFilesVal').textContent = imports + ' files';
+    $('avgImportTokVal').textContent = impTok.toLocaleString();
+    $('turnsDayVal').textContent = turns;
+    $('cacheHitVal').textContent = Math.round(cache * 100) + '%';
+    $('teamDevsVal').textContent = devs;
+
+    const mdTok = lines * 15;
+    const totalTok = mdTok + imports * impTok;
+    const leanTok = 110 * 15;
+    const moTurns = turns * 22 * devs;
+    const effRate = 3.0 * (cache * 0.10 + (1 - cache) * 1.25);
+    const moCost = (totalTok * moTurns / 1e6) * effRate;
+    const leanCost = (leanTok * moTurns / 1e6) * effRate;
+    const saveMo = Math.max(0, moCost - leanCost);
+    const adherence = Math.max(54, Math.min(98, 99 - Math.max(0, lines - 120) * 0.045 - imports * 1.4));
+    const status = totalTok <= 4000 ? 'kpi--ok' : (totalTok <= 12000 ? 'kpi--warn' : 'kpi--bad');
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${status}"><div class="kpi__label">Prefix Token Footprint</div><div class="kpi__val">${(totalTok/1000).toFixed(1)}K tok</div><div class="kpi__sub">${lines} lines + ${imports} @-imports</div></div>
+      <div class="kpi ${status}"><div class="kpi__label">Est. Rule Adherence</div><div class="kpi__val">${adherence.toFixed(0)}%</div><div class="kpi__sub">${lines <= 150 ? 'High signal density' : 'Prune prose to boost follow rate'}</div></div>
+      <div class="kpi"><div class="kpi__label">Monthly Prefix Tax</div><div class="kpi__val">$${moCost.toFixed(0)}/mo</div><div class="kpi__sub">Across ${devs} engineer${devs>1?'s':''}</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Lean 110-Line Savings</div><div class="kpi__val">$${saveMo.toFixed(0)}/mo</div><div class="kpi__sub">Reclaims ${Math.max(0,(totalTok-leanTok)/1000).toFixed(1)}K tok/turn</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; Your current CLAUDE.md setup injects <strong>${(totalTok/1000).toFixed(1)}K tokens</strong> on every turn (~${adherence.toFixed(0)}% adherence). Trimming to a 110-line root file with on-demand pointers reclaims <strong>${Math.max(0,(totalTok-leanTok)/1000).toFixed(1)}K tokens</strong> per turn and saves <strong>$${(saveMo*12).toFixed(0)}/yr</strong>.`;
+
+    const rows = [
+      { name: 'Your Current CLAUDE.md + @-Imports', tok: totalTok, adh: adherence.toFixed(0) + '%', cost: moCost, hi: true },
+      { name: 'Root File Only (On-Demand Docs)', tok: mdTok, adh: Math.min(97, adherence + 6).toFixed(0) + '%', cost: (mdTok * moTurns / 1e6) * effRate, hi: false },
+      { name: 'Lean 2026 Standard (110 lines + Hooks)', tok: leanTok, adh: '96%', cost: leanCost, hi: false }
+    ];
+    $('rows').innerHTML = rows.map(r => `<tr${r.hi?' class="tt"':''}><td>${r.name}</td><td class="num">${r.tok.toLocaleString()}</td><td class="num">${r.adh}</td><td class="num">$${r.cost.toFixed(2)}</td></tr>`).join('');
+
+    var badge = $('s13EchoBadge');
+    var pBtn = $('s13PrimaryBtn');
+    var postBtn = $('s13PostBtn');
+    if (badge) badge.textContent = `Your CLAUDE.md — ${(totalTok/1000).toFixed(1)}K prefix tokens · ${adherence.toFixed(0)}% adherence · $${saveMo.toFixed(0)}/mo reclaimable`;
+    if (pBtn) pBtn.textContent = `Get 5 Lean CLAUDE.md Templates & Hooks — $29 →`;
+    if (postBtn) postBtn.textContent = `Trim ${(totalTok/1000).toFixed(1)}K Prefix Bloat — $29 →`;
+  }
+  ['mdLines','importFiles','avgImportTok','turnsDay','cacheHit','teamDevs'].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+
+  var sampleBtn = $('s16SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(el => el.textContent.trim());
+      var md = [
+        '# CLAUDE.md — Lean 2026 Starter Template (ml0x.com)',
+        '',
+        '## Audit Snapshot',
+        '- Previous prefix footprint = ' + (vals[0] || '0K tok'),
+        '- Estimated adherence = ' + (vals[1] || '0%'),
+        '- Target lean footprint = 1.6K tokens (110 lines)',
+        '',
+        '## Core Commands',
+        '- Test = pytest -q',
+        '- Lint = ruff check .',
+        '',
+        '## Routing & Compaction Rules',
+        '- Default to Sonnet 4 for edits and tests.',
+        '- Escalate to Opus 4 only for /plan or multi-file refactors.',
+        '- Run /compact before context passes 85K tokens.'
+      ].join('\n');
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'ml0x-claude-md-2026-starter.md';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      var b = $('s16ProofBanner');
+      if (b) { b.textContent = 'Downloaded ml0x-claude-md-2026-starter.md — unlock all 5 stack templates & hooks below'; b.hidden = false; }
+      if (typeof gtag === 'function') gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'claude-md-best-practices-2026', file: 'ml0x-claude-md-2026-starter.md' });
+    });
+  }
+
+
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'claude-md-best-practices-2026'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

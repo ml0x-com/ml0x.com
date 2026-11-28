@@ -10,9 +10,20 @@
 - [Training Run Triage ($99)](https://ml0x.com/triage/): Diagnostic runbook and toolkit for failing LLM/ML training runs, loss spikes, OOM debugging, and checkpoint recovery. $99 once, 60-day refund.
 - [All 5 Production Pipelines](https://ml0x.com/x/): Index of all 5 pipelines built and run on 33 production sites (ml0x Pipeline, Training Run Triage, handsofflinks, toolsthatrank, aiwebsitepipeline).
 
-## Interactive AI Engineering, LLM & GPU Calculators (65 Free Browser Tools)
+## Interactive AI Engineering, LLM & GPU Calculators (74 Free Browser Tools)
 
 - [All Calculators Directory](https://ml0x.com/calculators/): Complete index of all interactive client-side ML, LLM, and GPU calculators.
+
+### AI Stack Cost Audit & Cost-Cutting Guides (Sprint 16)
+- [AI Stack Cost Audit Wizard](https://ml0x.com/calculators/ai-stack-cost-audit.html) — Audit your AI coding stack in 15 seconds. Enter team size, agent, and monthly spend to calculate annual waste and download a custom report.
+- [Cut Your Claude Code Bill by 50 Percent](https://ml0x.com/calculators/cut-claude-code-bill-50-percent.html) — Model how Sonnet routing, 90% prompt caching, context compaction, and spend guard hooks cut your monthly Claude Code API bill by 50% or more.
+- [CLAUDE.md Best Practices 2026 Budget Tool](https://ml0x.com/calculators/claude-md-best-practices-2026.html) — Size your CLAUDE.md line count, @-imported docs, and prompt-cache stability to eliminate prefix bloat and trim monthly Claude Code token spend.
+- [MCP Context Bloat Fix Calculator](https://ml0x.com/calculators/mcp-context-bloat-fix.html) — Measure how global MCP servers bloat your 200K context window and calculate exact token and dollar savings from workspace-scoped .mcp.json profiles.
+- [Anthropic Batch API vs Realtime Cost Calculator](https://ml0x.com/calculators/anthropic-batch-api-vs-realtime.html) — Compare Anthropic Realtime API against 50% off Batch API with stacked prompt caching across Claude Sonnet 4, Opus 4, and Haiku 3.5 workloads.
+- [vLLM vs Ollama Local GPU Cost Calculator](https://ml0x.com/calculators/vllm-vs-ollama-local-gpu-cost.html) — Compare vLLM continuous batching against Ollama on RTX 5090, 2x RTX 4090, Mac Studio M4 Ultra, and H100 by concurrency, P95 latency, and monthly cost.
+- [DeepSeek V3 vs Claude Sonnet 4 Coding Cost](https://ml0x.com/calculators/deepseek-v3-vs-claude-sonnet-coding.html) — Compare DeepSeek V3 and Claude Sonnet 4 coding API bills, prompt cache savings, rework time cost, and 70/30 hybrid routing across team seats.
+- [AI Agent Observability Cost Calculator](https://ml0x.com/calculators/ai-agent-observability-cost.html) — Estimate monthly LLM tracing bills across LangSmith, Langfuse Cloud, Datadog LLM, and self-hosted OTel against your underlying model token spend.
+- [Prompt Caching Architecture Cost Guide](https://ml0x.com/calculators/prompt-caching-architecture-guide.html) — Model Anthropic 5-minute (1.25x) and 1-hour (2x) prompt cache writes, 0.10x reads, cache-busting edits, and exact break-even turns for coding agents.
 
 ### MCP, Agent & Context-Window Benchmark Calculators (Sprint 15)
 - [MCP Tool Schema Token Overhead Calculator](https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html) — Calculate exact Model Context Protocol (MCP) JSON schema token bloat, context window tax, and monthly Claude API spend across connected MCP servers.
