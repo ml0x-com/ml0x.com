@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP Tool Schema Token Overhead Calculator | ml0x</title>
+<meta name="description" content="Calculate exact Model Context Protocol (MCP) JSON schema token bloat, context window tax, and monthly Claude API spend across connected MCP servers.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MCP Tool Schema Token Overhead Calculator">
+<meta property="og:description" content="Calculate exact Model Context Protocol (MCP) JSON schema token bloat, context window tax, and monthly Claude API spend across connected MCP servers.">
+<meta property="og:url" content="https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MCP Tool Schema Token Overhead Calculator">
+<meta name="twitter:description" content="Calculate exact Model Context Protocol (MCP) JSON schema token bloat, context window tax, and monthly Claude API spend across connected MCP servers.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;max-width:100%;width:auto;min-width:260px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:11px 22px;line-height:1.3;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s15-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s15-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s15-sample-btn:hover{background:#F5F5F3}
+.s15-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s15-diff-wrap{margin:12px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.s15-diff-title{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#3F3F46}
+.llm-calc table.s15-diff-table{margin:0;width:100%;font-size:12.5px;table-layout:fixed}
+.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:7px 9px;word-break:break-word}
+.llm-calc table.s15-diff-table thead th:last-child{background:#1A1A1A;color:#fff}
+.llm-calc table.s15-diff-table td:last-child{background:#FAFAF9}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}.s15-sample-btn{width:100%}.llm-calc table.s15-diff-table{font-size:11.5px}.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:6px 6px}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"MCP Tool Schema Token Overhead Calculator","url":"https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html","description":"Calculate exact Model Context Protocol (MCP) JSON schema token bloat, context window tax, and monthly Claude API spend across connected MCP servers.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many tokens does a single MCP tool schema consume?","acceptedAnswer":{"@type":"Answer","text":"Most MCP tool definitions consume 350 to 700 tokens including tool name, description, and nested JSON parameter schemas. Complex database or browser tools can exceed 1,000 tokens each."}},{"@type":"Question","name":"Are MCP tool schemas re-sent on every conversation turn?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every active MCP tool schema sits inside the system prefix sent on every API turn. Prompt caching discounts repeat reads by 90%, yet the tokens still occupy your 200K context window."}},{"@type":"Question","name":"How many MCP tools should stay active in Claude Code?","acceptedAnswer":{"@type":"Answer","text":"Keeping 10 to 20 high-value tools active per project keeps schema overhead under 10K tokens (5% of context) while preserving fast tool selection accuracy."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"MCP Tool Schema Token Overhead Calculator","item":"https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>MCP Tool Schema Token Overhead Calculator</span></nav>
+  <h1>MCP Tool Schema Token Overhead Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s15-mcp-tool-schema-token-overhead" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Every connected <strong>MCP server</strong> injects its full JSON tool definitions into your system prompt on every single turn. Drag the sliders below to measure exact schema token overhead, 200K context window loss, and monthly Anthropic API cost.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="mcpServers">Connected MCP servers <span class="val-pill" id="mcpServersVal">6</span></label><input id="mcpServers" type="range" min="1" max="20" step="1" value="6"></div>
+        <div class="field"><label for="toolsPerServer">Tools per MCP server <span class="val-pill" id="toolsPerServerVal">10</span></label><input id="toolsPerServer" type="range" min="2" max="30" step="1" value="10"></div>
+        <div class="field"><label for="tokPerSchema">Avg tokens per tool schema <span class="val-pill" id="tokPerSchemaVal">520</span></label><input id="tokPerSchema" type="range" min="200" max="1200" step="20" value="520"></div>
+        <div class="field"><label for="turnsSess">Turns per coding session <span class="val-pill" id="turnsSessVal">45</span></label><input id="turnsSess" type="range" min="10" max="120" step="5" value="45"></div>
+        <div class="field"><label for="sessDay">Sessions per workday <span class="val-pill" id="sessDayVal">4</span></label><input id="sessDay" type="range" min="1" max="12" step="1" value="4"></div>
+        <div class="field"><label for="cacheHit">Prompt cache hit rate <span class="val-pill" id="cacheHitVal">85%</span></label><input id="cacheHit" type="range" min="40" max="95" step="5" value="85"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>MCP Configuration</th><th class='num'>Total Tools</th><th class='num'>Schema Tokens</th><th class='num'>% of 200K</th><th class='num'>Monthly Sonnet 4 Tax</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint15-ml0x-primary" data-mr-placement="s15_calc_mcp-tool-schema-token-overhead" aria-label="Claude Code Workflow Pack">
+      <div class="s12-cro__tag">Most Popular &middot; $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
+      <p class="s12-cro__lead"><strong>MCP tool schemas quietly eating 20K+ tokens per turn?</strong> Pair workspace-scoped MCP profiles with <code>cost_guard.py</code> and 5 lean <code>CLAUDE.md</code> templates in the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who"><strong>Built for</strong> developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <div class="s15-diff-wrap" data-cro="sprint15-diff-table">
+        <p class="s15-diff-title">Free Sample vs Full $29 Pack</p>
+        <table class="s15-diff-table">
+          <thead><tr><th>Capability</th><th>Free Sample ($0)</th><th>Full $29 Pack</th></tr></thead>
+          <tbody>
+          <tr><td>MCP schema budget checklist</td><td>Included (.md)</td><td><strong>Included + 5 CLAUDE.md templates</strong></td></tr>
+          <tr><td>Session spend guard hook</td><td>Manual estimate</td><td><strong>Automated cost_guard.py (exits 2)</strong></td></tr>
+          <tr><td>Bash & file safety hooks</td><td>Not included</td><td><strong>guard_bash.py + protect_files.py</strong></td></tr>
+          <tr><td>Slash command workflows</td><td>Not included</td><td><strong>8 commands (/plan, /review, /pr)</strong></td></tr>
+          <tr><td>Automated unit test suite</td><td>0 tests</td><td><strong>64 passing pytest unit tests</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <div class="s15-sample-wrap" data-cro="sprint15-sample-bar">
+        <button type="button" class="s15-sample-btn" id="s15SampleBtn" data-sample-download="ml0x-mcp-schema-overhead-sample.md">&#8595; Download Free MCP Schema Audit Checklist (.md, instant)</button>
+        <div class="s15-proof-banner" id="s15ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full production Claude Code kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_mcp-tool-schema-token-overhead" data-cta="s15_buy_cc29_mcp-tool-schema-token-overhead">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <details>
+        <summary>Preview exact files &amp; sample lines inside the $29 Claude Code Pack</summary>
+        <pre class="s13-preview"><code># .mcp.json (Workspace-Scoped Lean Profile Excerpt)
+# Keep under 15 active tools per project to hold schema overhead below 8K tokens
+export CLAUDE_MAX_USD=5.00
+python3 .claude/hooks/cost_guard.py --check-spend # halts runaway turns at cap
+
+# CLAUDE.md (MCP Discipline Rule)
+- Prefer native CLI tools (rg, git, gh) over heavy MCP wrappers
+- Run /compact before context crosses 110K tokens</code></pre>
+        <ul>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> &mdash; 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>How many tokens does a single MCP tool schema consume?</h3><p>Most MCP tool definitions consume 350 to 700 tokens including tool name, description, and nested JSON parameter schemas. Complex database or browser tools can exceed 1,000 tokens each.</p></div>
+    <div class="faq-item"><h3>Are MCP tool schemas re-sent on every conversation turn?</h3><p>Yes. Every active MCP tool schema sits inside the system prefix sent on every API turn. Prompt caching discounts repeat reads by 90%, yet the tokens still occupy your 200K context window.</p></div>
+    <div class="faq-item"><h3>How many MCP tools should stay active in Claude Code?</h3><p>Keeping 10 to 20 high-value tools active per project keeps schema overhead under 10K tokens (5% of context) while preserving fast tool selection accuracy.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint15-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Stop paying a hidden schema tax on every agent turn</p>
+    <p class="s12-post__desc">Drop in 5 lean CLAUDE.md templates, cost_guard.py, and 8 slash commands from the $29 Claude Code Workflow Pack.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_mcp-tool-schema-token-overhead" data-cta="s15_post_cc29_mcp-tool-schema-token-overhead">Get Claude Code Pack &mdash; $29 &rarr;</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related MCP, agent &amp; context calculators</h2>
+    <ul>
+      <li><a href="/calculators/mcp-server-latency-cost-calculator.html">MCP server latency & token cost calculator</a> &mdash; Measure round-trip MCP latency alongside API spend.</li>
+      <li><a href="/calculators/claude-md-context-budget-calculator.html">CLAUDE.md context budget calculator</a> &mdash; Size CLAUDE.md lines and pinned repo maps against 200K.</li>
+      <li><a href="/calculators/context-window-rot-cost-calculator.html">Context window rot cost calculator</a> &mdash; Quantify rework cost when sessions bloat past 100K.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and rate limits reflect published 2026 provider rate cards.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261128-s15-mcp-tool-schema-token-overhead" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/mcp-tool-schema-token-overhead.html">MCP tool schema overhead</a>
+    <a href="/calculators/agent-loop-runaway-cost-calculator.html">Agent loop runaway cost</a>
+    <a href="/calculators/context-window-rot-cost-calculator.html">Context window rot cost</a>
+    <a href="/calculators/claude-code-vs-codex-cli-cost.html">Claude Code vs Codex CLI</a>
+    <a href="/calculators/prompt-cache-hit-rate-roi.html">Prompt cache hit rate ROI</a>
+    <a href="/calculators/llm-eval-suite-cost-calculator.html">LLM eval suite cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/guides/best-chrome-extensions-for-developers-2026" target="_blank" rel="noopener">Chrome Developer Extensions by Zovo</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const servers = +$('mcpServers').value;
+    const toolsSrv = +$('toolsPerServer').value;
+    const tokSchema = +$('tokPerSchema').value;
+    const turnsSess = +$('turnsSess').value;
+    const sessDay = +$('sessDay').value;
+    const cache = +$('cacheHit').value / 100;
+
+    $('mcpServersVal').textContent = servers;
+    $('toolsPerServerVal').textContent = toolsSrv;
+    $('tokPerSchemaVal').textContent = tokSchema;
+    $('turnsSessVal').textContent = turnsSess;
+    $('sessDayVal').textContent = sessDay;
+    $('cacheHitVal').textContent = Math.round(cache * 100) + '%';
+
+    const totalTools = servers * toolsSrv;
+    const schemaTok = totalTools * tokSchema;
+    const pctWin = (schemaTok / 200000) * 100;
+    const moTurns = turnsSess * sessDay * 22;
+    const effSonnet = 3.0 * (cache * 0.10 + (1 - cache) * 1.25);
+    const effOpus = 15.0 * (cache * 0.10 + (1 - cache) * 1.25);
+    const moSonnet = (schemaTok * moTurns / 1e6) * effSonnet;
+    const moOpus = (schemaTok * moTurns / 1e6) * effOpus;
+    const leanTools = Math.min(totalTools, 15);
+    const leanTok = leanTools * 380;
+    const leanCost = (leanTok * moTurns / 1e6) * effSonnet;
+    const saveMo = Math.max(0, moSonnet - leanCost);
+
+    const status = pctWin <= 10 ? 'kpi--ok' : (pctWin <= 22 ? 'kpi--warn' : 'kpi--bad');
+    const grade = pctWin <= 10 ? 'Lean MCP' : (pctWin <= 22 ? 'Moderate Bloat' : 'Heavy Bloat');
+
+    const scenarios = [
+      { name: 'Your Current MCP Stack (' + servers + ' servers)', tools: totalTools, tok: schemaTok, cost: moSonnet, hi: true },
+      { name: 'Same Stack on Claude Opus 4', tools: totalTools, tok: schemaTok, cost: moOpus },
+      { name: 'Curated Core Profile (15 tools, 380 tok)', tools: leanTools, tok: leanTok, cost: leanCost },
+      { name: 'Zero-MCP CLI Fallback (bash + grep only)', tools: 0, tok: 0, cost: 0 }
+    ];
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${status}"><div class="kpi__label">Schema Token Bloat</div><div class="kpi__val">${(schemaTok/1000).toFixed(1)}K tok</div><div class="kpi__sub">${totalTools} active tools across ${servers} servers</div></div>
+      <div class="kpi ${status}"><div class="kpi__label">200K Window Consumed</div><div class="kpi__val">${pctWin.toFixed(1)}%</div><div class="kpi__sub">${grade} before first prompt</div></div>
+      <div class="kpi"><div class="kpi__label">Monthly Schema Tax</div><div class="kpi__val">$${moSonnet.toFixed(0)}/mo</div><div class="kpi__sub">$${moOpus.toFixed(0)}/mo if running Opus 4</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Lean Profile Savings</div><div class="kpi__val">$${saveMo.toFixed(0)}/mo</div><div class="kpi__sub">Trimming to ${leanTools} core tools</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; Your ${totalTools} MCP tools inject <strong>${(schemaTok/1000).toFixed(1)}K tokens</strong> (${pctWin.toFixed(1)}% of Claude 200K context) on every turn, costing <strong>$${moSonnet.toFixed(0)}/mo</strong> on Sonnet 4. ${pctWin > 15 ? 'Disable idle MCP servers per workspace to recover ' + ((schemaTok - leanTok)/1000).toFixed(1) + 'K tokens of reasoning headroom.' : 'Your MCP footprint is well disciplined and leaves ample reasoning headroom.'}`;
+    $('rows').innerHTML = scenarios.map(s => `<tr${s.hi?' class="tt"':''}><td>${s.name}</td><td class="num">${s.tools}</td><td class="num">${s.tok.toLocaleString()}</td><td class="num">${(s.tok/2000).toFixed(1)}%</td><td class="num">$${s.cost.toFixed(2)}</td></tr>`).join('');
+
+  }
+  ["mcpServers", "toolsPerServer", "tokPerSchema", "turnsSess", "sessDay", "cacheHit"].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your MCP stack — ${k[0]} schema bloat (${k[1]} of 200K window, ${k[2]} monthly tax)`;
+    if (pBtn) pBtn.textContent = `Cut ${k[0]} MCP Bloat with Guard Hooks & Lean Templates — $29 →`;
+    if (postBtn) postBtn.textContent = `Cut ${k[0]} MCP Bloat with Guard Hooks & Lean Templates — $29 →`;
+
+  }
+  document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+    el.addEventListener('input', updateS13Echo);
+    el.addEventListener('change', updateS13Echo);
+  });
+  updateS13Echo();
+
+  var sampleBtn = document.getElementById('s15SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+      var md = [
+        '# ml0x MCP Tool Schema Token Audit Sample',
+        '# Generated from ml0x.com/calculators/mcp-tool-schema-token-overhead.html',
+        '',
+        '## Your Live MCP Snapshot',
+        '- Connected MCP servers = ' + $('mcpServers').value,
+        '- Tools per server = ' + $('toolsPerServer').value,
+        '- Avg tokens per schema = ' + $('tokPerSchema').value,
+        '- Total schema bloat = ' + (vals[0] || '0K tok'),
+        '- Window consumed = ' + (vals[1] || '0%'),
+        '- Monthly Sonnet 4 tax = ' + (vals[2] || '$0/mo'),
+        '',
+        '## 3 Quick Ways to Cut MCP Schema Tax',
+        '- Split MCP servers into project-local .mcp.json profiles instead of global installs.',
+        '- Disable read-heavy MCP servers when direct CLI tools (gh, psql, rg) work in 0 schema tokens.',
+        '- Enforce a hard session spend ceiling with cost_guard.py so bloated prefixes never snowball.',
+        '',
+        '## Full $29 Claude Code Workflow Pack',
+        '- 5 Python guard hooks + 64 tests + 5 CLAUDE.md templates + 8 slash commands'
+      ].join('\n');
+
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-mcp-schema-overhead-sample.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s15ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-mcp-schema-overhead-sample.md — unlock the full production Claude Code kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'mcp-tool-schema-token-overhead', file: 'ml0x-mcp-schema-overhead-sample.md' });
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'mcp-tool-schema-token-overhead'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

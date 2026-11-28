@@ -581,4 +581,54 @@
     <lastmod>2026-11-28</lastmod>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/agent-loop-runaway-cost-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/context-window-rot-cost-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/claude-code-vs-codex-cli-cost.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/rag-chunk-size-token-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/multi-agent-orchestration-cost.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/structured-output-json-token-tax.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/prompt-cache-hit-rate-roi.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html</loc>
+    <lastmod>2026-11-28</lastmod>
+    <priority>0.8</priority>
+  </url>
 </urlset>

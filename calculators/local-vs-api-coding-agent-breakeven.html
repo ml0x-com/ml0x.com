@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local vs API Coding Agent Breakeven Calc | ml0x</title>
+<meta name="description" content="Find exact payback months between a local AI coding rig (RTX 5090, Mac Studio M4 Ultra) and cloud coding APIs (Claude Sonnet 4, Opus 4, Max $200).">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Local vs API Coding Agent Breakeven Calculator">
+<meta property="og:description" content="Find exact payback months between a local AI coding rig (RTX 5090, Mac Studio M4 Ultra) and cloud coding APIs (Claude Sonnet 4, Opus 4, Max $200).">
+<meta property="og:url" content="https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Local vs API Coding Agent Breakeven Calculator">
+<meta name="twitter:description" content="Find exact payback months between a local AI coding rig (RTX 5090, Mac Studio M4 Ultra) and cloud coding APIs (Claude Sonnet 4, Opus 4, Max $200).">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;max-width:100%;width:auto;min-width:260px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:11px 22px;line-height:1.3;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s15-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s15-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s15-sample-btn:hover{background:#F5F5F3}
+.s15-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s15-diff-wrap{margin:12px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.s15-diff-title{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#3F3F46}
+.llm-calc table.s15-diff-table{margin:0;width:100%;font-size:12.5px;table-layout:fixed}
+.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:7px 9px;word-break:break-word}
+.llm-calc table.s15-diff-table thead th:last-child{background:#1A1A1A;color:#fff}
+.llm-calc table.s15-diff-table td:last-child{background:#FAFAF9}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}.s15-sample-btn{width:100%}.llm-calc table.s15-diff-table{font-size:11.5px}.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:6px 6px}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Local vs API Coding Agent Breakeven Calculator","url":"https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html","description":"Find exact payback months between a local AI coding rig (RTX 5090, Mac Studio M4 Ultra) and cloud coding APIs (Claude Sonnet 4, Opus 4, Max $200).","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can a local coding rig replace 100% of Claude Code API spend?","acceptedAnswer":{"@type":"Answer","text":"Rarely. Most engineers handle 60% to 80% of routine completions and refactors locally while keeping 20% to 40% cloud fallback for frontier reasoning."}},{"@type":"Question","name":"Why does Mac Studio M4 Ultra often beat dual GPUs for solo devs?","acceptedAnswer":{"@type":"Answer","text":"Unified 192GB to 512GB memory fits large MoE models at 180W to 210W total draw, keeping electricity costs low and fan noise silent."}},{"@type":"Question","name":"At what monthly API bill does buying local hardware make sense?","acceptedAnswer":{"@type":"Answer","text":"Once a solo developer or small team consistently spends $350+ per month on API tokens, a $4,200 to $6,500 local workstation typically pays back within 15 to 24 months."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"Local vs API Coding Agent Breakeven Calculator","item":"https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>Local vs API Coding Agent Breakeven Calculator</span></nav>
+  <h1>Local vs API Coding Agent Breakeven Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s15-local-vs-api-coding-agent-breakeven" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Running open-weight coding models locally (Qwen3 Coder, DeepSeek) eliminates per-token fees, but upfront hardware CapEx, power draw, and residual cloud frontier fallback still count. Calculate your exact <strong>hardware payback month</strong> below.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="rigSel">Local AI hardware build</label><select id="rigSel"><option value="rtx5090">RTX 5090 32GB Workstation ($4,200, 550W)</option><option value="dual5090">Dual RTX 5090 64GB Rig ($7,600, 950W)</option><option value="m4_192" selected>Mac Studio M4 Ultra 192GB ($6,500, 180W)</option><option value="m4_512">Mac Studio M4 Ultra 512GB ($9,500, 210W)</option></select></div>
+        <div class="field"><label for="apiMo">Current monthly cloud API spend <span class="val-pill" id="apiMoVal">$280/mo</span></label><input id="apiMo" type="range" min="60" max="1500" step="20" value="280"></div>
+        <div class="field"><label for="localShare">Tasks handled locally <span class="val-pill" id="localShareVal">75%</span></label><input id="localShare" type="range" min="30" max="95" step="5" value="75"></div>
+        <div class="field"><label for="hoursDay">Active coding hours / workday <span class="val-pill" id="hoursDayVal">6h</span></label><input id="hoursDay" type="range" min="2" max="14" step="1" value="6"></div>
+        <div class="field"><label for="kwh">Electricity rate ($/kWh) <span class="val-pill" id="kwhVal">$0.18</span></label><input id="kwh" type="range" min="0.08" max="0.44" step="0.02" value="0.18"></div>
+        <div class="field"><label for="horizon">Ownership horizon (months) <span class="val-pill" id="horizonVal">24 mo</span></label><input id="horizon" type="range" min="6" max="48" step="6" value="24"></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Strategy</th><th class='num'>Upfront CapEx</th><th class='num'>Monthly OpEx</th><th class='num'>Horizon TCO</th><th class='num'>Payback Month</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint15-ml0x-primary" data-mr-placement="s15_calc_local-vs-api-coding-agent-breakeven" aria-label="Claude Code Workflow Pack">
+      <div class="s12-cro__tag">Most Popular &middot; $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
+      <p class="s12-cro__lead"><strong>Running hybrid local + Claude Code workflows?</strong> Cap your cloud fallback API bill and standardize agent guardrails with the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who"><strong>Built for</strong> developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <div class="s15-diff-wrap" data-cro="sprint15-diff-table">
+        <p class="s15-diff-title">Free Sample vs Full $29 Pack</p>
+        <table class="s15-diff-table">
+          <thead><tr><th>Capability</th><th>Free Sample ($0)</th><th>Full $29 Pack</th></tr></thead>
+          <tbody>
+          <tr><td>Hybrid routing rules</td><td>Included (.md)</td><td><strong>Included + 5 CLAUDE.md templates</strong></td></tr>
+          <tr><td>Cloud fallback spend cap</td><td>Not included</td><td><strong>cost_guard.py (PreToolUse/Post)</strong></td></tr>
+          <tr><td>Local repo safety hooks</td><td>Not included</td><td><strong>guard_bash.py + protect_files.py</strong></td></tr>
+          <tr><td>Workflow slash commands</td><td>Not included</td><td><strong>8 drop-in commands (/plan to /pr)</strong></td></tr>
+          <tr><td>Automated unit tests</td><td>0 tests</td><td><strong>64 passing pytest unit tests</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <div class="s15-sample-wrap" data-cro="sprint15-sample-bar">
+        <button type="button" class="s15-sample-btn" id="s15SampleBtn" data-sample-download="ml0x-local-vs-api-breakeven-sample.md">&#8595; Download Free Local vs Cloud Routing Rules (.md, instant)</button>
+        <div class="s15-proof-banner" id="s15ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full production Claude Code kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_local-vs-api-coding-agent-breakeven" data-cta="s15_buy_cc29_local-vs-api-coding-agent-breakeven">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <details>
+        <summary>Preview exact files &amp; sample lines inside the $29 Claude Code Pack</summary>
+        <pre class="s13-preview"><code># Hybrid Local + Cloud Agent Guardrails (.claude/hooks/cost_guard.py)
+export CLAUDE_MAX_USD=3.00 # strict ceiling on cloud escalation runs
+python3 .claude/hooks/cost_guard.py --check-spend
+# Keep local models handling routine edits while capping frontier API bursts</code></pre>
+        <ul>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> &mdash; 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>Can a local coding rig replace 100% of Claude Code API spend?</h3><p>Rarely. Most engineers handle 60% to 80% of routine completions and refactors locally while keeping 20% to 40% cloud fallback for frontier reasoning.</p></div>
+    <div class="faq-item"><h3>Why does Mac Studio M4 Ultra often beat dual GPUs for solo devs?</h3><p>Unified 192GB to 512GB memory fits large MoE models at 180W to 210W total draw, keeping electricity costs low and fan noise silent.</p></div>
+    <div class="faq-item"><h3>At what monthly API bill does buying local hardware make sense?</h3><p>Once a solo developer or small team consistently spends $350+ per month on API tokens, a $4,200 to $6,500 local workstation typically pays back within 15 to 24 months.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint15-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Keep your cloud fallback bill tightly capped</p>
+    <p class="s12-post__desc">Get cost_guard.py, 5 CLAUDE.md templates, and 8 slash commands in the $29 Claude Code Workflow Pack.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_local-vs-api-coding-agent-breakeven" data-cta="s15_post_cc29_local-vs-api-coding-agent-breakeven">Get Claude Code Pack &mdash; $29 &rarr;</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related MCP, agent &amp; context calculators</h2>
+    <ul>
+      <li><a href="/calculators/local-llm-pc-build-vs-cloud-calculator.html">Local LLM PC build vs cloud calculator</a> &mdash; Compare RTX 5090 and Mac Studio TCO vs rented GPUs.</li>
+      <li><a href="/calculators/local-llm-hardware-guide-2026.html">Local LLM hardware guide (2026)</a> &mdash; Match model VRAM and tok/s to 2026 local rigs.</li>
+      <li><a href="/calculators/claude-code-token-cost-calculator.html">Claude Code token cost calculator</a> &mdash; Project exact monthly Claude Code API spend.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and rate limits reflect published 2026 provider rate cards.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261128-s15-local-vs-api-coding-agent-breakeven" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/mcp-tool-schema-token-overhead.html">MCP tool schema overhead</a>
+    <a href="/calculators/agent-loop-runaway-cost-calculator.html">Agent loop runaway cost</a>
+    <a href="/calculators/context-window-rot-cost-calculator.html">Context window rot cost</a>
+    <a href="/calculators/claude-code-vs-codex-cli-cost.html">Claude Code vs Codex CLI</a>
+    <a href="/calculators/prompt-cache-hit-rate-roi.html">Prompt cache hit rate ROI</a>
+    <a href="/calculators/llm-eval-suite-cost-calculator.html">LLM eval suite cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/guides/best-chrome-extensions-for-developers-2026" target="_blank" rel="noopener">Chrome Developer Extensions by Zovo</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const rigKey = $('rigSel').value;
+    const apiMo = +$('apiMo').value;
+    const localShare = +$('localShare').value / 100;
+    const hrsDay = +$('hoursDay').value;
+    const kwh = +$('kwh').value;
+    const horizon = +$('horizon').value;
+
+    $('apiMoVal').textContent = '$' + apiMo + '/mo';
+    $('localShareVal').textContent = Math.round(localShare * 100) + '%';
+    $('hoursDayVal').textContent = hrsDay + 'h';
+    $('kwhVal').textContent = '$' + kwh.toFixed(2);
+    $('horizonVal').textContent = horizon + ' mo';
+
+    const RIGS = {
+      rtx5090: { name: 'RTX 5090 32GB Build', capex: 4200, watts: 550 },
+      dual5090: { name: 'Dual RTX 5090 64GB', capex: 7600, watts: 950 },
+      m4_192: { name: 'Mac Studio M4 Ultra 192GB', capex: 6500, watts: 180 },
+      m4_512: { name: 'Mac Studio M4 Ultra 512GB', capex: 9500, watts: 210 }
+    };
+    const rig = RIGS[rigKey] || RIGS.m4_192;
+
+    const powerMo = (rig.watts / 1000) * hrsDay * 22 * kwh;
+    const residualApiMo = apiMo * (1 - localShare);
+    const hybridOpEx = powerMo + residualApiMo;
+    const netSaveMo = apiMo - hybridOpEx;
+    const payback = netSaveMo > 0 ? Math.ceil(rig.capex / netSaveMo) : 999;
+
+    const cloudTco = apiMo * horizon;
+    const max200Tco = 200 * horizon;
+    const localTco = rig.capex + hybridOpEx * horizon;
+    const netHorizon = cloudTco - localTco;
+    const status = payback <= horizon ? 'kpi--ok' : (payback <= horizon * 1.5 ? 'kpi--warn' : 'kpi--bad');
+
+    const rows = [
+      { name: '100% Cloud API (Current Spend)', cap: 0, op: apiMo, tco: cloudTco, pb: 'Baseline' },
+      { name: 'Claude Max 20x Flat ($200/mo)', cap: 0, op: 200, tco: max200Tco, pb: 'No CapEx' },
+      { name: rig.name + ' + ' + Math.round((1-localShare)*100) + '% Cloud Fallback', cap: rig.capex, op: hybridOpEx, tco: localTco, pb: payback < 999 ? 'Month ' + payback : 'Never', hi: true }
+    ];
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${status}"><div class="kpi__label">Hardware Payback</div><div class="kpi__val">${payback < 999 ? payback + ' mo' : 'Never'}</div><div class="kpi__sub">CapEx $${rig.capex.toLocaleString()} vs $${netSaveMo.toFixed(0)}/mo saved</div></div>
+      <div class="kpi"><div class="kpi__label">Hybrid Monthly OpEx</div><div class="kpi__val">$${hybridOpEx.toFixed(0)}/mo</div><div class="kpi__sub">$${powerMo.toFixed(1)} power + $${residualApiMo.toFixed(0)} cloud fallback</div></div>
+      <div class="kpi ${netHorizon >= 0 ? 'kpi--ok' : 'kpi--warn'}"><div class="kpi__label">${horizon}-Month Net Delta</div><div class="kpi__val">${netHorizon >= 0 ? '+$' + netHorizon.toFixed(0) : '-$' + Math.abs(netHorizon).toFixed(0)}</div><div class="kpi__sub">Local hybrid vs 100% cloud API</div></div>
+      <div class="kpi"><div class="kpi__label">Claude Max $200 TCO</div><div class="kpi__val">$${max200Tco.toLocaleString()}</div><div class="kpi__sub">Over ${horizon} months (0 CapEx)</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; Buying a <strong>${rig.name}</strong> ($${rig.capex.toLocaleString()}) to offload ${Math.round(localShare*100)}% of your $${apiMo}/mo bill pays back in <strong>${payback < 999 ? payback + ' months' : 'over 10 years'}</strong>. ${payback <= horizon ? 'Local ownership wins over ' + horizon + ' months by $' + netHorizon.toFixed(0) + '.' : 'Cloud API or Claude Max $200 stays cheaper over a ' + horizon + '-month horizon.'}`;
+    $('rows').innerHTML = rows.map(r => `<tr${r.hi?' class="tt"':''}><td>${r.name}</td><td class="num">$${r.cap.toLocaleString()}</td><td class="num">$${r.op.toFixed(0)}/mo</td><td class="num">$${r.tco.toLocaleString(undefined,{maximumFractionDigits:0})}</td><td class="num">${r.pb}</td></tr>`).join('');
+
+  }
+  ["rigSel", "apiMo", "localShare", "hoursDay", "kwh", "horizon"].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your breakeven — ${k[0]} payback (${k[1]} hybrid OpEx, ${k[2]} net)`;
+    if (pBtn) pBtn.textContent = `Trim Cloud Fallback Spend with Guard Hooks — $29 Pack →`;
+    if (postBtn) postBtn.textContent = `Trim Cloud Fallback Spend with Guard Hooks — $29 Pack →`;
+
+  }
+  document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+    el.addEventListener('input', updateS13Echo);
+    el.addEventListener('change', updateS13Echo);
+  });
+  updateS13Echo();
+
+  var sampleBtn = document.getElementById('s15SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+      var md = [
+        '# ml0x Local vs API Coding Agent Breakeven Sample',
+        '# Generated from ml0x.com/calculators/local-vs-api-breakeven.html',
+        '',
+        '## Your Live Breakeven Snapshot',
+        '- Current cloud API spend = $' + $('apiMo').value + '/mo',
+        '- Local task coverage = ' + $('localShare').value + '%',
+        '- Hardware payback = ' + (vals[0] || 'N/A'),
+        '- Hybrid monthly OpEx = ' + (vals[1] || '$0/mo'),
+        '- Horizon net delta = ' + (vals[2] || '$0'),
+        '',
+        '## Hybrid Routing Rules',
+        '- Route autocomplete, lint fixes, and local unit test drafts to local Qwen3/Llama models.',
+        '- Reserve Claude Sonnet 4 and Opus 4 for multi-file refactors and architecture reviews.',
+        '- Guard cloud fallback sessions with cost_guard.py so spikes never erode hardware ROI.',
+        '',
+        '## Full $29 Claude Code Workflow Pack',
+        '- 5 Python guard hooks + 64 tests + 5 CLAUDE.md templates + 8 slash commands'
+      ].join('\n');
+
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-local-vs-api-breakeven-sample.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s15ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-local-vs-api-breakeven-sample.md — unlock the full production Claude Code kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'local-vs-api-coding-agent-breakeven', file: 'ml0x-local-vs-api-breakeven-sample.md' });
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'local-vs-api-coding-agent-breakeven'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

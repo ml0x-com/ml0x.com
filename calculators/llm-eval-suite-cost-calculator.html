@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Eval Suite Cost Calculator (2026) | ml0x</title>
+<meta name="description" content="Calculate monthly LLM-as-a-Judge evaluation costs across dataset size, CI/CD runs, prompt length, judge models, and 50% Batch API discounts.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LLM Eval Suite Cost Calculator">
+<meta property="og:description" content="Calculate monthly LLM-as-a-Judge evaluation costs across dataset size, CI/CD runs, prompt length, judge models, and 50% Batch API discounts.">
+<meta property="og:url" content="https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LLM Eval Suite Cost Calculator">
+<meta name="twitter:description" content="Calculate monthly LLM-as-a-Judge evaluation costs across dataset size, CI/CD runs, prompt length, judge models, and 50% Batch API discounts.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;max-width:100%;width:auto;min-width:260px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:11px 22px;line-height:1.3;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s15-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s15-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s15-sample-btn:hover{background:#F5F5F3}
+.s15-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s15-diff-wrap{margin:12px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.s15-diff-title{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#3F3F46}
+.llm-calc table.s15-diff-table{margin:0;width:100%;font-size:12.5px;table-layout:fixed}
+.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:7px 9px;word-break:break-word}
+.llm-calc table.s15-diff-table thead th:last-child{background:#1A1A1A;color:#fff}
+.llm-calc table.s15-diff-table td:last-child{background:#FAFAF9}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}.s15-sample-btn{width:100%}.llm-calc table.s15-diff-table{font-size:11.5px}.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:6px 6px}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"LLM Eval Suite Cost Calculator","url":"https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html","description":"Calculate monthly LLM-as-a-Judge evaluation costs across dataset size, CI/CD runs, prompt length, judge models, and 50% Batch API discounts.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much does Batch API save on LLM eval suites?","acceptedAnswer":{"@type":"Answer","text":"Both Anthropic and OpenAI offer a flat 50% discount on asynchronous Batch API jobs, which can stack with prompt caching on shared grading rubrics."}},{"@type":"Question","name":"Should I use Opus 4 or Sonnet 4 as my LLM judge?","acceptedAnswer":{"@type":"Answer","text":"Use Sonnet 4 or Haiku 3.5 for binary rubric checks and formatting assertions; reserve Opus 4 for a smaller golden sample of nuanced reasoning checks."}},{"@type":"Question","name":"How do teams prevent CI eval costs from exploding on active repos?","acceptedAnswer":{"@type":"Answer","text":"Split suites into a 50-case smoke set that runs synchronously on every PR and a full regression suite that runs nightly via the 50% Batch API."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"LLM Eval Suite Cost Calculator","item":"https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>LLM Eval Suite Cost Calculator</span></nav>
+  <h1>LLM Eval Suite Cost Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s15-llm-eval-suite-cost-calculator" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Running automated <strong>LLM-as-a-Judge</strong> evaluation suites on every PR catches regressions early, yet unoptimized judge passes can silently outspend production traffic. Configure your dataset and CI cadence below to price real-time vs 50% Batch API evals.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="cases">Eval test cases per suite <span class="val-pill" id="casesVal">400</span></label><input id="cases" type="range" min="50" max="5000" step="50" value="400"></div>
+        <div class="field"><label for="runsWk">CI/CD eval runs per week <span class="val-pill" id="runsWkVal">12</span></label><input id="runsWk" type="range" min="1" max="50" step="1" value="12"></div>
+        <div class="field"><label for="inTok">Avg input tokens / test case <span class="val-pill" id="inTokVal">2400</span></label><input id="inTok" type="range" min="400" max="12000" step="200" value="2400"></div>
+        <div class="field"><label for="outTok">Avg output tokens / test case <span class="val-pill" id="outTokVal">450</span></label><input id="outTok" type="range" min="100" max="2000" step="50" value="450"></div>
+        <div class="field"><label for="judges">Judge grading passes / case <span class="val-pill" id="judgesVal">2</span></label><input id="judges" type="range" min="1" max="4" step="1" value="2"></div>
+        <div class="field"><label for="judgeModel">LLM Judge Model</label><select id="judgeModel"><option value="opus4">Claude Opus 4 Judge ($15 / $75)</option><option value="sonnet4" selected>Claude Sonnet 4 Judge ($3 / $15)</option><option value="haiku35">Claude Haiku 3.5 Judge ($0.80 / $4)</option><option value="gpt41mini">GPT-4.1-mini Judge ($0.40 / $1.60)</option></select></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Eval Execution Mode</th><th class='num'>Calls / Month</th><th class='num'>Cost / CI Run</th><th class='num'>Monthly Eval Bill</th><th class='num'>Annualized</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint15-ml0x-primary" data-mr-placement="s15_calc_llm-eval-suite-cost-calculator" aria-label="Claude Code Workflow Pack">
+      <div class="s12-cro__tag">Most Popular &middot; $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
+      <p class="s12-cro__lead"><strong>Automating eval suites and PR quality gates with Claude Code?</strong> Drop in <code>cost_guard.py</code>, 64 passing unit tests, and <code>/test-fix</code> from the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who"><strong>Built for</strong> developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <div class="s15-diff-wrap" data-cro="sprint15-diff-table">
+        <p class="s15-diff-title">Free Sample vs Full $29 Pack</p>
+        <table class="s15-diff-table">
+          <thead><tr><th>Capability</th><th>Free Sample ($0)</th><th>Full $29 Pack</th></tr></thead>
+          <tbody>
+          <tr><td>CI eval cost playbook</td><td>Included (.md)</td><td><strong>Included + 5 CLAUDE.md templates</strong></td></tr>
+          <tr><td>Hard dollar spend guard</td><td>Manual limit</td><td><strong>Automated cost_guard.py (exit 2)</strong></td></tr>
+          <tr><td>Test & lint automation</td><td>Not included</td><td><strong>format_on_edit.py + /test-fix</strong></td></tr>
+          <tr><td>PR & code review commands</td><td>Not included</td><td><strong>8 commands (/review, /pr, /commit)</strong></td></tr>
+          <tr><td>Verified hook test suite</td><td>0 tests</td><td><strong>64 passing pytest unit tests</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <div class="s15-sample-wrap" data-cro="sprint15-sample-bar">
+        <button type="button" class="s15-sample-btn" id="s15SampleBtn" data-sample-download="ml0x-llm-eval-suite-sample.md">&#8595; Download Free CI/CD Eval Budget Guard Rules (.md, instant)</button>
+        <div class="s15-proof-banner" id="s15ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full production Claude Code kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_llm-eval-suite-cost-calculator" data-cta="s15_buy_cc29_llm-eval-suite-cost-calculator">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <details>
+        <summary>Preview exact files &amp; sample lines inside the $29 Claude Code Pack</summary>
+        <pre class="s13-preview"><code># CI Eval Budget Guard (.claude/hooks/cost_guard.py)
+export CLAUDE_MAX_USD=10.00
+python3 .claude/hooks/cost_guard.py --check-spend
+# Blocks runaway eval loops while /test-fix repairs failing assertions</code></pre>
+        <ul>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> &mdash; 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>How much does Batch API save on LLM eval suites?</h3><p>Both Anthropic and OpenAI offer a flat 50% discount on asynchronous Batch API jobs, which can stack with prompt caching on shared grading rubrics.</p></div>
+    <div class="faq-item"><h3>Should I use Opus 4 or Sonnet 4 as my LLM judge?</h3><p>Use Sonnet 4 or Haiku 3.5 for binary rubric checks and formatting assertions; reserve Opus 4 for a smaller golden sample of nuanced reasoning checks.</p></div>
+    <div class="faq-item"><h3>How do teams prevent CI eval costs from exploding on active repos?</h3><p>Split suites into a 50-case smoke set that runs synchronously on every PR and a full regression suite that runs nightly via the 50% Batch API.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint15-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Keep automated evals and coding agents inside budget</p>
+    <p class="s12-post__desc">Get cost_guard.py, 5 CLAUDE.md templates, and 8 slash commands in the $29 Claude Code Workflow Pack.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_llm-eval-suite-cost-calculator" data-cta="s15_post_cc29_llm-eval-suite-cost-calculator">Get Claude Code Pack &mdash; $29 &rarr;</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related MCP, agent &amp; context calculators</h2>
+    <ul>
+      <li><a href="/calculators/openai-vs-anthropic-batch-api-calculator.html">OpenAI vs Anthropic Batch API calculator</a> &mdash; Compare 50% offline batch rates across 6 frontier models.</li>
+      <li><a href="/calculators/ai-code-review-cost-estimator.html">AI code review cost estimator</a> &mdash; Price automated PR review across diff sizes and models.</li>
+      <li><a href="/calculators/prompt-cache-hit-rate-roi.html">Prompt cache hit rate ROI</a> &mdash; Calculate exact savings from caching static eval rubrics.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and rate limits reflect published 2026 provider rate cards.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261128-s15-llm-eval-suite-cost-calculator" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/mcp-tool-schema-token-overhead.html">MCP tool schema overhead</a>
+    <a href="/calculators/agent-loop-runaway-cost-calculator.html">Agent loop runaway cost</a>
+    <a href="/calculators/context-window-rot-cost-calculator.html">Context window rot cost</a>
+    <a href="/calculators/claude-code-vs-codex-cli-cost.html">Claude Code vs Codex CLI</a>
+    <a href="/calculators/prompt-cache-hit-rate-roi.html">Prompt cache hit rate ROI</a>
+    <a href="/calculators/llm-eval-suite-cost-calculator.html">LLM eval suite cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/guides/best-chrome-extensions-for-developers-2026" target="_blank" rel="noopener">Chrome Developer Extensions by Zovo</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const cases = +$('cases').value;
+    const runsWk = +$('runsWk').value;
+    const inTok = +$('inTok').value;
+    const outTok = +$('outTok').value;
+    const judges = +$('judges').value;
+    const jKey = $('judgeModel').value;
+
+    $('casesVal').textContent = cases.toLocaleString();
+    $('runsWkVal').textContent = runsWk;
+    $('inTokVal').textContent = inTok.toLocaleString();
+    $('outTokVal').textContent = outTok.toLocaleString();
+    $('judgesVal').textContent = judges + 'x';
+
+    const JUDGES = {
+      opus4: { name: 'Claude Opus 4', inp: 15.0, out: 75.0 },
+      sonnet4: { name: 'Claude Sonnet 4', inp: 3.0, out: 15.0 },
+      haiku35: { name: 'Claude Haiku 3.5', inp: 0.80, out: 4.0 },
+      gpt41mini: { name: 'GPT-4.1-mini', inp: 0.40, out: 1.60 }
+    };
+    const j = JUDGES[jKey] || JUDGES.sonnet4;
+    const moRuns = runsWk * 4.33;
+
+    const genRunCost = ((cases * inTok / 1e6) * 3.0) + ((cases * outTok / 1e6) * 15.0);
+    const judgeIn = inTok + outTok + 500;
+    const judgeOut = 180;
+    const judgeRunCost = judges * (((cases * judgeIn / 1e6) * j.inp) + ((cases * judgeOut / 1e6) * j.out));
+    const syncRun = genRunCost + judgeRunCost;
+    const batchRun = syncRun * 0.50;
+    const cachedBatchRun = batchRun * 0.68;
+    const syncMo = syncRun * moRuns;
+    const batchMo = batchRun * moRuns;
+    const cachedBatchMo = cachedBatchRun * moRuns;
+    const moCalls = Math.round(cases * (1 + judges) * moRuns);
+    const status = syncMo <= 300 ? 'kpi--ok' : (syncMo <= 1200 ? 'kpi--warn' : 'kpi--bad');
+
+    const rows = [
+      { name: 'Sync Real-Time CI (' + j.name + ' Judge)', calls: moCalls, run: syncRun, mo: syncMo, hi: true },
+      { name: 'Async Batch API (50% Off)', calls: moCalls, run: batchRun, mo: batchMo },
+      { name: 'Batch API + Cached Rubric Prefix', calls: moCalls, run: cachedBatchRun, mo: cachedBatchMo }
+    ];
+
+    $('kpis').innerHTML = `
+      <div class="kpi ${status}"><div class="kpi__label">Cost Per CI Run</div><div class="kpi__val">$${syncRun.toFixed(2)}</div><div class="kpi__sub">Gen $${genRunCost.toFixed(2)} + Judge $${judgeRunCost.toFixed(2)}</div></div>
+      <div class="kpi ${status}"><div class="kpi__label">Monthly Sync Bill</div><div class="kpi__val">$${syncMo.toFixed(0)}/mo</div><div class="kpi__sub">${(moCalls/1000).toFixed(1)}K total API calls / mo</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Batch API (50% Off)</div><div class="kpi__val">$${batchMo.toFixed(0)}/mo</div><div class="kpi__sub">Saves $${(syncMo - batchMo).toFixed(0)}/mo automatically</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">Batch + Cache Rubric</div><div class="kpi__val">$${cachedBatchMo.toFixed(0)}/mo</div><div class="kpi__sub">Saves $${(syncMo - cachedBatchMo).toFixed(0)}/mo vs sync</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; Running <strong>${cases.toLocaleString()} test cases</strong> ${runsWk}x/week with ${judges}x ${j.name} judge passes costs <strong>$${syncRun.toFixed(2)} per run</strong> (<strong>$${syncMo.toFixed(0)}/mo</strong> sync). Moving nightly suites to the 50% Batch API with cached grading rubrics cuts monthly spend to <strong>$${cachedBatchMo.toFixed(0)}/mo</strong>.`;
+    $('rows').innerHTML = rows.map(r => `<tr${r.hi?' class="tt"':''}><td>${r.name}</td><td class="num">${r.calls.toLocaleString()}</td><td class="num">$${r.run.toFixed(2)}</td><td class="num">$${r.mo.toFixed(0)}</td><td class="num">$${(r.mo*12).toLocaleString(undefined,{maximumFractionDigits:0})}</td></tr>`).join('');
+
+  }
+  ["cases", "runsWk", "inTok", "outTok", "judges", "judgeModel"].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your eval suite — ${k[0]}/run (${k[1]} sync vs ${k[2]} Batch API)`;
+    if (pBtn) pBtn.textContent = `Guard Your ${k[1]} Eval & Coding Runs — $29 Pack →`;
+    if (postBtn) postBtn.textContent = `Guard Your ${k[1]} Eval & Coding Runs — $29 Pack →`;
+
+  }
+  document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+    el.addEventListener('input', updateS13Echo);
+    el.addEventListener('change', updateS13Echo);
+  });
+  updateS13Echo();
+
+  var sampleBtn = document.getElementById('s15SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+      var md = [
+        '# ml0x LLM Eval Suite Cost Guard Sample',
+        '# Generated from ml0x.com/calculators/llm-eval-suite-cost-calculator.html',
+        '',
+        '## Your Live Eval Snapshot',
+        '- Eval test cases = ' + $('cases').value,
+        '- CI runs per week = ' + $('runsWk').value,
+        '- Cost per CI run = ' + (vals[0] || '$0'),
+        '- Monthly sync bill = ' + (vals[1] || '$0/mo'),
+        '- Monthly Batch API bill = ' + (vals[2] || '$0/mo'),
+        '- Batch + cached rubric = ' + (vals[3] || '$0/mo'),
+        '',
+        '## CI/CD Eval Cost Controls',
+        '- Run a fast 50-case smoke subset on every PR and reserve full 400+ case sweeps for nightly Batch API jobs.',
+        '- Pin the static grading rubric at the top of the judge prompt for 90% cache read savings.',
+        '- Enforce hard dollar ceilings on automated test/eval agents with cost_guard.py.',
+        '',
+        '## Full $29 Claude Code Workflow Pack',
+        '- 5 Python guard hooks + 64 tests + 5 CLAUDE.md templates + 8 slash commands'
+      ].join('\n');
+
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-llm-eval-suite-sample.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s15ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-llm-eval-suite-sample.md — unlock the full production Claude Code kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'llm-eval-suite-cost-calculator', file: 'ml0x-llm-eval-suite-sample.md' });
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'llm-eval-suite-cost-calculator'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>

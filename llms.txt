@@ -10,9 +10,21 @@
 - [Training Run Triage ($99)](https://ml0x.com/triage/): Diagnostic runbook and toolkit for failing LLM/ML training runs, loss spikes, OOM debugging, and checkpoint recovery. $99 once, 60-day refund.
 - [All 5 Production Pipelines](https://ml0x.com/x/): Index of all 5 pipelines built and run on 33 production sites (ml0x Pipeline, Training Run Triage, handsofflinks, toolsthatrank, aiwebsitepipeline).
 
-## Interactive AI Engineering, LLM & GPU Calculators (55 Free Browser Tools)
+## Interactive AI Engineering, LLM & GPU Calculators (65 Free Browser Tools)
 
 - [All Calculators Directory](https://ml0x.com/calculators/): Complete index of all interactive client-side ML, LLM, and GPU calculators.
+
+### MCP, Agent & Context-Window Benchmark Calculators (Sprint 15)
+- [MCP Tool Schema Token Overhead Calculator](https://ml0x.com/calculators/mcp-tool-schema-token-overhead.html) — Calculate exact Model Context Protocol (MCP) JSON schema token bloat, context window tax, and monthly Claude API spend across connected MCP servers.
+- [Agent Loop Runaway Cost Calculator](https://ml0x.com/calculators/agent-loop-runaway-cost-calculator.html) — Model quadratic token burn in autonomous AI agent loops and compare uncapped runaway retries against hard dollar gateway caps.
+- [Context Window Rot Cost Calculator](https://ml0x.com/calculators/context-window-rot-cost-calculator.html) — Measure context rot accuracy decay, wasted rework turns, and extra API spend as coding sessions fill past 50% of a 200K context window.
+- [Claude Code vs Codex CLI Cost Calculator](https://ml0x.com/calculators/claude-code-vs-codex-cli-cost.html) — Compare Claude Code (Sonnet 4, Opus 4, Max $100/$200) against OpenAI Codex CLI (o4-mini, o3, Plus/Pro) across daily turns, caching, and team seats.
+- [RAG Chunk Size & Token Cost Calculator](https://ml0x.com/calculators/rag-chunk-size-token-calculator.html) — Optimize RAG chunk size (128 to 2048 tokens), overlap percent, top-K retrieval context, and monthly LLM generation token cost.
+- [Multi-Agent Orchestration Cost Calculator](https://ml0x.com/calculators/multi-agent-orchestration-cost.html) — Estimate multi-agent fan-out token spend, supervisor handoff overhead, wall-clock speedup, and monthly API budgets for 2 to 16 parallel agents.
+- [Structured Output JSON Token Tax Calculator](https://ml0x.com/calculators/structured-output-json-token-tax.html) — Calculate extra prompt and completion tokens from JSON schemas, strict function calling, and retry validation across monthly LLM calls.
+- [Prompt Cache Hit Rate ROI Calculator](https://ml0x.com/calculators/prompt-cache-hit-rate-roi.html) — Model Anthropic 5-minute (1.25x) and 1-hour (2x) prompt cache write costs vs 0.10x cache read savings to find your exact cache break-even hit rate.
+- [Local vs API Coding Agent Breakeven Calculator](https://ml0x.com/calculators/local-vs-api-coding-agent-breakeven.html) — Find exact payback months between a local AI coding rig (RTX 5090, Mac Studio M4 Ultra) and cloud coding APIs (Claude Sonnet 4, Opus 4, Max $200).
+- [LLM Eval Suite Cost Calculator](https://ml0x.com/calculators/llm-eval-suite-cost-calculator.html) — Calculate monthly LLM-as-a-Judge evaluation costs across dataset size, CI/CD runs, prompt length, judge models, and 50% Batch API discounts.
 
 ### Claude Code & AI Coding Agent Calculators (Sprint 14 Wave 2)
 - [CLAUDE.md Context Budget Calculator](https://ml0x.com/calculators/claude-md-context-budget-calculator.html) — Size your CLAUDE.md, MCP tool schemas, and repo map tokens against the 200K Claude Code window with remaining headroom and monthly cache tax.

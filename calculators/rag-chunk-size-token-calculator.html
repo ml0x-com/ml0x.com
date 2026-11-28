@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" data-sct-site="ml0x.com">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Chunk Size & Token Cost Calculator | ml0x</title>
+<meta name="description" content="Optimize RAG chunk size (128 to 2048 tokens), overlap percent, top-K retrieval context, and monthly LLM generation token cost in your browser.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://ml0x.com/calculators/rag-chunk-size-token-calculator.html">
+<link rel="alternate" hreflang="en" href="https://ml0x.com/calculators/rag-chunk-size-token-calculator.html">
+<link rel="alternate" hreflang="x-default" href="https://ml0x.com/calculators/rag-chunk-size-token-calculator.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RAG Chunk Size & Token Cost Calculator">
+<meta property="og:description" content="Optimize RAG chunk size (128 to 2048 tokens), overlap percent, top-K retrieval context, and monthly LLM generation token cost in your browser.">
+<meta property="og:url" content="https://ml0x.com/calculators/rag-chunk-size-token-calculator.html">
+<meta property="og:site_name" content="ml0x">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RAG Chunk Size & Token Cost Calculator">
+<meta name="twitter:description" content="Optimize RAG chunk size (128 to 2048 tokens), overlap percent, top-K retrieval context, and monthly LLM generation token cost in your browser.">
+<meta name="author" content="Michael Lip">
+<link rel="stylesheet" href="/assets/ml0x.css">
+<style>
+.llm-calc{max-width:920px;margin:0 auto;padding:8px 0}
+.llm-calc nav[aria-label="Breadcrumb"]{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);padding:20px 0 0;margin:0 0 8px}
+.llm-calc nav[aria-label="Breadcrumb"] a{color:var(--ink-faint)}
+.llm-calc nav[aria-label="Breadcrumb"] a:hover{color:var(--ink)}
+.llm-calc .byline{font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);margin:0 0 14px}
+.llm-calc table{width:100%;border-collapse:collapse;margin:18px 0;font-size:13.5px;font-variant-numeric:tabular-nums}
+.llm-calc th,.llm-calc td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+.llm-calc thead th{background:var(--surface-2);font-family:var(--font-mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-muted)}
+.llm-calc .num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
+.llm-calc .tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.llm-calc .tool{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin:20px 0}
+.llm-calc .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px 18px}
+.llm-calc .field label{display:flex;justify-content:space-between;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--ink-muted);margin:0 0 6px;letter-spacing:.2px}
+.llm-calc .val-pill{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;color:var(--ink);font-weight:700;font-size:12px}
+.llm-calc .field select,.llm-calc .field input[type="number"]{width:100%;padding:9px 11px;font:14px var(--font-body);border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--bg);color:var(--ink);box-sizing:border-box}
+.llm-calc .field input[type="range"]{width:100%;accent-color:#1A1A1A;cursor:pointer;min-height:28px}
+.llm-calc .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:12px;margin:20px 0 14px}
+.llm-calc .kpi{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:13px 15px}
+.llm-calc .kpi__label{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-muted);margin-bottom:4px}
+.llm-calc .kpi__val{font-family:var(--font-mono);font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.llm-calc .kpi__sub{font-size:12px;color:var(--ink-faint);margin-top:4px;line-height:1.4}
+.llm-calc .kpi--ok{border-left:3px solid var(--ok)}
+.llm-calc .kpi--warn{border-left:3px solid var(--warn)}
+.llm-calc .kpi--bad{border-left:3px solid var(--bad)}
+.llm-calc .verdict{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:var(--radius-sm);padding:12px 15px;margin:14px 0 0;font-size:14px;color:var(--ink)}
+.llm-calc tr.tt td{font-weight:700;color:var(--ink);background:rgba(37,99,235,0.06)}
+.llm-calc .disclaimer{font-size:13px;color:var(--ink-muted)}
+.llm-calc .faq-item{border-bottom:1px solid var(--line);padding:14px 0}
+.llm-calc .faq-item h3{margin:0 0 6px;font-size:16px}
+.llm-calc .faq-item p{margin:0;font-size:14.5px;color:var(--ink-2)}
+.llm-calc section p a,.llm-calc td a,.llm-calc li a{color:var(--s1);text-decoration:underline;text-underline-offset:2px}
+.s12-cro{margin:16px 0 22px;padding:18px;border:1px solid var(--line-strong,#D8D8D6);border-left:4px solid #1A1A1A;border-radius:10px;background:#fff;color:#1A1A1A}
+.s12-cro__tag{font-family:var(--font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:#555;font-weight:700;margin-bottom:4px}
+.s12-cro__lead{margin:0 0 10px;font-size:14.5px;line-height:1.5;color:#1A1A1A}
+.s12-cro__disc{font-size:12px;line-height:1.45;color:#3F3F46;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:8px;padding:8px 12px;margin:0 0 12px}
+.s12-cta-btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;max-width:100%;width:auto;min-width:260px;box-sizing:border-box;font-family:var(--font-body);font-size:14.5px;font-weight:700;color:#fff;background:#1A1A1A;border:0;padding:11px 22px;line-height:1.3;border-radius:980px;cursor:pointer;text-align:center}
+.s12-cta-btn:hover{background:#333}
+.s12-cro__alts{margin:10px 0 12px;font-size:12.5px;color:#52525B}
+.s12-cro__alts a{color:#1A1A1A;text-decoration:underline}
+.s12-cro details{margin:0;font-size:13px;color:#3F3F46;background:#FAFAF9;border:1px solid #E8E8E6;border-radius:8px;padding:9px 12px}
+.s12-cro summary{cursor:pointer;font-weight:600;color:#1A1A1A}
+.s12-cro ul{margin:8px 0 2px;padding-left:18px;line-height:1.55}
+.s12-post{margin:20px 0;padding:16px 18px;border:1px solid var(--line,#D8D8D6);border-radius:10px;background:#FAFAF9}
+.s12-post__title{margin:0 0 4px;font-weight:700;font-size:15.5px;color:#1A1A1A}
+.s12-post__desc{margin:0 0 10px;font-size:13.5px;color:#52525B}
+.s13-echo-badge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:4px 9px;margin:0 0 10px;line-height:1.4;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s13-who{margin:0 0 6px;font-size:13px;line-height:1.45;color:#27272A}
+.s13-files{margin:0 0 10px;font-size:12.5px;line-height:1.45;color:#3F3F46}
+.s13-files code{font-family:var(--font-mono);font-size:11.5px;background:#F4F4F5;border:1px solid #E4E4E7;border-radius:4px;padding:1px 5px;color:#18181B}
+.s13-preview{overflow-x:auto;max-width:100%;box-sizing:border-box;font-family:var(--font-mono);font-size:11.5px;line-height:1.45;padding:10px 12px;background:#111;color:#E8E8E8;border-radius:6px;margin:8px 0 6px;white-space:pre}
+.s15-sample-wrap{margin:0 0 12px;display:flex;flex-direction:column;gap:8px}
+.s15-sample-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto;max-width:100%;align-self:flex-start;box-sizing:border-box;font-family:var(--font-body);font-size:13.5px;font-weight:600;color:#1A1A1A;background:#fff;border:1.5px dashed #1A1A1A;padding:9px 18px;border-radius:10px;cursor:pointer;text-align:center}
+.s15-sample-btn:hover{background:#F5F5F3}
+.s15-proof-banner{font-family:var(--font-mono);font-size:11.5px;line-height:1.45;color:#15803D;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:8px;padding:8px 12px;max-width:100%;box-sizing:border-box;word-break:break-word}
+.s15-diff-wrap{margin:12px 0 14px;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+.s15-diff-title{margin:0 0 6px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#3F3F46}
+.llm-calc table.s15-diff-table{margin:0;width:100%;font-size:12.5px;table-layout:fixed}
+.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:7px 9px;word-break:break-word}
+.llm-calc table.s15-diff-table thead th:last-child{background:#1A1A1A;color:#fff}
+.llm-calc table.s15-diff-table td:last-child{background:#FAFAF9}
+@media(max-width:767px){.llm-calc .tool{padding:14px}.s12-cro{padding:14px}.s12-cta-btn{width:100%;min-width:0;padding:11px 16px;font-size:14px}.s15-sample-btn{width:100%}.llm-calc table.s15-diff-table{font-size:11.5px}.llm-calc table.s15-diff-table th,.llm-calc table.s15-diff-table td{padding:6px 6px}}
+@media print{.s12-cro,.s12-post{display:none}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"RAG Chunk Size & Token Cost Calculator","url":"https://ml0x.com/calculators/rag-chunk-size-token-calculator.html","description":"Optimize RAG chunk size (128 to 2048 tokens), overlap percent, top-K retrieval context, and monthly LLM generation token cost in your browser.","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Michael Lip","url":"https://zovo.one"},"publisher":{"@type":"Organization","name":"ml0x","url":"https://ml0x.com/"},"datePublished":"2026-11-28","dateModified":"2026-11-28"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the best default RAG chunk size in 2026?","acceptedAnswer":{"@type":"Answer","text":"512 tokens with 10% to 15% overlap is the strongest general baseline. Technical docs and codebases often perform better at 384 to 512 tokens paired with a cross-encoder reranker."}},{"@type":"Question","name":"Does embedding cost or LLM generation cost matter more in RAG?","acceptedAnswer":{"@type":"Answer","text":"LLM generation input tokens usually exceed embedding costs by 50x to 500x. Cutting top-K from 12 to 6 via reranking saves far more than switching embedding models."}},{"@type":"Question","name":"How much overlap should I use between RAG chunks?","acceptedAnswer":{"@type":"Answer","text":"10% to 15% overlap prevents splitting key sentences across chunk boundaries without inflating vector storage or retrieval duplication."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ml0x","item":"https://ml0x.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://ml0x.com/calculators/"},{"@type":"ListItem","position":3,"name":"RAG Chunk Size & Token Cost Calculator","item":"https://ml0x.com/calculators/rag-chunk-size-token-calculator.html"}]}</script>
+<script src="/site-analytics.js?v=1126m" defer></script>
+<link rel="stylesheet" href="/assets/support-v3.css?v=4-github-20261017">
+<script src="/assets/support-v3.js?v=3"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-nav">
+  <div class="site-nav__inner">
+    <div class="site-nav__left">
+      <a class="site-nav__logo" href="/">ml0x</a>
+      <nav class="site-nav__links" aria-label="Main">
+        <a href="/tools/">Tools</a>
+        <a href="/calculators/" aria-current="page">Calculators</a>
+        <a href="/guides/">Guides</a>
+        <a href="/answers/">Answers</a>
+        <a href="/research/">Research</a>
+      </nav>
+    </div>
+    <a class="nav-cta" data-cta="header_pipeline" href="/pipeline/">ml0x Pipeline, $99</a>
+  </div>
+</header>
+<main id="main" class="container">
+<article class="llm-calc">
+  <nav aria-label="Breadcrumb"><a href="/">ml0x</a> / <a href="/calculators/">Calculators</a> / <span>RAG Chunk Size & Token Cost Calculator</span></nav>
+  <h1>RAG Chunk Size & Token Cost Calculator</h1>
+  <p class="byline">By <a href="https://zovo.one/lifetime?utm_source=ml0x&amp;utm_medium=inline&amp;utm_campaign=s15-rag-chunk-size-token-calculator" rel="author">Michael Lip</a> &middot; Updated 28 November 2026 &middot; Runs 100% client-side in your browser.</p>
+
+  <p>Your <strong>RAG chunk size</strong> and <strong>top-K retrieval count</strong> directly control both embedding index volume and monthly LLM input token bills. Sweep chunk sizes below to compare retrieval precision, index size, and generation spend.</p>
+
+  <section id="calculator">
+    <h2>Interactive calculator</h2>
+    <div class="tool">
+      <div class="grid">
+        <div class="field"><label for="corpusMB">Document corpus size (MB) <span class="val-pill" id="corpusMBVal">250 MB</span></label><input id="corpusMB" type="range" min="10" max="4000" step="10" value="250"></div>
+        <div class="field"><label for="chunkTok">Chunk size (tokens) <span class="val-pill" id="chunkTokVal">512 tok</span></label><input id="chunkTok" type="range" min="128" max="2048" step="64" value="512"></div>
+        <div class="field"><label for="overlapPct">Chunk overlap percent <span class="val-pill" id="overlapPctVal">15%</span></label><input id="overlapPct" type="range" min="0" max="40" step="5" value="15"></div>
+        <div class="field"><label for="topK">Retrieved chunks per query (top-K) <span class="val-pill" id="topKVal">8</span></label><input id="topK" type="range" min="2" max="24" step="1" value="8"></div>
+        <div class="field"><label for="queriesDay">Queries per day <span class="val-pill" id="queriesDayVal">2000</span></label><input id="queriesDay" type="range" min="100" max="20000" step="100" value="2000"></div>
+        <div class="field"><label for="llmChoice">Generation LLM</label><select id="llmChoice"><option value="sonnet4" selected>Claude Sonnet 4 ($3 / $15)</option><option value="gpt41">OpenAI GPT-4.1 ($2 / $8)</option><option value="haiku35">Claude Haiku 3.5 ($0.80 / $4)</option><option value="deepseek">DeepSeek V3 ($0.27 / $1.10)</option></select></div>
+      </div>
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="verdict" id="verdict"></div>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Chunk Size</th><th class='num'>Total Chunks</th><th class='num'>Context / Query</th><th class='num'>Embed Cost (1x)</th><th class='num'>Monthly LLM Spend</th></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <aside class="s12-cro" data-cro="sprint15-ml0x-primary" data-mr-placement="s15_calc_rag-chunk-size-token-calculator" aria-label="Claude Code Workflow Pack">
+      <div class="s12-cro__tag">Most Popular &middot; $29 Once</div>
+      <div class="s13-echo-badge" id="s13EchoBadge" aria-live="polite">Calculated setup ready &mdash; adjust sliders above to customize</div>
+      <p class="s12-cro__lead"><strong>Building RAG pipelines with Claude Code?</strong> Keep retrieval scripts tested, formatted, and under hard API budget caps with the $29 Claude Code Workflow Pack.</p>
+      <p class="s13-who"><strong>Built for</strong> developers running Claude Code or hybrid LLM coding agents daily who need hard spend caps &amp; safety hooks.</p>
+      <p class="s13-files"><strong>Instant 10s download</strong> &mdash; <code>5 Python Guard Hooks + 5 CLAUDE.md Templates + 8 Slash Commands + 64 Tests</code></p>
+      <div class="s15-diff-wrap" data-cro="sprint15-diff-table">
+        <p class="s15-diff-title">Free Sample vs Full $29 Pack</p>
+        <table class="s15-diff-table">
+          <thead><tr><th>Capability</th><th>Free Sample ($0)</th><th>Full $29 Pack</th></tr></thead>
+          <tbody>
+          <tr><td>RAG chunk sizing spec</td><td>Included (.md)</td><td><strong>Included + 5 CLAUDE.md templates</strong></td></tr>
+          <tr><td>Agentic RAG spend guard</td><td>Manual estimate</td><td><strong>Automated cost_guard.py hook</strong></td></tr>
+          <tr><td>Secret & .env protection</td><td>Not included</td><td><strong>protect_files.py PreToolUse hook</strong></td></tr>
+          <tr><td>Auto-lint & test commands</td><td>Not included</td><td><strong>format_on_edit.py + /test-fix</strong></td></tr>
+          <tr><td>Hook regression test suite</td><td>0 tests</td><td><strong>64 passing pytest unit tests</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+      <div class="s15-sample-wrap" data-cro="sprint15-sample-bar">
+        <button type="button" class="s15-sample-btn" id="s15SampleBtn" data-sample-download="ml0x-rag-chunk-token-sample.md">&#8595; Download Free RAG Chunking & Cost Spec (.md, instant)</button>
+        <div class="s15-proof-banner" id="s15ProofBanner" role="status" aria-live="polite" hidden>Downloaded sample &mdash; unlock the full production Claude Code kit below</div>
+      </div>
+      <button type="button" class="s12-cta-btn" id="s13PrimaryBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_rag-chunk-size-token-calculator" data-cta="s15_buy_cc29_rag-chunk-size-token-calculator">Download Claude Code Workflow Pack &mdash; $29 &rarr;</button>
+      <p class="s12-cro__alts">Want GPU/VRAM desk sheets or the full autonomous pipeline? <a href="/cheatsheet-pack/">$9 ML Cheatsheets</a> &middot; <a href="/pipeline/">$99 ml0x Pipeline</a></p>
+      <details>
+        <summary>Preview exact files &amp; sample lines inside the $29 Claude Code Pack</summary>
+        <pre class="s13-preview"><code># rag_eval_guard.sh (Pair with .claude/hooks/cost_guard.py)
+export CLAUDE_MAX_USD=4.00
+python3 .claude/hooks/cost_guard.py --check-spend
+# Keeps agentic RAG indexing and eval loops inside a strict dollar envelope</code></pre>
+        <ul>
+          <li><strong>Hard Spend Protection (<code>cost_guard.py</code>)</strong> &mdash; PreToolUse/PostToolUse hook that reads live session token spend and halts runaway agent loops at your dollar cap.</li>
+          <li><strong>Safety &amp; Velocity Hooks</strong> &mdash; <code>guard_bash.py</code>, <code>protect_files.py</code>, <code>format_on_edit.py</code>, and <code>notify.py</code> &mdash; 64 passing unit tests included.</li>
+          <li><strong>5 <code>CLAUDE.md</code> Templates + 8 Slash Commands</strong> &mdash; Drop-in <code>/plan</code>, <code>/review</code>, <code>/test-fix</code>, <code>/commit</code>, <code>/pr</code>, and <code>/handoff</code> workflows.</li>
+        </ul>
+      </details>
+    </aside>
+  </section>
+
+  <section id="faq">
+    <h2>Frequently asked questions</h2>
+    <div class="faq-item"><h3>What is the best default RAG chunk size in 2026?</h3><p>512 tokens with 10% to 15% overlap is the strongest general baseline. Technical docs and codebases often perform better at 384 to 512 tokens paired with a cross-encoder reranker.</p></div>
+    <div class="faq-item"><h3>Does embedding cost or LLM generation cost matter more in RAG?</h3><p>LLM generation input tokens usually exceed embedding costs by 50x to 500x. Cutting top-K from 12 to 6 via reranking saves far more than switching embedding models.</p></div>
+    <div class="faq-item"><h3>How much overlap should I use between RAG chunks?</h3><p>10% to 15% overlap prevents splitting key sentences across chunk boundaries without inflating vector storage or retrieval duplication.</p></div>
+  </section>
+
+  <aside class="s12-post" data-cro="sprint15-postresult" aria-label="ml0x Engineering Kit">
+    <p class="s12-post__title">Ship cleaner RAG and coding agent pipelines under budget</p>
+    <p class="s12-post__desc">Get 5 Python guard hooks, 5 CLAUDE.md templates, and 8 slash commands in the $29 Claude Code Workflow Pack.</p>
+    <p class="s12-cro__disc">One-time payment &middot; Instant download &middot; 60-day refund guarantee &middot; Secure Stripe checkout shown as <strong>BeLikeNative / AUTOM8 LLC</strong></p>
+    <button type="button" class="s12-cta-btn" id="s13PostBtn" data-checkout="https://buy.stripe.com/4gMfZi1k6foc1xz1op43S3I?client_reference_id=s15_ml0x_rag-chunk-size-token-calculator" data-cta="s15_post_cc29_rag-chunk-size-token-calculator">Get Claude Code Pack &mdash; $29 &rarr;</button>
+  </aside>
+
+  <section id="related">
+    <h2>Related MCP, agent &amp; context calculators</h2>
+    <ul>
+      <li><a href="/calculators/rag-chunk-size-embedding-cost-calculator.html">RAG chunk & embedding cost calculator</a> &mdash; Compare OpenAI, Voyage, and Cohere vector DB storage.</li>
+      <li><a href="/calculators/fine-tuning-vs-rag-cost.html">Fine-tuning vs RAG cost calculator</a> &mdash; Compare 12-month QLoRA hosting against RAG pipelines.</li>
+      <li><a href="/calculators/prompt-cache-hit-rate-roi.html">Prompt cache hit rate ROI</a> &mdash; Cache static RAG system prompts for 90% read discounts.</li>
+    </ul>
+  </section>
+
+  <section class="disclaimer">
+    <p>All calculations run 100% locally in your browser with zero external API calls. Pricing and rate limits reflect published 2026 provider rate cards.</p>
+  </section>
+</article>
+</main>
+<div class="support-cta-wrap"><aside class="support-cta" data-support-cta="footer" aria-label="Support ml0x"><p class="support-cta__title">Made by Michael, one person and a lot of coffee.</p><p class="sct-maker"><img class="sct-face" src="/assets/michael-128.webp" width="44" height="44" loading="lazy" alt="Michael Lip"><span>If ml0x has helped you, you can buy me a coffee. It honestly makes my day, and I read every note that comes with one.</span></p><div class="sct-actions"><span class="sct-card-rail"><a class="support-cta__btn" href="https://paypal.me/najzzz/5USD" target="_blank" rel="noopener" data-rail="paypal">Buy me a coffee &middot; $5</a><small>via PayPal</small></span><a class="support-cta__btn support-cta__btn--alt" href="https://buymeacoffee.com/michaellip" target="_blank" rel="noopener" data-rail="bmc">Card, any amount or monthly</a><a class="support-cta__btn sct-github" href="https://github.com/sponsors/theluckystrike" data-rail="github" target="_blank" rel="noopener">Sponsor on GitHub<small>monthly or one-time</small></a><a class="support-cta__why" href="/support/">Why I ask</a></div></aside></div>
+<footer class="site-footer">
+  <p class="s7-sponsor" data-cro="sprint-20261128-s15-rag-chunk-size-token-calculator" style="margin:0 0 12px;font:14px/1.5 Inter,system-ui,sans-serif;text-align:center">Like this free tool? <a href="https://github.com/sponsors/theluckystrike" target="_blank" rel="noopener" data-sponsor-line style="display:inline-block;padding:12px 4px;color:inherit;font-weight:600;text-decoration:underline">Support it on GitHub Sponsors.</a></p>
+  <nav class="footer-links-seo" aria-label="ML tools and content">
+    <a href="/calculators/">All calculators</a>
+    <a href="/calculators/mcp-tool-schema-token-overhead.html">MCP tool schema overhead</a>
+    <a href="/calculators/agent-loop-runaway-cost-calculator.html">Agent loop runaway cost</a>
+    <a href="/calculators/context-window-rot-cost-calculator.html">Context window rot cost</a>
+    <a href="/calculators/claude-code-vs-codex-cli-cost.html">Claude Code vs Codex CLI</a>
+    <a href="/calculators/prompt-cache-hit-rate-roi.html">Prompt cache hit rate ROI</a>
+    <a href="/calculators/llm-eval-suite-cost-calculator.html">LLM eval suite cost</a>
+    <a href="/tools/">ML tools</a>
+    <a href="/research/">Research</a>
+    <a href="/about.html">About</a>
+  </nav>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="site-footer__logo">ml0x</span>
+      <span class="site-footer__meta">by <a href="https://github.com/theluckystrike" target="_blank" rel="noopener">@theluckystrike</a></span>
+    </div>
+    <div class="site-footer__links">
+      <a href="https://github.com/theluckystrike/100xagenticdev" target="_blank" rel="noopener">GitHub</a>
+      <a href="/research/">Research</a>
+      <a href="https://zovo.one/guides/best-chrome-extensions-for-developers-2026" target="_blank" rel="noopener">Chrome Developer Extensions by Zovo</a>
+      <a href="https://twitter.com/_alphashark_" target="_blank" rel="noopener">X</a>
+      <a href="/privacy/">Privacy</a>
+      <a href="/support/">Support</a>
+      <a href="/privacy/#analytics" data-mr-consent-open>Cookie settings</a>
+    </div>
+  </div>
+</footer>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  function calc(){
+    const corpusMB = +$('corpusMB').value;
+    const chunkTok = +$('chunkTok').value;
+    const overlap = +$('overlapPct').value / 100;
+    const topK = +$('topK').value;
+    const qDay = +$('queriesDay').value;
+    const llmKey = $('llmChoice').value;
+
+    $('corpusMBVal').textContent = corpusMB + ' MB';
+    $('chunkTokVal').textContent = chunkTok + ' tok';
+    $('overlapPctVal').textContent = Math.round(overlap * 100) + '%';
+    $('topKVal').textContent = topK;
+    $('queriesDayVal').textContent = qDay.toLocaleString();
+
+    const LLMS = {
+      sonnet4: { name: 'Claude Sonnet 4', inp: 3.0, out: 15.0 },
+      gpt41: { name: 'GPT-4.1', inp: 2.0, out: 8.0 },
+      haiku35: { name: 'Claude Haiku 3.5', inp: 0.80, out: 4.0 },
+      deepseek: { name: 'DeepSeek V3', inp: 0.27, out: 1.10 }
+    };
+    const m = LLMS[llmKey] || LLMS.sonnet4;
+    const corpusTok = corpusMB * 250000;
+    const moQueries = qDay * 30;
+
+    function evalChunk(sz) {
+      const stride = Math.max(32, sz * (1 - overlap));
+      const chunks = Math.ceil(corpusTok / stride);
+      const embedTok = chunks * sz;
+      const embedCost = (embedTok / 1e6) * 0.02;
+      const ctxQuery = topK * sz + 450;
+      const llmMo = ((ctxQuery * moQueries / 1e6) * m.inp) + ((350 * moQueries / 1e6) * m.out);
+      return { sz, chunks, embedCost, ctxQuery, llmMo };
+    }
+
+    const cur = evalChunk(chunkTok);
+    const lean = evalChunk(256);
+    const status = cur.ctxQuery <= 6000 ? 'kpi--ok' : (cur.ctxQuery <= 12000 ? 'kpi--warn' : 'kpi--bad');
+
+    const sweep = [256, 512, 1024, 2048].map(evalChunk);
+    if (![256, 512, 1024, 2048].includes(chunkTok)) {
+      sweep.push(cur);
+      sweep.sort((a, b) => a.sz - b.sz);
+    }
+
+    $('kpis').innerHTML = `
+      <div class="kpi"><div class="kpi__label">Total Index Chunks</div><div class="kpi__val">${(cur.chunks/1000).toFixed(1)}K</div><div class="kpi__sub">Embed cost $${cur.embedCost.toFixed(2)} (text-embed-3)</div></div>
+      <div class="kpi ${status}"><div class="kpi__label">Retrieved Context</div><div class="kpi__val">${(cur.ctxQuery/1000).toFixed(1)}K tok</div><div class="kpi__sub">${topK} chunks x ${chunkTok} tok + prompt</div></div>
+      <div class="kpi"><div class="kpi__label">Monthly LLM Bill</div><div class="kpi__val">$${cur.llmMo.toFixed(0)}/mo</div><div class="kpi__sub">${(moQueries/1000).toFixed(0)}K queries on ${m.name}</div></div>
+      <div class="kpi kpi--ok"><div class="kpi__label">256-Tok Chunk Delta</div><div class="kpi__val">$${Math.max(0, cur.llmMo - lean.llmMo).toFixed(0)}/mo</div><div class="kpi__sub">Potential spend drop with tighter chunks</div></div>
+    `;
+    $('verdict').innerHTML = `<strong>Verdict</strong> &mdash; At <strong>${chunkTok}-token chunks</strong> with top-${topK} retrieval, each query sends <strong>${(cur.ctxQuery/1000).toFixed(1)}K tokens</strong> into ${m.name} for <strong>$${cur.llmMo.toFixed(0)}/mo</strong>. Generation input tokens dominate embedding cost by ${(cur.llmMo / Math.max(0.01, cur.embedCost)).toFixed(0)}x.`;
+    $('rows').innerHTML = sweep.map(r => `<tr${r.sz===chunkTok?' class="tt"':''}><td>${r.sz} tokens${r.sz===chunkTok?' (Selected)':''}</td><td class="num">${r.chunks.toLocaleString()}</td><td class="num">${(r.ctxQuery/1000).toFixed(1)}K tok</td><td class="num">$${r.embedCost.toFixed(2)}</td><td class="num">$${r.llmMo.toFixed(0)}</td></tr>`).join('');
+
+  }
+  ["corpusMB", "chunkTok", "overlapPct", "topK", "queriesDay", "llmChoice"].forEach(id => { $(id).addEventListener('input', calc); $(id).addEventListener('change', calc); });
+  calc();
+
+  function updateS13Echo(){
+    var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+    if (vals.length < 4) return;
+    var k = vals;
+    var badge = document.getElementById('s13EchoBadge');
+    var pBtn = document.getElementById('s13PrimaryBtn');
+    var postBtn = document.getElementById('s13PostBtn');
+    if (badge) badge.textContent = `Your RAG profile — ${k[1]} per query (${k[0]} chunks, ${k[2]} LLM spend)`;
+    if (pBtn) pBtn.textContent = `Guard Your ${k[2]} RAG & Agent Pipelines — $29 Pack →`;
+    if (postBtn) postBtn.textContent = `Guard Your ${k[2]} RAG & Agent Pipelines — $29 Pack →`;
+
+  }
+  document.querySelectorAll('#calculator input, #calculator select').forEach(function(el){
+    el.addEventListener('input', updateS13Echo);
+    el.addEventListener('change', updateS13Echo);
+  });
+  updateS13Echo();
+
+  var sampleBtn = document.getElementById('s15SampleBtn');
+  if (sampleBtn) {
+    sampleBtn.addEventListener('click', function(){
+      var vals = Array.from(document.querySelectorAll('#kpis .kpi__val')).map(function(el){ return el.textContent.trim(); });
+      var md = [
+        '# ml0x RAG Chunk Size & Token Budget Sample',
+        '# Generated from ml0x.com/calculators/rag-chunk-size-token-calculator.html',
+        '',
+        '## Your Live RAG Config',
+        '- Corpus size = ' + $('corpusMB').value + ' MB',
+        '- Chunk size = ' + $('chunkTok').value + ' tokens',
+        '- Overlap = ' + $('overlapPct').value + '%',
+        '- Top-K chunks = ' + $('topK').value,
+        '- Total index chunks = ' + (vals[0] || '0K'),
+        '- Retrieved context per query = ' + (vals[1] || '0K tok'),
+        '- Monthly LLM spend = ' + (vals[2] || '$0/mo'),
+        '',
+        '## Production RAG Tuning Rules',
+        '- Start with 512-token chunks and 10% to 15% overlap, then add a reranker to trim top-K.',
+        '- Cache static system instructions separately from dynamic retrieved chunks.',
+        '- Cap agentic RAG retry loops with cost_guard.py during evaluation runs.',
+        '',
+        '## Full $29 Claude Code Workflow Pack',
+        '- 5 Python guard hooks + 64 tests + 5 CLAUDE.md templates + 8 slash commands'
+      ].join('\n');
+
+      var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'ml0x-rag-chunk-token-sample.md';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+      var banner = document.getElementById('s15ProofBanner');
+      if (banner) {
+        banner.textContent = 'Downloaded ml0x-rag-chunk-token-sample.md — unlock the full production Claude Code kit below';
+        banner.hidden = false;
+      }
+      if (typeof gtag === 'function') {
+        gtag('event', 'sample_download', { site: 'ml0x.com', slug: 'rag-chunk-size-token-calculator', file: 'ml0x-rag-chunk-token-sample.md' });
+      }
+    });
+  }
+
+  document.querySelectorAll('[data-checkout]').forEach(function(btn){
+    btn.addEventListener('click', function(e){
+      if (!e.isTrusted) return;
+      var targetUrl = btn.getAttribute('data-checkout');
+      if (!targetUrl) return;
+      if (typeof gtag === 'function') {
+        gtag('event', 'begin_checkout_click', {
+          site: 'ml0x.com',
+          cta: btn.getAttribute('data-cta') || '',
+          slug: 'rag-chunk-size-token-calculator'
+        });
+      }
+      window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+})();
+</script>
+<script src="/assets/js/mlx-ui.js" defer></script>
+</body>
+</html>
